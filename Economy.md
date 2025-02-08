@@ -1,34 +1,60 @@
 ```mermaid
+%%{init: {"flowchart": {"defaultRenderer": "elk"}} }%%
 graph TD;
-	subgraph Verzamelen
-		A1[Verzamelen]
-		A2[loot]
+	subgraph Tap
+		direction RL
+		Collecting ~~~ Loot
 	end 
-	B[creeren]
-	C[gebruiken]
-
-	A1 --> B
-	A2 --> B
-	B --> C 
-	C --> A2
+	Tap --> Inventory
+	subgraph Converter
+		direction RL
+		Crafting ~~~ Trading
+	end
+	Inventory --> Converter
+	subgraph Use
+		direction RL
+		Upgrade ~~~ Drain
+	end
+	Converter --> Use
+	Upgrade -- positif --> Tap
+	Drain  -- negatif --> Tap
 ```
-## Flow
-### verzamelen
-Het verzamelen van recources. 
+## Tap
+Invloei van resources: 
+* loot 
+* Exp 
+* Gold
+* Crafting Material
 
-Deze bestaat uit 2 delen
+**Kan een aanmoedeging zijn voor Taken te doe** 
+
+## Inventory 
+Het bijhouden van [[Resources]] en Items. 
+Zorgt voor een limiet: 
++ + meer items gebruiken
++ - Moeilijke te controleren
+	+ fysieke resource regelen zicht zelf. 
+	+ wordt meestal vervangen door kaarten of kleinere items
 
 
-### creeren
-Het maken van items
+## Converter
+Het omzetten van [[Resources]] in Items
+Dit wordt gedaan door [[Crafting]] en trading. 
 
-### gebruiken
-Het gebruiken van items
-## Ideeen 
-### munten
-inplaats van metalen munten its anders bv:
-* kroonkurken
-* knikkers
-* ...
-lijkt me iets goed koper en maakt de larp iets specialer (zeker als er een lore reden voor is).
+### Trading
+Verschillende soorten met elk een voorkeur en specialiteit.
+Hierdoor is er meer vraag en aanbod. 
 
+## Upgrade
+
+Zorgt er voor dat de [[#Tap]] beter werkt bvb: 
+- meer damage -> makellijker te queesten
+
+## Drain 
+Verwijderd [[Resources]] uit het spel bvb: 
+- Hp -> healing potions
+- Kogels
+- Belastingen
+- Breekbare wapens
+- Breekbaar gereedschap
+- Gestolen geld
