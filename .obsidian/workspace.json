@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Econemy.md",
+                "file": "Economy.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Econemy"
+              "title": "Economy"
             }
           }
         ]
@@ -182,7 +182,7 @@
   "active": "a22f8619fe1d0f5c",
   "lastOpenFiles": [
     "Untitled.canvas",
-    "Econemy.md",
+    "Economy.md",
     "Home.md",
     "Assets"
   ]
