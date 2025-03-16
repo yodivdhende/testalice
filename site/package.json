@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "vite dev",
+		"start": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
@@ -33,6 +33,7 @@
 	},
 	"dependencies": {
 		"@threlte/core": "^8.0.1",
-		"@types/three": "^0.174.0"
+		"@types/three": "^0.174.0",
+		"mysql2": "^3.13.0"
 	}
 }

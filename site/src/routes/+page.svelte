@@ -1,9 +1,6 @@
-<script>
-    import Scene from '$lib/components/scene.svelte';
-    import {Canvas} from '@threlte/core';
+<script lang="ts">
+	import type { PageProps } from './$types';
 
+    let { data }: PageProps = $props();
 </script>
 
-<Canvas>
-    <Scene> </Scene>
-</Canvas>
