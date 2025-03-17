@@ -1,11 +1,11 @@
-*/node_modules
+site/node_modules
 
 # Output
 site/.output
 site/.vercel
 site/.netlify
 site/.wrangler
-/site/.svelte-kit
+site/.svelte-kit
 site/build
 
 # OS
