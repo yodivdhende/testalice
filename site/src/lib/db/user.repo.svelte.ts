@@ -1,43 +1,47 @@
-import Request from '$libs/types/request.svelte';
-import { FailedRequest, SuccessRequest } from '../types/request.svelte';
+import { mysqlconnFn } from './mysql';
 
-function getUser({ email, password }: { email: string, password: string }): Request<User> {
-  let userState = new Request<User>();
+const userSelector = ' SELECT Id as id, Email as email, Name as name FROM Users';
+export async function fetchUserByEmail({ email }: { email: string }): Promise<User> {
+	try {
+		const [results] = await (
+			await mysqlconnFn()
+		).execute(`${userSelector} WHERE email = ?  `, [email]);
+		const [firstUser] = results as any;
+		if (isUser(firstUser)) {
+			return { id: firstUser.id, email: firstUser.email, name: firstUser.name };
+		} else {
+			throw new Error(`user not found with email: ${email}`);
+		}
+	} catch (error) {
+		throw error;
+	}
+}
 
-  mysqlconnFn().query(`
-    SELECT
-      Id,
-      Email,
-      Name
-    FROM Users
-    WHERE
-      Email = '${email}'
-      AND Password = '${password}'
-  `).then(([firstUser]) => {
-    if (isUser(firstUser)) {
-      userState = new SuccessRequest({
-        id: firstUser.Id,
-        email: firstUser.Email,
-        name: firstUser.Name
-      })
-    }
-    else {
-      userState = new FailedRequest('No user found')
-    } 
-
-  });
-
-  return userState;
+export async function fetchUserById({ id }: { id: number }): Promise<User> {
+	try {
+		const [results] = await (await mysqlconnFn()).execute(`${userSelector} WHERE id = ?  `, [id]);
+		const [firstUser] = results as any;
+    console.log(firstUser);
+		if (isUser(firstUser)) {
+			return { id: firstUser.id, email: firstUser.email, name: firstUser.name };
+		} else {
+			throw new Error(`user not found with id: ${id}`);
+		}
+	} catch (error) {
+		throw error;
+	}
 }
 
 export type User = {
-  id: string;
-  email: string;
-  name: string;
-}
+	id: string;
+	email: string;
+	name: string;
+};
 
 export function isUser(user: any): user is User {
-  return typeof user?.id === 'string'
-    && typeof user?.email === 'string'
-    && typeof user?.name === 'string'
+	return (
+		typeof user?.id === 'number' &&
+		typeof user?.email === 'string' &&
+		typeof user?.name === 'string'
+	);
 }

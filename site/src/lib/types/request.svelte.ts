@@ -1,11 +1,9 @@
-export function Request<T>(): Request<T> {
-  return $state({ state: 'loading' });
-}
-export function SuccessRequest<T>(value: T): SuccessRequest<T> {
-  return {state: 'success', value} 
-}
-export function FailedRequest(message: string): FailedRequest {
-  return {state: 'Failed', message} 
+export function createRequest<T>(cb: () => Promise<T>): Request<T> {
+  let request: Request<T> = $state({ state: 'loading' });
+  cb()
+    .then(result => (request = {state: 'success', value: result}))
+    .catch(error => (request = {state: 'failed', message: error}))
+  return request;
 }
 
 
@@ -23,6 +21,6 @@ type LoadingRequest = {
 }
 
 type FailedRequest = {
-  state: 'Failed',
+  state: 'failed',
   message: string,
 }

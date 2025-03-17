@@ -6,5 +6,3 @@
 <Canvas>
     <Scene> </Scene>
 </Canvas>
-
-{@render children()}
