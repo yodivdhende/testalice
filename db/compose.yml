@@ -9,7 +9,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=testaliceDB
-      - MYSQL_USER=Yodi
+      - MYSQL_USER=yodi
       - MYSQL_PASSWORD=Tester@123
     volumes:
       - './scripts:/docker-entrypoint-initdb.d'
