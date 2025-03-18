@@ -8,7 +8,7 @@ export function mysqlconnFn(): Promise<mysql.Connection> {
         mysqlconn = mysql.createConnection({ 
             host: '127.0.0.1',
             port: 3307,
-            user: 'Yodi',
+            user: 'yodi',
             password: 'Tester@123',
             database: 'testaliceDB'
         });
