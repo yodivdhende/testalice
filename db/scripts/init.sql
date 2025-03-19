@@ -48,7 +48,7 @@ CREATE TABLE Characters (
   Id int NOT NULL AUTO_INCREMENT,
   Name varchar(254),
   Owner int,
-  CurrentHP int,
+  CurrentHp int,
   MaxHp int,
   PRIMARY KEY (Id),
   FOREIGN KEY (Owner) REFERENCES Users(Id)
