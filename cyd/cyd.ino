@@ -1,11 +1,15 @@
 #include <TFT_eSPI.h>
 #include <WiFi.h>
+#include "FS.h"
+#include "SD.h"
+#include "SPI.h"
+
 
 TFT_eSPI tft = TFT_eSPI();
 
 void setup() {
   screenSetup();
-  tft.println("booting");
+  tft.println("booting V0.0.2");
   connectToWifi();
 }
 
@@ -39,3 +43,5 @@ void connectToWifi() {
   tft.println((String)"connected with Ip: "+ WiFi.localIP());
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
 }
+
+void listDir(fs::FS &fs, const char* dirname, uint8_)
