@@ -29,7 +29,7 @@ void logGreen(char* log, String param)
 }
 
 
-void logRed(char* log)
+void logRed(const char* log)
 {
   tft.setTextColor(TFT_RED, TFT_BLACK);
   Serial.println(log);

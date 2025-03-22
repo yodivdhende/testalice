@@ -78,8 +78,23 @@ void readFile(fs::FS &fs, const char * path) {
   }
 
   logWhite("Read from file: ");
+  String jsonData = String("");
   while (file.available()) {
-    Serial.write(file.read());
+    jsonData = jsonData + (char)file.read();
   }
+
+  Serial.println(jsonData);
+  JsonDocument configObject;
+  DeserializationError error = deserializeJson(configObject, jsonData);
+
+  if(error) {
+    Serial.println(error.c_str());
+    return;
+  }
+
+  int characterId = configObject["characterId"]; 
+  logGreen(String(characterId).c_str());
+
   file.close();
+  return;
 }
