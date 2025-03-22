@@ -13,8 +13,10 @@ void setup()
 {
   screenSetup();
   logWhite("booting V0.0.2", "");
-  setupSD();
-  // connectToWifi();
+  if(setupSD() == false) {
+    return;
+  };
+  connectToWifi();
 }
 
 void loop()
@@ -33,17 +35,6 @@ void clearScreen()
   tft.fillScreen(TFT_BLACK);
 }
 
-// void connectToWifi()
-// {
-//   WiFi.begin(wifi_ssid, wifi_password);
-//   logWhite("connecting to: %s",wifi_ssid);
-//   while (WiFi.status() != WL_CONNECTED)
-//   {
-//     logWhite(".", "");
-//     delay(1000);
-//   }
-//   tft.print("\n");
-//   logGreen("connected with Ip: %s", String(WiFi.localIP()));
-// }
+
 
 

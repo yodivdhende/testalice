@@ -28,7 +28,6 @@ void logGreen(char* log, String param)
   tft.println(buffer);
 }
 
-
 void logRed(const char* log)
 {
   tft.setTextColor(TFT_RED, TFT_BLACK);
