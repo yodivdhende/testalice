@@ -1,14 +1,15 @@
 import { mysqlconnFn } from "./mysql"
 
 class CharacterRepo {
-    private characterSelector = `SELECT Id as id, Name as Name, Owner as ownerId, CurrentHP as currentHp, MaxHp as maxHp FROM Characters`
+    private characterSelector = `SELECT Id as id, Name as name, Owner as ownerId, CurrentHP as currentHp, MaxHp as maxHp FROM Characters`
 
     public async getCharacterById(id: number): Promise<Character> {
         try {
             const [result] = await (
                 await mysqlconnFn()
             ).execute(`${this.characterSelector} WHERE id = ?`, [id]);
-            const [firstCharacter] = result as any,
+            const [firstCharacter] = result as any;
+            console.log(firstCharacter);
             if(isCharacter(firstCharacter)) {
                 return {
                     id: firstCharacter.id,
