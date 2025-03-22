@@ -4,19 +4,25 @@
 #include <FS.h>
 #include <SD.h>
 #include <SPI.h>
+#include <HTTPClient.h>
 
 TFT_eSPI tft = TFT_eSPI();
 String wifi_ssid;
 String wifi_password;
+String server_url;
+int character_id;
 
 void setup()
 {
   screenSetup();
-  logWhite("booting V0.0.2", "");
+  logWhite("booting V0.0.3", "");
   if(setupSD() == false) {
     return;
   };
-  connectToWifi();
+  if(connectToWifi() ==false){
+    return;
+  };
+  fetchCharacter();
 }
 
 void loop()

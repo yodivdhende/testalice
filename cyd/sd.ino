@@ -26,13 +26,13 @@ bool setupSD() {
   }
 
   uint64_t cardSize = SD.cardSize() / (1024 * 1024);
-  logGreen("SD Card Size: %lluMB\n", String(cardSize));
+  logGreen("SD Card Size: %lluMB", String(cardSize));
   return readConfig(SD);
 }
 
 bool readConfig(fs::FS &fs) {
   const char * path =  "/config.json";
-  logWhite("Reading file: %s\n", path);
+  logWhite("Reading file: %s", path);
 
   File file = fs.open(path);
   if (!file) {
@@ -59,8 +59,12 @@ bool readConfig(fs::FS &fs) {
   int characterId = configObject["characterId"];
   String ssid = configObject["wifi"]["ssid"];
   String password = configObject["wifi"]["password"];
+  String url = configObject["url"];
+  int id = configObject["characterId"];
   wifi_ssid = ssid;
   wifi_password = password;
+  server_url = url;
+  character_id = id;
 
   return true;
 }

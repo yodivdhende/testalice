@@ -1,4 +1,4 @@
-void logWhite(char* log)
+void logWhite(const char* log)
 {
     Serial.println(log);
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
