@@ -1,47 +1,49 @@
 #include <TFT_eSPI.h>
 #include <WiFi.h>
-#include "FS.h"
-#include "SD.h"
-#include "SPI.h"
-
+#include <ArduinoJson.h>
+#include <FS.h>
+#include <SD.h>
+#include <SPI.h>
 
 TFT_eSPI tft = TFT_eSPI();
+String wifi_ssid;
+String wifi_password;
 
-void setup() {
+void setup()
+{
   screenSetup();
-  tft.println("booting V0.0.2");
-  connectToWifi();
+  logWhite("booting V0.0.2", "");
+  setupSD();
+  // connectToWifi();
 }
 
-void loop() {
-
+void loop()
+{
 }
 
-void screenSetup() {
+void screenSetup()
+{
   tft.init();
   clearScreen();
-  tft.setTextColor(TFT_WHITE, TFT_BLACK);
   tft.setTextFont(2);
 }
 
-void clearScreen() {
+void clearScreen()
+{
   tft.fillScreen(TFT_BLACK);
 }
 
+// void connectToWifi()
+// {
+//   WiFi.begin(wifi_ssid, wifi_password);
+//   logWhite("connecting to: %s",wifi_ssid);
+//   while (WiFi.status() != WL_CONNECTED)
+//   {
+//     logWhite(".", "");
+//     delay(1000);
+//   }
+//   tft.print("\n");
+//   logGreen("connected with Ip: %s", String(WiFi.localIP()));
+// }
 
-void connectToWifi() {
-  char* ssid = "De Notenboom ";
-  char* password = "X4k9*9wS!K2eEp2b";
-  WiFi.begin(ssid, password);
-   tft.println((String)"connecting to: " + ssid);
-  while(WiFi.status() != WL_CONNECTED) {
-     tft.print(".");
-    delay(1000);
-  }
-  tft.print("\n");
-  tft.setTextColor(TFT_GREEN, TFT_BLACK);
-  tft.println((String)"connected with Ip: "+ WiFi.localIP());
-  tft.setTextColor(TFT_WHITE, TFT_BLACK);
-}
 
-void listDir(fs::FS &fs, const char* dirname, uint8_)
