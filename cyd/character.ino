@@ -3,10 +3,8 @@
 
 void fetchCharacter() {
   if(WiFi.status() == WL_CONNECTED) {
-    String characterUrl = server_url + "characters?id=" + String(character_id);
+    String characterUrl = server_url + "/characters?id=" + String(character_id);
     logWhite("fetching: ");
-    logWhite(server_url.c_str());
-    logWhite(String(character_id).c_str());
     logWhite(characterUrl.c_str());
 
     String characterResponse = httpGETRequest(characterUrl.c_str());
