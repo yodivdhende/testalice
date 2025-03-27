@@ -5,12 +5,17 @@
 #include <SD.h>
 #include <SPI.h>
 #include <HTTPClient.h>
+#include <lvgl.h>
+#include <lv_gif.h>
+
+
 
 TFT_eSPI tft = TFT_eSPI();
 String wifi_ssid;
 String wifi_password;
 String server_url;
 int character_id;
+String boot_gif_path;
 
 void setup()
 {
@@ -23,10 +28,14 @@ void setup()
     return;
   };
   fetchCharacter();
+  lv_init();
+
+  createGifFromFile("/assets/images/boot_logo.gif");
 }
 
-void loop()
-{
+void loop(){
+  lv_timer_handler();
+  delay(5);
 }
 
 void screenSetup()
