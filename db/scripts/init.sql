@@ -72,7 +72,7 @@ VALUES ('Bob', 2, 100, 100),
 ('Eve', 4, 100, 100),
 ('Mallory', 5, 100, 100),
 ('Trent', 6, 100, 100),
-('Carol', 7, 100, 100),
+('Carol', 7, 100, 100)
 
 DROP TABLE IF EXISTS Party;
 CREATE TABLE Party (
@@ -80,10 +80,12 @@ CREATE TABLE Party (
   Name varchar(254),
   PRIMARY KEY (Id)
 )
+;
 
 INSERT INTO Party (Name)
 VALUES ('Party 1'),
 ('Party 2')
+;
 
 DROP TABLE IF EXISTS Party_Members;
 CREATE TABLE Party_Members (
@@ -93,6 +95,7 @@ CREATE TABLE Party_Members (
   FOREIGN KEY (Party) REFERENCES Party(Id),
   FOREIGN KEY (Member) REFERENCES Characters(Id)
 )
+;
 
 INSERT INTO Party_Members (Party, Member)
 VALUES (1, 1),
@@ -100,7 +103,8 @@ VALUES (1, 1),
 (1, 3),
 (1, 4),
 (2, 5),
-(2, 6),
+(2, 6)
+;
 
 
 

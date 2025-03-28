@@ -6,5 +6,5 @@ export const GET: RequestHandler = async ({url}) => {
     if(id == null || typeof id != 'string') return json([]);
     const idNumber = parseInt(id);
     if(Number.isNaN(idNumber)) return json([]);
-    return json(await characterRepo.getCharacterById(idNumber));
+    return json(await characterRepo.getById(idNumber));
 }
