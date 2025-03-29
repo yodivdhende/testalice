@@ -8,15 +8,15 @@
 #include <character.h>
 
 void setup () {
-  // screenSetup();
-  // logWhite("booting V0.0.3");
-  // if(setupSD() == false) {
-  //   return;
-  // };
-  // if(connectToWifi() ==false){
-  //   return;
-  // };
-  // fetchCharacter();
+  screenSetup();
+  logWhite("booting V0.0.3");
+  if(setupSD() == false) {
+    return;
+  };
+  if(connectToWifi() ==false){
+    return;
+  };
+  fetchCharacter();
 }
 
 void loop (){

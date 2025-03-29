@@ -1,5 +1,5 @@
 //                            USER DEFINED SETTINGS
-//   Set driver type, fonts to be loaded, pins used and SPI control method etc.
+//   Set driver type, fonts to be loaded, pins used and SPI control method etc
 //
 //   See the User_Setup_Select.h file if you wish to be able to define multiple
 //   setups and then easily select which setup file is used by the compiler.
@@ -28,22 +28,22 @@
 //#define NUCLEO_64_TFT
 //#define NUCLEO_144_TFT
 
-// STM32 8-bit parallel only:
-// If STN32 Port A or B pins 0-7 are used for 8-bit parallel data bus bits 0-7
+// STM32 8 bit parallel only:
+// If STN32 Port A or B pins 0-7 are used for 8 bit parallel data bus bits 0-7
 // then this will improve rendering performance by a factor of ~8x
 //#define STM_PORTA_DATA_BUS
 //#define STM_PORTB_DATA_BUS
 
 // Tell the library to use parallel mode (otherwise SPI is assumed)
 //#define TFT_PARALLEL_8_BIT
-//#defined TFT_PARALLEL_16_BIT // **** 16-bit parallel ONLY for RP2040 processor ****
+//#defined TFT_PARALLEL_16_BIT // **** 16 bit parallel ONLY for RP2040 processor ****
 
 // Display type -  only define if RPi display
 //#define RPI_DISPLAY_TYPE // 20MHz maximum SPI
 
 // Only define one driver, the other ones must be commented out
 //#define ILI9341_DRIVER       // Generic driver for common displays
-//#define ILI9341_2_DRIVER     // Alternative ILI9341 driver, see https://github.com/Bodmer/TFT_eSPI/issues/1172
+#define ILI9341_2_DRIVER     // Alternative ILI9341 driver, see https://github.com/Bodmer/TFT_eSPI/issues/1172
 //#define ST7735_DRIVER      // Define additional parameters below for this display
 //#define ILI9163_DRIVER     // Define additional parameters below for this display
 //#define S6D02A1_DRIVER
@@ -52,7 +52,7 @@
 //#define ILI9481_DRIVER
 //#define ILI9486_DRIVER
 //#define ILI9488_DRIVER     // WARNING: Do not connect ILI9488 display SDO to MISO if other devices share the SPI bus (TFT SDO does NOT tristate when CS is high)
-#define ST7789_DRIVER      // Full configuration option, define additional parameters below for this display
+//#define ST7789_DRIVER      // Full configuration option, define additional parameters below for this display
 //#define ST7789_2_DRIVER    // Minimal configuration option, define additional parameters below for this display
 //#define R61581_DRIVER
 //#define RM68140_DRIVER
@@ -74,7 +74,7 @@
 // Try ONE option at a time to find the correct colour order for your display
 
 //  #define TFT_RGB_ORDER TFT_RGB  // Colour order Red-Green-Blue
-  #define TFT_RGB_ORDER TFT_BGR  // Colour order Blue-Green-Red
+//  #define TFT_RGB_ORDER TFT_BGR  // Colour order Blue-Green-Red
 
 // For M5Stack ESP32 module with integrated ILI9341 display ONLY, remove // in line below
 
@@ -84,12 +84,11 @@
 // #define TFT_WIDTH  80
 // #define TFT_WIDTH  128
 // #define TFT_WIDTH  172 // ST7789 172 x 320
-// #define TFT_WIDTH  170 // ST7789 170 x 320
-// #define TFT_WIDTH  240 // ST7789 240 x 240 and 240 x 320
+#define TFT_WIDTH  240 // ST7789 240 x 240 and 240 x 320
 // #define TFT_HEIGHT 160
 // #define TFT_HEIGHT 128
 // #define TFT_HEIGHT 240 // ST7789 240 x 240
-// #define TFT_HEIGHT 320 // ST7789 240 x 320
+#define TFT_HEIGHT 320 // ST7789 240 x 320
 // #define TFT_HEIGHT 240 // GC9A01 240 x 240
 
 // For ST7735 ONLY, define the type of display, originally this was based on the
@@ -105,7 +104,7 @@
 // #define ST7735_GREENTAB3
 // #define ST7735_GREENTAB128    // For 128 x 128 display
 // #define ST7735_GREENTAB160x80 // For 160 x 80 display (BGR, inverted, 26 offset)
-// #define ST7735_ROBOTLCD       // For some RobotLCD Arduino shields (128x160, BGR, https://docs.arduino.cc/retired/getting-started-guides/TFT)
+// #define ST7735_ROBOTLCD       // For some RobotLCD arduino shields (128x160, BGR, https://docs.arduino.cc/retired/getting-started-guides/TFT)
 // #define ST7735_REDTAB
 // #define ST7735_BLACKTAB
 // #define ST7735_REDTAB160x80   // For 160 x 80 display with 24 pixel offset
@@ -114,7 +113,7 @@
 // 2 lines try both options, one of the options should correct the inversion.
 
 // #define TFT_INVERSION_ON
- #define TFT_INVERSION_OFF
+// #define TFT_INVERSION_OFF
 
 
 // ##################################################################################
@@ -129,8 +128,8 @@
 // driven with a PWM signal or turned OFF/ON then this must be handled by the user
 // sketch. e.g. with digitalWrite(TFT_BL, LOW);
 
- #define TFT_BL   21             // LED back-light control pin
- #define TFT_BACKLIGHT_ON HIGH  // Level to turn ON back-light (HIGH or LOW)
+#define TFT_BL   21            // LED back-light control pin
+#define TFT_BACKLIGHT_ON HIGH  // Level to turn ON back-light (HIGH or LOW)
 
 
 
@@ -166,14 +165,11 @@
 
 // ###### EDIT THE PIN NUMBERS IN THE LINES FOLLOWING TO SUIT YOUR ESP8266 SETUP ######
 
-#define TFT_MOSI 13 // In some display driver board, it might be written as "SDA" and so on.
-#define TFT_SCLK 14
-#define TFT_CS   15  // Chip select control pin
-#define TFT_DC   2  // Data Command control pin
-#define TFT_RST  12  // Reset pin (could connect to Arduino RESET pin)
-#define TFT_BL   21  // LED back-light
-
-#define TOUCH_CS 33     // Chip select pin (T_CS) of touch screen
+// For NodeMCU - use pin numbers in the form PIN_Dx where Dx is the NodeMCU pin designation
+//#define TFT_CS   PIN_D8  // Chip select control pin D8
+//#define TFT_DC   PIN_D3  // Data Command control pin
+//#define TFT_RST  PIN_D4  // Reset pin (could connect to NodeMCU RST, see next line)
+//#define TFT_RST  -1    // Set TFT_RST to -1 if the display RESET is connected to NodeMCU RST or 3.3V
 
 //#define TFT_BL PIN_D1  // LED back-light (only for ST7789 with backlight control pin)
 
@@ -207,13 +203,13 @@
 // For ESP32 Dev board (only tested with ILI9341 display)
 // The hardware SPI can be mapped to any pins
 
-//#define TFT_MISO 19
-//#define TFT_MOSI 23
-//#define TFT_SCLK 18
-//#define TFT_CS   15  // Chip select control pin
-//#define TFT_DC    2  // Data Command control pin
+#define TFT_MISO 12
+#define TFT_MOSI 13
+#define TFT_SCLK 14
+#define TFT_CS   15  // Chip select control pin
+#define TFT_DC    2  // Data Command control pin
 //#define TFT_RST   4  // Reset pin (could connect to RST pin)
-//#define TFT_RST  -1  // Set TFT_RST to -1 if display RESET is connected to ESP32 board RST
+#define TFT_RST  -1  // Set TFT_RST to -1 if display RESET is connected to ESP32 board RST
 
 // For ESP32 Dev board (only tested with GC9A01 display)
 // The hardware SPI can be mapped to any pins
@@ -240,7 +236,7 @@
 
 // ######       EDIT THE PINs BELOW TO SUIT YOUR ESP32 PARALLEL TFT SETUP        ######
 
-// The library supports 8-bit parallel TFTs with the ESP32, the pin
+// The library supports 8 bit parallel TFTs with the ESP32, the pin
 // selection below is compatible with ESP32 boards in UNO format.
 // Wemos D32 boards need to be modified, see diagram in Tools folder.
 // Only ILI9481 and ILI9341 based displays have been tested!
@@ -248,7 +244,7 @@
 // Parallel bus is only supported for the STM32 and ESP32
 // Example below is for ESP32 Parallel interface with UNO displays
 
-// Tell the library to use 8-bit parallel mode (otherwise SPI is assumed)
+// Tell the library to use 8 bit parallel mode (otherwise SPI is assumed)
 //#define TFT_PARALLEL_8_BIT
 
 // The ESP32 and TFT the pins used for testing are:
@@ -328,11 +324,11 @@
 // For RP2040 processor and SPI displays, uncomment the following line to use the PIO interface.
 //#define RP2040_PIO_SPI // Leave commented out to use standard RP2040 SPI port interface
 
-// For RP2040 processor and 8 or 16-bit parallel displays:
+// For RP2040 processor and 8 or 16 bit parallel displays:
 // The parallel interface write cycle period is derived from a division of the CPU clock
 // speed so scales with the processor clock. This means that the divider ratio may need
-// to be increased when overclocking. It may also need to be adjusted dependant on the
-// display controller type (ILI94341, HX8357C etc.). If RP2040_PIO_CLK_DIV is not defined
+// to be increased when overclocking. I may also need to be adjusted dependant on the
+// display controller type (ILI94341, HX8357C etc). If RP2040_PIO_CLK_DIV is not defined
 // the library will set default values which may not suit your display.
 // The display controller data sheet will specify the minimum write cycle period. The
 // controllers often work reliably for shorter periods, however if the period is too short
@@ -360,9 +356,8 @@
 // #define SPI_FREQUENCY  20000000
 //#define SPI_FREQUENCY  27000000
 // #define SPI_FREQUENCY  40000000
- #define SPI_FREQUENCY  55000000 // STM32 SPI1 only (SPI2 maximum is 27MHz)
+#define SPI_FREQUENCY  55000000 // STM32 SPI1 only (SPI2 maximum is 27MHz)
 // #define SPI_FREQUENCY  80000000
-// #define SPI_FREQUENCY  65000000
 
 // Optional reduced SPI frequency for reading TFT
 #define SPI_READ_FREQUENCY  20000000
@@ -385,4 +380,4 @@
 // Transactions are automatically enabled by the library for an ESP32 (to use HAL mutex)
 // so changing it here has no effect
 
- #define SUPPORT_TRANSACTIONS
+// #define SUPPORT_TRANSACTIONS

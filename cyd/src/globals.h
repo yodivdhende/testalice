@@ -4,11 +4,11 @@
     #include <TFT_eSPI.h>
     #include <Arduino.h>
 
-    TFT_eSPI tft;
-    String wifi_ssid;
-    String wifi_password;
-    String server_url;
-    int character_id;
+    extern TFT_eSPI tft;
+    extern String wifi_ssid;
+    extern String wifi_password;
+    extern String server_url;
+    extern int character_id;
     void clearScreen();
     void screenSetup();
 
