@@ -1,10 +1,12 @@
-void logWhite(const char* log)
-{
+#include <log.h>
+#include <globals.h>
+
+void logWhite(const char* log) {
     Serial.println(log);
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
     tft.println(log);
 }
-void logWhite(char* log, String param)
+void logWhite(char* log, const char* param)
 {
   char buffer[253];
   sprintf(buffer,log, param);
@@ -19,7 +21,7 @@ void logGreen(const char* log)
   Serial.println(log);
   tft.println(log);
 }
-void logGreen(char* log, String param)
+void logGreen(char* log,const char* param)
 {
   char buffer[253];
   sprintf(buffer,log, param);
@@ -34,7 +36,7 @@ void logRed(const char* log)
   Serial.println(log);
   tft.println(log);
 }
-void logRed(char* log, String param)
+void logRed(char* log,const char* param)
 {
   char buffer[253];
   sprintf(buffer,log, param);

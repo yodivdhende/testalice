@@ -1,3 +1,9 @@
+#include <character.h>
+#include <WiFi.h>
+#include <globals.h>
+#include <ArduinoJson.h>
+#include <HTTPClient.h>
+#include <log.h>
 // unsigned long lastTime = 0;
 // unsigned long timerDelay = 5000;
 
@@ -38,7 +44,7 @@ String httpGETRequest(const char* serverName) {
   String payload = "{}"; 
   
   if (httpResponseCode>0) {
-    logWhite("HTTP Response code: %s", String(httpResponseCode));
+    logWhite("HTTP Response code: %s", String(httpResponseCode).c_str());
     payload = http.getString();
   }
   else {
