@@ -3,7 +3,7 @@
 
 const uint16_t screenWidth  = 320;
 const uint16_t screenHeight = 240;
-TFT_eSPI tft = TFT_eSPI( screenWidth, screenHeight ); /* TFT instance */
+TFT_eSPI tft = TFT_eSPI( screenHeight ,screenWidth ); /* TFT instance */
 String wifi_ssid;
 String wifi_password;
 String server_url;
@@ -18,6 +18,7 @@ void clearScreen()
 void screenSetup()
 {
   tft.init();
+  tft.setRotation(0) ;
   clearScreen();
   tft.setTextFont(2);
 }

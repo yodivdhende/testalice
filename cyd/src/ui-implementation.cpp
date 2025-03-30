@@ -2,8 +2,9 @@
 
 #include <lvgl.h>
 #include <TFT_eSPI.h>
-#include <ui.h>
+#include <ui/ui.h>
 #include <globals.h>
+#include <character.h>
 
 /*Don't forget to set Sketchbook location in File/Preferences to the path of your UI project (the parent foder of this INO file)*/
 
@@ -89,6 +90,7 @@ void uiSetup ()
 
     tft.setRotation( 3 ); /* Landscape orientation, flipped */
 
+
     static lv_disp_t* disp;
     disp = lv_display_create( screenWidth, screenHeight );
     lv_display_set_buffers( disp, buf, NULL, SCREENBUFFER_SIZE_PIXELS * sizeof(lv_color_t), LV_DISPLAY_RENDER_MODE_PARTIAL );
@@ -109,5 +111,13 @@ void uiSetup ()
 void uiLoop ()
 {
     lv_timer_handler(); /* let the GUI do its work */
+
+    lv_label_set_text_fmt(ui_Name_Label, currentCharacter.name.c_str());
+
+    lv_arc_set_range(ui_Arc1, 0, currentCharacter.maxHp);
+    lv_arc_set_value(ui_Arc1, currentCharacter.currentHp);
+    String hpValue = String(currentCharacter.currentHp)+"/"+String(currentCharacter.maxHp);
+    lv_label_set_text_fmt(ui_HP_value, hpValue.c_str());
+
     delay(5);
 }

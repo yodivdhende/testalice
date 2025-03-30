@@ -22,7 +22,9 @@ void setup () {
   };
   clearScreen();
   uiSetup(); 
+
 }
+
 
 void loop (){
   uiLoop();

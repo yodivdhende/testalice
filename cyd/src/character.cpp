@@ -1,35 +1,54 @@
+#include <Arduino.h>
 #include <character.h>
 #include <WiFi.h>
 #include <globals.h>
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
 #include <log.h>
-// unsigned long lastTime = 0;
-// unsigned long timerDelay = 5000;
 
-bool fetchCharacter() {
+
+Character currentCharacter;
+
+bool fetchCharacter()
+{
   if(WiFi.status() == WL_CONNECTED) {
-    String characterUrl = server_url + "/characters?id=" + String(character_id);
+    String characterUrl = server_url + "characters?id=" + String(character_id);
     logWhite("fetching: ");
     logWhite(characterUrl.c_str());
 
     String characterResponse = httpGETRequest(characterUrl.c_str());
-    Serial.println(characterResponse);
+    logWhite(characterResponse.c_str());
+
+    if(characterResponse == "") {
+      logRed("Empty response");
+      return false;
+    }
 
     JsonDocument characterObj;
     DeserializationError error = deserializeJson(characterObj, characterResponse);
 
     if(error) {
+      logRed("JSON error:");
       logRed(error.c_str());  
       return false;
     }
 
     String name = characterObj["name"];
+    currentCharacter.id = characterObj["id"];
+    currentCharacter.name = name;
+    currentCharacter.currentHp = characterObj["currentHp"];
+    currentCharacter.maxHp = characterObj["maxHp"];
+
     logGreen(name.c_str());
+    if(name == NULL){
+      return false;
+    }
+    return true;
   }
+  return false;
 }
 
-String httpGETRequest(const char* serverName) {
+const char* httpGETRequest(const char* serverName) {
   WiFiClient client;
   HTTPClient http;
     
@@ -55,5 +74,5 @@ String httpGETRequest(const char* serverName) {
   // Free resources
   http.end();
 
-  return payload;
+  return payload.c_str();
 }
