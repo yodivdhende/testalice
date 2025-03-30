@@ -7,7 +7,7 @@
 // unsigned long lastTime = 0;
 // unsigned long timerDelay = 5000;
 
-void fetchCharacter() {
+bool fetchCharacter() {
   if(WiFi.status() == WL_CONNECTED) {
     String characterUrl = server_url + "/characters?id=" + String(character_id);
     logWhite("fetching: ");
@@ -21,6 +21,7 @@ void fetchCharacter() {
 
     if(error) {
       logRed(error.c_str());  
+      return false;
     }
 
     String name = characterObj["name"];

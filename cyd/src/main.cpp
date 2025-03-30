@@ -6,6 +6,7 @@
 #include <connection.h>
 #include <sd-reader.h>
 #include <character.h>
+#include <ui-implementation.h>
 
 void setup () {
   screenSetup();
@@ -13,13 +14,18 @@ void setup () {
   if(setupSD() == false) {
     return;
   };
-  if(connectToWifi() ==false){
+  if(connectToWifi() == false){
     return;
   };
-  fetchCharacter();
+  if(fetchCharacter() == false){
+    return;
+  };
+  clearScreen();
+  uiSetup(); 
 }
 
 void loop (){
+  uiLoop();
 }
 
 
