@@ -14,11 +14,11 @@ class CharacterRepo {
 		on u.id = c.id
 	`;
 
-	public async getCharacterById(id: number): Promise<Character> {
+	public async getById(id: number): Promise<Character> {
 		try {
 			const [result] = await (
 				await mysqlconnFn()
-			).execute(`${this.characterSelector} WHERE id = ?`, [id]);
+			).execute(`${this.characterSelector} WHERE c.id = ?`, [id]);
 			const [firstCharacter] = result as any;
 			if (isCharacter(firstCharacter)) {
 				return {
