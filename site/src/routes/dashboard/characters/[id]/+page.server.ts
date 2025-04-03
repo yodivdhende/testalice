@@ -17,6 +17,8 @@ export const load: PageServerLoad = async ({params}) => {
     }
 }      
 
+
+
 async function getCharacter(id: any): Promise<Character | undefined> {
     if(id == null || typeof id != 'string') return;
     const idNumber = parseInt(id);

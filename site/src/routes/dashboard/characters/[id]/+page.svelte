@@ -1,39 +1,46 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import CharacterForm from '$lib/components/character-form.svelte';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 	let character = data.character;
-    let users = data.users;
-	function save() {
+    const users = data.users;
+	async function save() {
+		if(character == null) return;
+		try {
+		const result = await fetch(`/api/characters/${character.id}`, {
+			method: 'post',
+			body: JSON.stringify(character),
+			headers: {
+				'content-type': 'application/json',
+			}
+		})
+		if(result.ok) {
+			goto('.');
+		}
+
+		} catch( err) {
+			//TODO make error component;
+		}
     }
 </script>
 
 <main>
+	<a href=".">back</a>
 	{#if character != null}
-		<label for="owner">owner</label>
-        {#if users != null}
-        <select id="owner" bind:value={character.ownerId}>
-            {#each users as owner}
-                <option value={owner.id}>{owner.name}</option> 
-            {/each}
-        </select>
-        {/if}
-		<label for="name">name</label>
-		<input id="name" type="text" bind:value={character.name} />
-		<label for="hp">hp</label>
-		<input type="number" bind:value={character.maxHp} />
-		<div>
-			<button onclick={save}>save</button>
-		</div>
+		<CharacterForm bind:character {users} />
 	{/if}
+	<div>
+		<button onclick={save}>save</button>
+	</div>
 </main>
 
 <style>
 	main {
 		display: flex;
 		flex-direction: column;
-		background-color: white;
-		gap: 8px;
 		padding: 8px;
+		background-color: white;
 	}
 </style>

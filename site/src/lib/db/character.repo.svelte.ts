@@ -1,4 +1,6 @@
+import { stringify } from 'querystring';
 import { mysqlconnFn } from './mysql';
+import { currentWritable } from '@threlte/core';
 
 class CharacterRepo {
 	private characterSelector = `
@@ -62,6 +64,27 @@ class CharacterRepo {
 			throw error;
 		}
 	}
+
+	public async save(character: Character)  {
+		try {
+			(await mysqlconnFn()).execute(`
+				UPDATE Characters
+				SET Name = ?,
+					Owner = ?,
+					currentHp = ?,
+					maxHp = ?
+				WHERE id = ?
+			`, [
+				character.name,
+				character.ownerId,
+				character.maxHp,
+				character.maxHp,
+				character.id
+			])
+		} catch (error) {
+			throw error;
+		}
+	}
 }
 
 export const characterRepo = new CharacterRepo();
@@ -74,6 +97,7 @@ export type  Character = {
 	currentHp: number;
 	maxHp: number;
 };
+
 
 export function isCharacter(character: any): character is Character {
 	return (
