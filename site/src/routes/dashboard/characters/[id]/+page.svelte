@@ -3,13 +3,21 @@
 
 	let { data }: PageProps = $props();
 	let character = data.character;
+    let users = data.users;
 	function save() {
-        console.log(character);
     }
 </script>
 
 <main>
 	{#if character != null}
+		<label for="owner">owner</label>
+        {#if users != null}
+        <select id="owner" bind:value={character.ownerId}>
+            {#each users as owner}
+                <option value={owner.id}>{owner.name}</option> 
+            {/each}
+        </select>
+        {/if}
 		<label for="name">name</label>
 		<input id="name" type="text" bind:value={character.name} />
 		<label for="hp">hp</label>
