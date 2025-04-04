@@ -9,7 +9,6 @@ export const load: PageServerLoad = async () =>{
         }
     }
     catch(err) {
-        console.error(err);
        error(500) ;
     }
 } 

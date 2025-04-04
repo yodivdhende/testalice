@@ -1,7 +1,7 @@
-import { error } from "console";
 import { characterRepo, type Character } from "$lib/db/character.repo.svelte";
 import type { PageServerLoad } from "./$types";
 import { userRepo } from "$lib/db/user.repo.svelte";
+import { error } from "@sveltejs/kit";
 
 export const load: PageServerLoad = async ({params}) => {
     try {
@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({params}) => {
     }
 
     }catch(err) {
-        return error(500, err);
+        return error(500, `${err}`);
     }
 }      
 

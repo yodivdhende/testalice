@@ -44,6 +44,20 @@ class UserRepo {
 			throw error;
 		}
 	}
+
+	public async update(user: User) {
+		try {
+			(await mysqlconnFn()).execute(`
+				UPDATE Users
+				SET Name = ?,
+					Email = ?,
+					Password = ''
+				WHERE id = ?
+				`, [user.name, user.email, user.id])
+		} catch(error) {
+			throw error;
+		}
+	}
 }
 
 export type User = {

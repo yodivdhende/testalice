@@ -65,7 +65,7 @@ class CharacterRepo {
 		}
 	}
 
-	public async save(character: Character)  {
+	public async update(character: Character)  {
 		try {
 			(await mysqlconnFn()).execute(`
 				UPDATE Characters
