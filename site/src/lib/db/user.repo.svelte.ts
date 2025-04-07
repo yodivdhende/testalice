@@ -45,6 +45,14 @@ class UserRepo {
 		}
 	}
 
+	public async save(user: User | NewUser)	 {
+		if(isUser(user)) {
+			this.update(user);
+		} else {
+			this.insert(user);
+		}
+	}
+
 	public async update(user: User) {
 		try {
 			(await mysqlconnFn()).execute(`
@@ -58,20 +66,48 @@ class UserRepo {
 			throw error;
 		}
 	}
+
+	public async insert(user: NewUser) {
+		try {
+			(await mysqlconnFn()).execute(`
+				INSERT Users (Name, Email, Password)
+				VALUE (?, ?, ?)
+				`, [user.name, user.email, user.password])
+		} catch(error) {
+			throw error;
+		}
+	}
 }
 
 export type User = {
 	id: string;
 	email: string;
 	name: string;
+	password: string;
 };
+
 
 export function isUser(user: any): user is User {
 	return (
 		typeof user?.id === 'number' &&
 		typeof user?.email === 'string' &&
-		typeof user?.name === 'string'
+		typeof user?.name === 'string' && 
+		typeof user?.password === 'string'
 	);
+};
+
+export type NewUser = {
+	email: string;
+	name: string;
+	password: string;
+}
+
+export function isNewUser(user: any): user is NewUser {
+	return  (
+		typeof user?.email === 'string' &&
+		typeof user?.name === 'string' &&
+		typeof user?.password === 'string'
+	)
 }
 
 export const userRepo = new UserRepo();

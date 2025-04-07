@@ -1,6 +1,7 @@
 import { stringify } from 'querystring';
 import { mysqlconnFn } from './mysql';
 import { currentWritable } from '@threlte/core';
+import { checkPrime } from 'crypto';
 
 class CharacterRepo {
 	private characterSelector = `
@@ -65,7 +66,29 @@ class CharacterRepo {
 		}
 	}
 
-	public async update(character: Character)  {
+	public async save(character: NewCharacter | Character) {
+		if(isNewCharacter(character)) return this.insert(character);
+		if(isCharacter(character)) return this.update(character);
+	}
+
+	private async insert(character: NewCharacter) {
+		try {
+			(await mysqlconnFn()).execute(`
+				INSERT Characters (Name, Owner, CurrentHp, MaxHp)
+				VALUE (?, ?, ?, ?)
+			`, [
+				character.name,
+				character.ownerId,
+				character.maxHp,
+				character.maxHp,
+			])
+		} catch (error) {
+			throw error;
+		}
+
+	}
+
+	private async update(character: Character)  {
 		try {
 			(await mysqlconnFn()).execute(`
 				UPDATE Characters
@@ -89,22 +112,31 @@ class CharacterRepo {
 
 export const characterRepo = new CharacterRepo();
 
-export type  Character = {
+export type  Character = NewCharacter & {
 	id: number;
-	name: string;
-	ownerId: number;
 	ownerName: string;
-	currentHp: number;
-	maxHp: number;
 };
 
 
 export function isCharacter(character: any): character is Character {
 	return (
 		typeof character?.id === 'number' &&
+		typeof character?.ownerName === 'string' &&
+		isNewCharacter(character) 
+	);
+}
+
+export type  NewCharacter =  {
+	name: string;
+	ownerId: number;
+	currentHp: number;
+	maxHp: number;
+} ;
+
+export function isNewCharacter(character: any): character is NewCharacter {
+	return (
 		typeof character?.name === 'string' &&
 		typeof character?.ownerId === 'number' &&
-		typeof character?.ownerName === 'string' &&
 		typeof character?.currentHp === 'number' &&
 		typeof character?.maxHp === 'number'
 	);
