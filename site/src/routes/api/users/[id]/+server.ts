@@ -13,8 +13,8 @@ export const GET: RequestHandler  = async ({params})  => {
 
 export const POST: RequestHandler = async ({request}) => {
     const user = await request.json();
-    if(isUser(user) || isNewUser(user)) {
-        await userRepo.save(user);
+    if(isUser(user)) {
+        await userRepo.update(user);
         return  new Response();
     }
         

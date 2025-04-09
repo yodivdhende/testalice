@@ -112,3 +112,12 @@ VALUES(1,1,NULL),
 (1,6,NULL),
 (1,7,NULL)
 ;
+
+DROP TABLE IF EXISTS Connections;
+CREATE TABLE Connections (
+  Token: varchar(255) NOT NULL,
+  Role: varchar(255) NOT NULL,
+  Start: datetime NOT NULL,
+  End: datetime 
+)
+;
