@@ -1,0 +1,15 @@
+- [ ] Connection
+    - [ ]  Make registration page
+    - [ ]  Implement login page 
+    - [ ]  Store session token & Role
+    - [ ]  Display connections
+- [ ] Role system
+    - [ ]  Hide pages depending on Role
+    - [ ]  Create guard for api depending on DB Role
+    - [ ]  Create guard for pages depending on stored Role
+- [ ] Events
+    - [ ] Creat events overview page 
+    - [ ] Create 'New event' page
+    - [ ] Create 'Event registration' 
+    - [ ] Update 'authentication.getRole' depending on event
+- [ ] Add email verifictions

@@ -122,3 +122,13 @@ CREATE TABLE Connections (
   End datetime 
 )
 ;
+
+DROP TABLE IF EXISTS EmailVerifications;
+CREATE TABLE EmailVerifications (
+  UserId number NOT NULL,
+  Token varchar(255),
+  ExpireDate datetime,
+  PRIMARY KEY (UserId),
+  FOREIGN KEY (UserId) REFERENCES Users(Id)
+)
+;

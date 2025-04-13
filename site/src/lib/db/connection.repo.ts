@@ -3,17 +3,25 @@ import {v4 as uuidv4} from 'uuid';
 import { mysqlconnFn } from './mysql';
 class ConnectionRepo {
 
-    public async createConnection(role: UserRole, endDate?: Date): Promise<string> {
+    public async createConnection({
+        role, endDate, descripiton,
+    }: {
+        role: UserRole,
+        endDate?: Date,
+        descripiton?: string,
+    }): Promise<string> {
         try {
+            await this.removeExpiredConnections();
             const connection = await mysqlconnFn();
             const connectionToken = uuidv4();
             await connection.execute(`
-            INSERT INTO Connections (Token, Role, Start, End)
+            INSERT INTO Connections (Token, Role, Start, End, Description)
             VALUES (?, ?, CUREDATE(), ?)
             `, [
                 connectionToken,
                 role,
-                endDate?.toISOString() ?? null
+                endDate?.toISOString() ?? null,
+                descripiton ?? null 
             ])
             return connectionToken;
         } catch (err) {
@@ -23,6 +31,7 @@ class ConnectionRepo {
 
     public async deleteConnection(token: string) {
         try {
+            await this.removeExpiredConnections();
             const connection = await mysqlconnFn();
             await connection.execute(`
                 DELETE Connections
@@ -36,6 +45,7 @@ class ConnectionRepo {
 
     public async getRole(token: string): Promise<UserRole | null> {
         try {
+            await this.removeExpiredConnections();
             const connection = await mysqlconnFn();
             const [result] = await connection.execute(`
                 SELECT Role
