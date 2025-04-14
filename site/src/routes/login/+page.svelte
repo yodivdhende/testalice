@@ -5,12 +5,9 @@
   let email = 'yodi.vandenhende@gmail.com';
   let password = 'Tester@123';
 
-  function login(): void {
-  } 
-
 </script>
 <main>
-  <div class="login-container">
+  <form class="login-container" method="POST" action="/login">
     <h1>Login</h1>
     <label for="email">Email</label>
     <input type="email" name="email" id="email" value={email}/>
@@ -21,7 +18,7 @@
     {:else}
       <span class="eye__open">◉</span>
     {/if}
-    <button onclick={login}> login </button>
+    <button> login </button>
   </div>
 </main>
 <style>

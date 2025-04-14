@@ -116,9 +116,16 @@ VALUES(1,1,NULL),
 DROP TABLE IF EXISTS Connections;
 CREATE TABLE Connections (
   Token varchar(255) NOT NULL,
-  Role varchar(255) NOT NULL,
   Description varchar(500),
   Start datetime NOT NULL,
   End datetime 
 )
 ;
+
+Drop Table IF EXISTS Connection_Roles;
+CREATE TABLE Connection_Roles (
+  Token varchar(255) NOT NULL,
+  Role varchar(255) NOT NULL,
+  FOREIGN KEY (Token) REFERENCES Connections(Token),
+  CONSTRAINT PK_Connection_Roles PRIMARY KEY (Token, Role)
+)

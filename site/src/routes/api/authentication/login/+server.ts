@@ -6,11 +6,14 @@ export const POST: RequestHandler = async ({request}) => {
     try {
         const {email, password} = await request.json();
         if(email && password) {
-            const role = await authenticationRepo.getRole({email, password});
-            if(role == null) return error(400, 'credentials wrong');
-            const token = await connectionRepo.createConnection({role, endDate:  getTommorow(), descripiton: 'api login'})
-            return json({token, role});
+            const roles = await authenticationRepo.getRoles({email, password});
+            if(roles == null) return error(400, 'credentials wrong');
+            const token = await connectionRepo.create({roles, endDate:  getTommorow(), descripiton: 'api login'});
+            return json({token, roles});
         }
+        return error(400, 'needs email and password');
+    } catch (err) {
+        return error(500, `${err}`);
     }
 }
 
