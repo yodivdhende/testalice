@@ -1,20 +1,35 @@
-import { authenticationRepo } from "$lib/db/authentication.repo";
-import { connectionRepo } from "$lib/db/connection.repo";
-import {type  RequestHandler, error } from "@sveltejs/kit";
+import { authenticationRepo } from '$lib/db/authentication.repo';
+import { connectionRepo } from '$lib/db/connection.repo';
+import { RequestError } from '$lib/types/errors';
+import { handleRequest } from '$lib/utils/request';
+import { getTommorow } from '$lib/utils/time';
+import { type RequestHandler, error } from '@sveltejs/kit';
 
-export const POST: RequestHandler = async ({request}) =>  {
-    try {
-        const {name, email, password} = await request.json();
-        await authenticationRepo.register({name,email,password});
-        const roles = await authenticationRepo.getRoles({email, password});
-        if(roles === null) return error(400, 'credentials wrong');
-        const token = await connectionRepo.create({roles, endDate: getTommorow(), descripiton: 'api login'})
-        return new Response();
-    } catch (err) {
-        return error(500, `${err}`);
-    }
-}
+export const POST: RequestHandler = async ({ request }) => {
+	return handleRequest(async () => {
+		await requestRegistration(await request.json());
+		return new Response();
+	});
+};
 
-function getTommorow(): Date {
-    return new Date(new Date().getTime() + 1*24*60*60*1000);
+export async function requestRegistration({
+	name,
+	email,
+	password
+}: {
+	name?: string;
+	email?: string;
+	password?: string;
+}) {
+	if (name && email && password) {
+		await authenticationRepo.register({ name, email, password });
+		const roles = await authenticationRepo.getRoles({ email, password });
+		if (roles === null) return error(400, 'credentials wrong');
+		const token = await connectionRepo.create({
+			roles,
+			endDate: getTommorow(),
+			descripiton: 'api login'
+		});
+	}
+    throw new RequestError(400, 'request needs: name, email and password');
 }
