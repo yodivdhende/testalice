@@ -15,7 +15,7 @@
 	</div>
 	<header>
 		<a href="/">Home</a>
-		<a href="login">Login</a>
+		<a href="/login">Login</a>
 		<a href="/dashboard/users">Users</a>
 		<a href="/dashboard/characters">Characters</a>
 	</header>

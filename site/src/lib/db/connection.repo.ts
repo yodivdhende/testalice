@@ -16,8 +16,8 @@ class ConnectionRepo {
 			await this.removeExpiredConnections();
 			const connection = await mysqlconnFn();
 			const token = await this.addConnection(connection, { endDate, descripiton });
-            await this.addConnectionRoles(connection, {roles, token});
-            return token;
+			await this.addConnectionRoles(connection, { roles, token });
+			return token;
 		} catch (err) {
 			throw err;
 		}
@@ -31,58 +31,70 @@ class ConnectionRepo {
 		await connection.execute(
 			`
             INSERT INTO Connections (Token, Start, End, Description)
-            VALUES (?, CUREDATE(), ?, ?)
+            VALUES (?, NOW(), ?, ?)
             `,
-			[connectionToken, endDate?.toISOString() ?? null, descripiton ?? null]
+			[connectionToken, this.convertDateToDateTimeString(endDate), descripiton ?? null]
 		);
 		return connectionToken;
+	}
+
+	private convertDateToDateTimeString(date?: Date) {
+		return date?.toJSON().slice(0, 19).replace('T', ' ') ?? null;
 	}
 
 	private async addConnectionRoles(
 		connection: Connection,
 		{ roles, token }: { roles: UserRole[]; token: string }
 	): Promise<void> {
-        const queryValues: string[] = roles.map(() => '(?, ?)');
-        const values = roles.flatMap(role => ([token, role]))
-		await connection.execute(`
-            INSERT INTO Conneciton_Roles (Token, Role)
+		const queryValues: string[] = roles.map(() => '(?, ?)');
+		const values = roles.flatMap((role) => [token, role]);
+		await connection.execute(
+			`
+            INSERT INTO Connection_Roles (Token, Role)
             VALUES ${queryValues.join(',')}
-            `, values);
+            `,
+			values
+		);
 	}
 
 	public async delete(token: string) {
 		try {
 			await this.removeExpiredConnections();
 			const connection = await mysqlconnFn();
-            await this.deleteConnectionRoles(connection, token);
-            await this.deleteConnections(connection, token);
+			await this.deleteConnectionRoles(connection, token);
+			await this.deleteConnections(connection, token);
 		} catch (err) {
 			throw err;
 		}
 	}
 
-    private async deleteConnections(connection: Connection, token:string) {
-        try {
-            await connection.execute(`
+	private async deleteConnections(connection: Connection, token: string) {
+		try {
+			await connection.execute(
+				`
                 DELETE Connections
                 WHERE Token = ?
-                `, token) 
-        } catch (err) {
-            throw err;
-        }
-    }
+                `,
+				token
+			);
+		} catch (err) {
+			throw err;
+		}
+	}
 
-
-    private async deleteConnectionRoles(connection: Connection, token:string) {
-        try {
-            await connection.execute(`
+	private async deleteConnectionRoles(connection: Connection, token: string) {
+		try {
+			await connection.execute(
+				`
                 DELETE Connection_Roles
                 WHERE Token = ?
-                `, token) 
-        } catch (err) {
-            throw err;
-        }
-    }
+                `,
+				token
+			);
+		} catch (err) {
+			throw err;
+		}
+	}
 
 	public async getRole(token: string): Promise<UserRole | null> {
 		try {
@@ -105,20 +117,19 @@ class ConnectionRepo {
 		try {
 			const connection = await mysqlconnFn();
 			await connection.execute(`
-                DELETE Connection_Roles
+                DELETE FROM Connection_Roles
                 WHERE Token in (
                     SELECT Token
                     FROM Connections c
                     WHERE  c.End IS NOT NULL
-                    AND c.End < CUREDATE()
+                    AND c.End < NOW()
                 )
-                ; 
-
-                DELETE Connections
-                WHERE End IS NOT NULL
-                AND c.End < CUREDATE()
-                ;
             `);
+			await connection.execute(`
+                DELETE FROM Connections
+                WHERE End IS NOT NULL
+                AND End < NOW()
+				`);
 		} catch (err) {
 			throw err;
 		}

@@ -9,13 +9,13 @@ CREATE TABLE Users (
 ;
 
 INSERT INTO Users (Name,Email, Password)
-VALUES ('Yodi','yodi.vandenhende@gmail.com', 'Tester@123'),
-('Player2','yodi.vandenhende+player2@gmail.com', 'Tester@123'),
-('Player3','yodi.vandenhende+player3@gmail.com', 'Tester@123'),
-('Player4','yodi.vandenhende+player4@gmail.com', 'Tester@123'),
-('Extra5','yodi.vandenhende+extra5@gmail.com', 'Tester@123'),
-('Extra6','yodi.vandenhende+extra6@gmail.com', 'Tester@123'),
-('Extra7','yodi.vandenhende+extra7@gmail.com', 'Tester@123')
+VALUES ('Yodi','yodi.vandenhende@gmail.com', '$2b$13$evbfN7v/BJgCDtmdftgnyOgHvoUt3JZuZZnqvBjne6YMbXHLS9ReW'),
+('Player2','yodi.vandenhende+player2@gmail.com', '$2b$13$evbfN7v/BJgCDtmdftgnyOgHvoUt3JZuZZnqvBjne6YMbXHLS9ReW'),
+('Player3','yodi.vandenhende+player3@gmail.com', '$2b$13$evbfN7v/BJgCDtmdftgnyOgHvoUt3JZuZZnqvBjne6YMbXHLS9ReW'),
+('Player4','yodi.vandenhende+player4@gmail.com', '$2b$13$evbfN7v/BJgCDtmdftgnyOgHvoUt3JZuZZnqvBjne6YMbXHLS9ReW'),
+('Extra5','yodi.vandenhende+extra5@gmail.com', '$2b$13$evbfN7v/BJgCDtmdftgnyOgHvoUt3JZuZZnqvBjne6YMbXHLS9ReW'),
+('Extra6','yodi.vandenhende+extra6@gmail.com', '$2b$13$evbfN7v/BJgCDtmdftgnyOgHvoUt3JZuZZnqvBjne6YMbXHLS9ReW'),
+('Extra7','yodi.vandenhende+extra7@gmail.com', '$2b$13$evbfN7v/BJgCDtmdftgnyOgHvoUt3JZuZZnqvBjne6YMbXHLS9ReW')
 ;
 
 DROP TABLE IF EXISTS Admins;
@@ -118,7 +118,8 @@ CREATE TABLE Connections (
   Token varchar(255) NOT NULL,
   Description varchar(500),
   Start datetime NOT NULL,
-  End datetime 
+  End datetime,
+  PRIMARY KEY (Token)
 )
 ;
 
@@ -126,6 +127,6 @@ Drop Table IF EXISTS Connection_Roles;
 CREATE TABLE Connection_Roles (
   Token varchar(255) NOT NULL,
   Role varchar(255) NOT NULL,
-  FOREIGN KEY (Token) REFERENCES Connections(Token),
-  CONSTRAINT PK_Connection_Roles PRIMARY KEY (Token, Role)
+  CONSTRAINT PK_Connection_Roles PRIMARY KEY (Token, Role),
+  FOREIGN KEY (Token) REFERENCES Connections(Token)
 )

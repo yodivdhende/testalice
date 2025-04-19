@@ -7,13 +7,14 @@ class AuthenticationRepo {
 		try {
 			const connection = await mysqlconnFn();
 			const passwordHash = await bcrypt.hash(newUser.password, 13);
-			await connection.execute(
+			const [result] = await connection.execute(
 				`
             INSERT Users (Name, Email, Password)
             VALUES (?, ?, ?)
                 `,
 				[newUser.name, newUser.email, passwordHash]
 			);
+			console.log({result});
 		} catch (err) {
 			throw err;
 		}
@@ -24,22 +25,24 @@ class AuthenticationRepo {
 			const connection = await mysqlconnFn();
 			const [result] = await connection.execute(
 				`
-            SELECT
-                u.Password
+			SELECT
+                u.Password as password,
                 CASE
-                    WHEN a.id IS NULL THEN FALSE 
-                    WHEN a.id IS NOT NULL THEN TRUE 
-            FROM users u
+                    WHEN a.UserId IS NULL THEN FALSE
+					ELSE TRUE
+				END AS isAdmin
+            FROM Users u
             LEFT JOIN Admins a
-                on a.userId = u.id
+                ON a.userId = u.id
             WHERE email = ?
         `,
-				authUser.email
+				[authUser.email]
 			);
-			const [password, isAdmin] = result as any;
-			if (await bcrypt.compare(authUser.password, password) === false) return null;
+			const {password, isAdmin} = (result as any)[0] as any;
+			if ((await bcrypt.compare(authUser.password, password)) === false) return null;
 			const roles: UserRole[] = [UserRole.user];
 			if (isAdmin) roles.push(UserRole.admin);
+			console.log(roles);
 			return roles;
 		} catch (err) {
 			throw err;

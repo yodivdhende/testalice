@@ -7,12 +7,12 @@ import { json, type RequestHandler } from "@sveltejs/kit";
 
 export const POST: RequestHandler = async ({request}) => {
     return handleRequest(async () => {
-        return json(await requestTokenAndRole(await request.json()));
+        return json(await requestConnectionTokenAndRole(await request.json()));
     });
 }
 
-export async function requestTokenAndRole({email,password}: {email?:string, password?:string}) {
-        if(email && password) {
+export async function requestConnectionTokenAndRole({email,password}: {email?:any, password?:any}) {
+        if(typeof email === 'string' && password) {
             const roles = await authenticationRepo.getRoles({email, password});
             if(roles == null) throw new RequestError(400, 'needs email and password');
             const token = await connectionRepo.create({roles, endDate:  getTommorow(), descripiton: 'api login'});

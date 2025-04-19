@@ -17,11 +17,11 @@ export async function requestRegistration({
 	email,
 	password
 }: {
-	name?: string;
-	email?: string;
-	password?: string;
+	name?: any;
+	email?: any;
+	password?: any;
 }) {
-	if (name && email && password) {
+	if (typeof name === 'string' && typeof email === 'string' && typeof password === 'string') {
 		await authenticationRepo.register({ name, email, password });
 		const roles = await authenticationRepo.getRoles({ email, password });
 		if (roles === null) return error(400, 'credentials wrong');
@@ -30,6 +30,7 @@ export async function requestRegistration({
 			endDate: getTommorow(),
 			descripiton: 'api login'
 		});
+		return { token };
 	}
-    throw new RequestError(400, 'request needs: name, email and password');
+	throw new RequestError(400, 'request needs: name, email and password');
 }
