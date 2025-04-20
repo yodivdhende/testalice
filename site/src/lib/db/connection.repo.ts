@@ -60,9 +60,12 @@ class ConnectionRepo {
 	public async delete(token: string) {
 		try {
 			await this.removeExpiredConnections();
+			console.log('removed expired connections');
 			const connection = await mysqlconnFn();
 			await this.deleteConnectionRoles(connection, token);
+			console.log('removed removed connection Roles');
 			await this.deleteConnections(connection, token);
+			console.log('removed ');
 		} catch (err) {
 			throw err;
 		}
@@ -72,10 +75,10 @@ class ConnectionRepo {
 		try {
 			await connection.execute(
 				`
-                DELETE Connections
+                DELETE FROM Connections
                 WHERE Token = ?
                 `,
-				token
+				[token]
 			);
 		} catch (err) {
 			throw err;
@@ -86,10 +89,10 @@ class ConnectionRepo {
 		try {
 			await connection.execute(
 				`
-                DELETE Connection_Roles
+                DELETE FROM Connection_Roles
                 WHERE Token = ?
                 `,
-				token
+				[token]
 			);
 		} catch (err) {
 			throw err;
