@@ -25,7 +25,6 @@ class UserRepo {
 				await mysqlconnFn()
 			).execute(`${this.userSelector} WHERE id = ?  `, [id]);
 			const [firstUser] = results as any;
-			console.log(firstUser);
 			if (isUser(firstUser)) {
 				return { id: firstUser.id, email: firstUser.email, name: firstUser.name };
 			} else {

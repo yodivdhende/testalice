@@ -1,7 +1,7 @@
 import { isUserRole, type UserRole } from '$lib/types/roles';
 import { v4 as uuidv4 } from 'uuid';
 import { mysqlconnFn } from './mysql';
-import { type Connection } from 'mysql2/promise';
+import { type Connection as MySqlConnection } from 'mysql2/promise';
 class ConnectionRepo {
 	public async create({
 		roles,
@@ -24,7 +24,7 @@ class ConnectionRepo {
 	}
 
 	private async addConnection(
-		connection: Connection,
+		connection: MySqlConnection,
 		{ endDate, descripiton }: { endDate?: Date; descripiton?: string }
 	): Promise<string> {
 		const connectionToken = uuidv4();
@@ -43,7 +43,7 @@ class ConnectionRepo {
 	}
 
 	private async addConnectionRoles(
-		connection: Connection,
+		connection: MySqlConnection,
 		{ roles, token }: { roles: UserRole[]; token: string }
 	): Promise<void> {
 		const queryValues: string[] = roles.map(() => '(?, ?)');
@@ -68,7 +68,7 @@ class ConnectionRepo {
 		}
 	}
 
-	private async deleteConnections(connection: Connection, token: string) {
+	private async deleteConnections(connection: MySqlConnection, token: string) {
 		try {
 			await connection.execute(
 				`
@@ -82,7 +82,7 @@ class ConnectionRepo {
 		}
 	}
 
-	private async deleteConnectionRoles(connection: Connection, token: string) {
+	private async deleteConnectionRoles(connection: MySqlConnection, token: string) {
 		try {
 			await connection.execute(
 				`
@@ -134,6 +134,51 @@ class ConnectionRepo {
 			throw err;
 		}
 	}
+
+	public async getAll(){
+		try {
+			const connection = await mysqlconnFn();
+			const [connectionRoles] = await connection.execute(`
+				SELECT
+					c.Token as token,
+					c.Start as start,
+					c.End as end,
+					c.Description as description,
+					cr.Role as role
+				FROM Connections c
+				join Connection_Roles cr
+					on c.Token = cr.Token 
+				`);
+				const connections: Connection[] = [];
+				for (let connectionRole of (connectionRoles as any[])) {
+					let existingConnection = connections.find(connection => connection.token === connectionRole.token);
+					if(existingConnection === undefined) {
+						existingConnection = {
+							token: connectionRole.token,
+							start: connectionRole.start,
+							end: connectionRole.end,
+							description: connectionRole.description,
+							roles: [],
+						};
+						connections.push(existingConnection);
+					}
+					if(existingConnection.roles.includes(connectionRole.role) === false) {
+						existingConnection.roles.push(connectionRole.role);
+					}
+				}
+				return connections;
+		} catch (err) {
+			throw err;
+		}
+	}
+	
 }
 
 export const connectionRepo = new ConnectionRepo();
+export type Connection= {
+	token: string;
+	start: Date;
+	end: Date | null;
+	description: string;
+	roles: UserRole[];
+}

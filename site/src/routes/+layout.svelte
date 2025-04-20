@@ -18,6 +18,7 @@
 		<a href="/login">Login</a>
 		<a href="/dashboard/users">Users</a>
 		<a href="/dashboard/characters">Characters</a>
+		<a href="/dashboard/connections">Connections</a>
 	</header>
 	<section>
 		{@render children()}

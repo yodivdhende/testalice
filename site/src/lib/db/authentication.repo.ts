@@ -14,7 +14,6 @@ class AuthenticationRepo {
                 `,
 				[newUser.name, newUser.email, passwordHash]
 			);
-			console.log({result});
 		} catch (err) {
 			throw err;
 		}
@@ -42,7 +41,6 @@ class AuthenticationRepo {
 			if ((await bcrypt.compare(authUser.password, password)) === false) return null;
 			const roles: UserRole[] = [UserRole.user];
 			if (isAdmin) roles.push(UserRole.admin);
-			console.log(roles);
 			return roles;
 		} catch (err) {
 			throw err;
