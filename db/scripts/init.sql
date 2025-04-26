@@ -116,6 +116,7 @@ VALUES(1,1,NULL),
 DROP TABLE IF EXISTS Connections;
 CREATE TABLE Connections (
   Token varchar(255) NOT NULL,
+  UserId int, 
   Description varchar(500),
   Start datetime NOT NULL,
   End datetime,

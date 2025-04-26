@@ -3,7 +3,10 @@
 	// import Scene from '$lib/components/scene.svelte';
 	// import { Canvas } from '@threlte/core';
 	import backgroundImg from '$lib/assets/images/background.png';
-	let { children } = $props();
+	import Navigation from '$lib/components/navigation.svelte';
+	import type { LayoutProps } from './$types';
+
+	let { children, data}: LayoutProps = $props();
 </script>
 
 <main>
@@ -14,11 +17,7 @@
 	</Canvas> -->
 	</div>
 	<header>
-		<a href="/">Home</a>
-		<a href="/login">Login</a>
-		<a href="/dashboard/users">Users</a>
-		<a href="/dashboard/characters">Characters</a>
-		<a href="/dashboard/connections">Connections</a>
+		<Navigation roles={data.roles}/>
 	</header>
 	<section>
 		{@render children()}
@@ -57,10 +56,6 @@
 		padding: 1em;
 	}
 
-	a {
-		color: white;
-		text-decoration: none;
-	}
 
   section {
     grid-area: section;

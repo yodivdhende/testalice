@@ -1,13 +1,16 @@
-import { connectionRepo } from '$lib/db/connection.repo';
-import { error } from 'console';
 import type { PageServerLoad } from './$types';
+import { handleRequest } from '$lib/utils/request';
+import { RequestError } from '$lib/types/errors';
+import { getConnections } from '../../api/connections/+server';
+import { getConnectionToken } from '$lib/utils/cookies';
 
-export const load: PageServerLoad = async () => {
-	try {
-		const connections = await connectionRepo.getAll();
-		return { connections };
-	} catch (err) {
-		return error(500, `${err}`);
-	}
+export const load: PageServerLoad = async ({request, cookies}) => {
+	return handleRequest(async () => {
+		const  token = request.headers.get('authentication') ?? getConnectionToken(cookies);
+		console.log('connection server', {token});
+		if (typeof token !== 'string') throw new RequestError(403, 'not authenticated');
+		const connections =  await getConnections(token);
+		return {connections};;
+	});
 };
 

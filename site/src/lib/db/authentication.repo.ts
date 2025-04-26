@@ -19,12 +19,13 @@ class AuthenticationRepo {
 		}
 	}
 
-	public async getRoles(authUser: AuthUser): Promise<UserRole[] | null> {
+	public async getCredentials(authUser: AuthUser) {
 		try {
 			const connection = await mysqlconnFn();
 			const [result] = await connection.execute(
 				`
 			SELECT
+				u.Id as userId,
                 u.Password as password,
                 CASE
                     WHEN a.UserId IS NULL THEN FALSE
@@ -37,11 +38,11 @@ class AuthenticationRepo {
         `,
 				[authUser.email]
 			);
-			const {password, isAdmin} = (result as any)[0] as any;
+			const {userId, password, isAdmin} = (result as any)[0] as any;
 			if ((await bcrypt.compare(authUser.password, password)) === false) return null;
-			const roles: UserRole[] = [UserRole.user];
-			if (isAdmin) roles.push(UserRole.admin);
-			return roles;
+			const credential: {userId: number, roles: UserRole[] } = {userId, roles: [UserRole.user]};
+			if (isAdmin) credential.roles.push(UserRole.admin);
+			return credential;
 		} catch (err) {
 			throw err;
 		}

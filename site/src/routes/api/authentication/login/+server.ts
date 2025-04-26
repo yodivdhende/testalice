@@ -1,6 +1,6 @@
 import { authenticationRepo } from "$lib/db/authentication.repo";
 import { connectionRepo } from "$lib/db/connection.repo";
-import { RequestError } from "$lib/types/errors";
+import { RequestError, UnAutherizedRequestError } from "$lib/types/errors";
 import { handleRequest } from "$lib/utils/request";
 import { getTommorow } from "$lib/utils/time";
 import { json, type RequestHandler } from "@sveltejs/kit";
@@ -13,9 +13,10 @@ export const POST: RequestHandler = async ({request}) => {
 
 export async function requestConnectionTokenAndRole({email,password}: {email?:any, password?:any}) {
         if(typeof email === 'string' && password) {
-            const roles = await authenticationRepo.getRoles({email, password});
-            if(roles == null) throw new RequestError(400, 'needs email and password');
-            const token = await connectionRepo.create({roles, endDate:  getTommorow(), descripiton: 'api login'});
+            const {roles, userId} = await authenticationRepo.getCredentials({email, password}) ?? {};
+            if(roles == null) throw new UnAutherizedRequestError()
+            if(userId == null) throw new UnAutherizedRequestError();
+            const token = await connectionRepo.create({userId, roles, endDate:  getTommorow(), descripiton: 'api login'});
             return {token, roles};
         }
         throw new RequestError(400, 'needs email and password')

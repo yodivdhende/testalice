@@ -23,7 +23,7 @@ export async function requestRegistration({
 }) {
 	if (typeof name === 'string' && typeof email === 'string' && typeof password === 'string') {
 		await authenticationRepo.register({ name, email, password });
-		const roles = await authenticationRepo.getRoles({ email, password });
+		const roles = await authenticationRepo.getCredentials({ email, password });
 		if (roles === null) return error(400, 'credentials wrong');
 		const token = await connectionRepo.create({
 			roles,

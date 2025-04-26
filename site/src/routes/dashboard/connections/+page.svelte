@@ -9,7 +9,6 @@
 		const response = await fetch(`/api/connections/${token}`, {
 			method: 'DELETE'
 		});
-		console.log(response);
 	}
 </script>
 

@@ -12,3 +12,12 @@ export class RequestError extends Error {
         return error(this.code, this.message)
     }
 }
+
+export class UnAutherizedRequestError extends RequestError {
+	constructor(message: string = 'not autherized') {super(401, message)}
+ }
+
+export class NoAccesRequest extends RequestError {
+	constructor(message: string = 'not autherized') {super(403, message)}
+ }
+
