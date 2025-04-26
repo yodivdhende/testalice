@@ -1,7 +1,9 @@
 - [ ] Connection
-    - [ ]  Make registration page
-    - [ ]  Implement login page 
-    - [ ]  Store session token & Role
+    - [x]  Make registration page
+    - [x]  Implement login page 
+    - [ ]  Store:
+        - [x] session token
+        - [ ] Role
     - [ ]  Display connections
 - [ ] Role system
     - [ ]  Hide pages depending on Role
