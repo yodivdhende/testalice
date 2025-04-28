@@ -20,5 +20,6 @@
         position:absolute;
         padding: 1em;
         background-color: white;
+        z-index: 100;
     }
 </style>

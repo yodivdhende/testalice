@@ -17,7 +17,7 @@ export async function requestConnectionTokenAndRole({email,password}: {email?:an
             if(roles == null) throw new UnAutherizedRequestError()
             if(userId == null) throw new UnAutherizedRequestError();
             const token = await sessionRepo.create({userId, roles, endDate:  getTommorow(), descripiton: 'api login'});
-            return {token};
+            return {token, roles};
         }
         throw new RequestError(400, 'needs email and password')
 }

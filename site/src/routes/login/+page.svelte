@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { setActiveUser } from "$lib/managers/local-storage";
-	import type { PageProps } from "./$types";
+	import { credentialStore } from '$lib/local-utils/credential-store.svelte';
+	import type { PageProps } from './$types';
 
 	let showPassword = $state(false);
 	let passwordInputType = $derived.by(() => (showPassword ? 'text' : 'password'));
@@ -11,13 +11,13 @@
 	function toggleShowPassword() {
 		showPassword = !showPassword;
 	}
-	
-	let {form}: PageProps = $props();
-	$effect(()=>{
-		if(form?.success) {
-			setActiveUser(form.success);
-		}
-	})
+
+	let { form }: PageProps = $props();
+	if (form?.error) console.error(form.error);
+	if (form?.success) {
+		const { roles } = form.success;
+		credentialStore.roles = roles;
+	}
 </script>
 
 <main>
@@ -37,7 +37,7 @@
 			</div>
 			<button> Login </button>
 		</form>
-	  <a href="/register">Register</a>
+		<a href="/register">Register</a>
 	</div>
 </main>
 
@@ -62,11 +62,11 @@
 		border: 1px solid white;
 		border-radius: 5px;
 	}
-  
-  .login-container form{
+
+	.login-container form {
 		display: grid;
 		gap: 1em;
-  }
+	}
 
 	.password {
 		display: flex;

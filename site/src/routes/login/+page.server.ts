@@ -9,10 +9,13 @@ export const actions = {
             const formdata = await request.formData();
             const email = formdata.get('email');
             const password = formdata.get('password');
-            const {token}= await requestConnectionTokenAndRole({email,password})
+            const {token, roles}= await requestConnectionTokenAndRole({email,password})
             const activeUser = await getUserOfToken(token);
             setSessionToken(cookies, token);
-            return {success: activeUser};
+            return {success: {
+                activeUser,
+                roles,
+            }};
         } catch (err){
             return {error: err}
         }

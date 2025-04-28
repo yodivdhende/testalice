@@ -33,7 +33,7 @@ export async function requestRegistration({
 			endDate: getTommorow(),
 			descripiton: 'api login'
 		});
-		return { token };
+		return { token, roles };
 	}
 	throw new RequestError(400, 'request needs: name, email and password');
 }

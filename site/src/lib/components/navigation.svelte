@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { UserRole } from '$lib/types/roles';
+	import { credentialStore } from '$lib/local-utils/credential-store.svelte';
 
-	let {roles}: {roles: UserRole[]} = $props();
+	const roles = $derived(credentialStore.roles);
 </script>
 
 <nav>
@@ -9,12 +9,15 @@
 	{#if roles.includes('user') === false}
 		<a href="/login">login</a>
 	{/if}
-	<a href="/dashboard/users">users</a>
-	<a href="/dashboard/characters">Characters</a>
-	{#if roles.includes('admin')}
-		<a href="/login">login</a>
+	{#if roles.includes('user')}
+		<a href="/dashboard/users">users</a>
 	{/if}
-	<a href="/dashboard/connections">Connections</a>
+	{#if roles.includes('user')}
+		<a href="/dashboard/characters">Characters</a>
+	{/if}
+	{#if roles.includes('admin')}
+		<a href="/dashboard/sessions">Sessions</a>
+	{/if}
 </nav>
 
 <style>

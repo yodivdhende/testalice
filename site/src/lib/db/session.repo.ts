@@ -111,7 +111,7 @@ class SessionRepo {
                 DELETE FROM \`Session_Roles\` 
                 WHERE Token in (
                     SELECT Token
-                    FROM \`Session\` s  
+                    FROM \`Sessions\` s  
                     WHERE  s.End IS NOT NULL
                     AND s.End < NOW()
                 )

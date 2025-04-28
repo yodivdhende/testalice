@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { credentialStore } from "$lib/local-utils/credential-store.svelte";
+	import type { PageProps } from "./$types";
+
 	let showPassword = $state(false);
 	let passwordInputType = $derived.by(() => (showPassword ? 'text' : 'password'));
 
@@ -9,6 +12,16 @@
 	function toggleShowPassword() {
 		showPassword = !showPassword;
 	}
+
+	let {form}: PageProps = $props();
+	$effect(() =>{
+		if(form?.error) console.error(form.error);
+		if(form?.success) {
+			const {roles, activeUser} = form.success;
+			credentialStore.roles = roles;
+		}
+	})
+
 </script>
 
 <main>

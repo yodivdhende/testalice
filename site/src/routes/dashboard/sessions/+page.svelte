@@ -6,7 +6,7 @@
 	let { data }: PageProps = $props();
 
 	async function deleteConnection(token: string) {
-		const response = await fetch(`/api/connections/${token}`, {
+		const response = await fetch(`/api/sessions/${token}`, {
 			method: 'DELETE'
 		});
 	}
@@ -56,6 +56,9 @@
 	main {
 		padding: 16px;
 		background-color: white;
+	}
+	table {
+		max-width: 90vw;
 	}
 	tr {
 		border-bottom: 1px solid silver;
