@@ -14,6 +14,8 @@ class AuthenticationRepo {
                 `,
 				[newUser.name, newUser.email, passwordHash]
 			);
+			//TODO: check the result, hopfaly its the id and return it;
+			console.log('register: ', result);
 		} catch (err) {
 			throw err;
 		}

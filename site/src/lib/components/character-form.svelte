@@ -1,5 +1,5 @@
 <script lang='ts'>
-	import type { Character } from "$lib/db/character.repo.svelte";
+	import type { Character } from "$lib/db/character.repo";
 
     let {character = $bindable<Character>(), users} = $props();
 </script>
