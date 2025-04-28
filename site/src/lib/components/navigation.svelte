@@ -10,7 +10,7 @@
 		<a href="/login">login</a>
 	{/if}
 	{#if roles.includes('user')}
-		<a href="/dashboard/users">users</a>
+		<a href="/dashboard/users">Users</a>
 	{/if}
 	{#if roles.includes('user')}
 		<a href="/dashboard/characters">Characters</a>
@@ -21,8 +21,19 @@
 </nav>
 
 <style>
+	nav {
+		display: flex;
+		background-color: black;
+		border-bottom: 1px solid white;
+		font-size: 2rem;
+	}
 	a {
+		display: block;
+		padding: 1em;
+		height: 100%;
 		color: white;
 		text-decoration: none;
+		border: 1px solid white;
+		border-top: none;
 	}
 </style>

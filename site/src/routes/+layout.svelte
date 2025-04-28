@@ -6,7 +6,7 @@
 	import Navigation from '$lib/components/navigation.svelte';
 	import type { LayoutProps } from './$types';
 
-	let { children, data}: LayoutProps = $props();
+	let { children}: LayoutProps = $props();
 </script>
 
 <main>
@@ -17,7 +17,7 @@
 	</Canvas> -->
 	</div>
 	<header>
-		<Navigation roles={data.roles}/>
+		<Navigation />
 	</header>
 	<section>
 		{@render children()}
@@ -48,12 +48,6 @@
 
     header {
       grid-area: header;
-		display: flex;
-		gap: 1em;
-		background-color: black;
-		border-bottom: 1px solid white;
-		font-size: 2rem;
-		padding: 1em;
 	}
 
 
