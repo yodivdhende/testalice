@@ -113,8 +113,8 @@ VALUES(1,1,NULL),
 (1,7,NULL)
 ;
 
-DROP TABLE IF EXISTS Connections;
-CREATE TABLE Connections (
+DROP TABLE IF EXISTS `Sessions`;
+CREATE TABLE `Sessions`(
   Token varchar(255) NOT NULL,
   UserId int, 
   Description varchar(500),
@@ -124,10 +124,10 @@ CREATE TABLE Connections (
 )
 ;
 
-Drop Table IF EXISTS Connection_Roles;
-CREATE TABLE Connection_Roles (
+Drop Table IF EXISTS `Session_Roles`;
+CREATE TABLE `Session_Roles` (
   Token varchar(255) NOT NULL,
   Role varchar(255) NOT NULL,
-  CONSTRAINT PK_Connection_Roles PRIMARY KEY (Token, Role),
-  FOREIGN KEY (Token) REFERENCES Connections(Token)
+  CONSTRAINT PK_Sessions_Roles PRIMARY KEY (Token, Role),
+  FOREIGN KEY (Token) REFERENCES Sessions(Token)
 )

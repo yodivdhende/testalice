@@ -1,6 +1,7 @@
 import type { Actions } from "@sveltejs/kit";
 import { requestConnectionTokenAndRole } from "../api/authentication/login/+server";
-import { setConnectionToken } from "$lib/utils/cookies";
+import { setSessionToken } from "$lib/utils/cookies";
+import { getUserOfToken } from "../api/users/active/+server";
 
 export const actions = {
     default: async ({cookies,request}) => {
@@ -9,10 +10,11 @@ export const actions = {
             const email = formdata.get('email');
             const password = formdata.get('password');
             const {token}= await requestConnectionTokenAndRole({email,password})
-            setConnectionToken(cookies, token);
-            return {success: true};
+            const activeUser = await getUserOfToken(token);
+            setSessionToken(cookies, token);
+            return {success: activeUser};
         } catch (err){
-            return {failer: err}
+            return {error: err}
         }
     }
 } satisfies Actions

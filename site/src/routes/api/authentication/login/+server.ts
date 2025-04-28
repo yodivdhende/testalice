@@ -1,5 +1,5 @@
 import { authenticationRepo } from "$lib/db/authentication.repo";
-import { connectionRepo } from "$lib/db/connection.repo";
+import { sessionRepo } from "$lib/db/session.repo";
 import { RequestError, UnAutherizedRequestError } from "$lib/types/errors";
 import { handleRequest } from "$lib/utils/request";
 import { getTommorow } from "$lib/utils/time";
@@ -16,8 +16,8 @@ export async function requestConnectionTokenAndRole({email,password}: {email?:an
             const {roles, userId} = await authenticationRepo.getCredentials({email, password}) ?? {};
             if(roles == null) throw new UnAutherizedRequestError()
             if(userId == null) throw new UnAutherizedRequestError();
-            const token = await connectionRepo.create({userId, roles, endDate:  getTommorow(), descripiton: 'api login'});
-            return {token, roles};
+            const token = await sessionRepo.create({userId, roles, endDate:  getTommorow(), descripiton: 'api login'});
+            return {token};
         }
         throw new RequestError(400, 'needs email and password')
 }

@@ -1,4 +1,4 @@
-import { characterRepo, isCharacter, isNewCharacter } from '$lib/db/character.repo.svelte';
+import { characterRepo, isCharacter, isNewCharacter } from '$lib/db/character.repo';
 import { isNumberOrError } from '$lib/request.utils';
 import { RequestError } from '$lib/types/errors';
 import { handleRequest } from '$lib/utils/request';

@@ -1,4 +1,4 @@
-import { setConnectionToken } from "$lib/utils/cookies";
+import { setSessionToken } from "$lib/utils/cookies";
 import type { Actions } from "@sveltejs/kit";
 import { requestRegistration } from "../../api/authentication/register/+server";
 
@@ -9,6 +9,6 @@ export const actions = {
         const email = formData.get('email');
         const password = formData.get('password');
         const {token} = await requestRegistration({name, email, password});
-        setConnectionToken(cookies, token);
+        setSessionToken(cookies, token);
     }
 } satisfies Actions

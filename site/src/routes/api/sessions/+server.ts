@@ -1,7 +1,7 @@
 import { RequestError } from "$lib/types/errors";
 import { authGuard, handleRequest } from "$lib/utils/request";
 import { json, type RequestHandler } from "@sveltejs/kit";
-import { connectionRepo } from "$lib/db/connection.repo";
+import { sessionRepo } from "$lib/db/session.repo";
 
 export const GET: RequestHandler = async ({ request}) => {
 	return handleRequest(async () => {
@@ -13,5 +13,5 @@ export const GET: RequestHandler = async ({ request}) => {
 
 export async function getConnections(token: any) {
 	await authGuard(token, ['admin']);
-	return connectionRepo.getAll();
+	return sessionRepo.getAll();
 }

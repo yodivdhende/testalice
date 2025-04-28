@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { setActiveUser } from "$lib/managers/local-storage";
+	import type { PageProps } from "./$types";
+
 	let showPassword = $state(false);
 	let passwordInputType = $derived.by(() => (showPassword ? 'text' : 'password'));
 
@@ -8,6 +11,13 @@
 	function toggleShowPassword() {
 		showPassword = !showPassword;
 	}
+	
+	let {form}: PageProps = $props();
+	$effect(()=>{
+		if(form?.success) {
+			setActiveUser(form.success);
+		}
+	})
 </script>
 
 <main>

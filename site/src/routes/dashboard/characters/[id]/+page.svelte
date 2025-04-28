@@ -4,8 +4,8 @@
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
-	let character = data.character;
-    const users = data.users;
+	let character = $derived(data.character);
+	const users = $derived(data.users);
 	async function save() {
 		if(character == null) return;
 		try {
@@ -29,7 +29,7 @@
 <main>
 	<a href=".">back</a>
 	{#if character != null}
-		<CharacterForm bind:character {users} />
+		<CharacterForm bind:character={data.character} {users} />
 	{/if}
 	<div>
 		<button onclick={save}>save</button>
