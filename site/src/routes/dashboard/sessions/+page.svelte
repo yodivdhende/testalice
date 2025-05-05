@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { invalidate } from '$app/navigation';
 	import Dropdown from '$lib/components/dropdown.svelte';
 	import { type PageProps } from './$types';
 	import { Settings2 } from '@lucide/svelte';
@@ -9,6 +10,7 @@
 		const response = await fetch(`/api/sessions/${token}`, {
 			method: 'DELETE'
 		});
+		invalidate('/api/sessions');
 	}
 </script>
 
@@ -25,14 +27,14 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#if data.connections}
-				{#each data.connections as connection}
+			{#if data.sessions}
+				{#each data.sessions as session}
 					<tr>
-						<td>{connection.token}</td>
-						<td>{connection.roles.join(', ')}</td>
-						<td>{connection.start}</td>
-						<td>{connection.end}</td>
-						<td>{connection.description}</td>
+						<td>{session.token}</td>
+						<td>{session.roles.join(', ')}</td>
+						<td>{session.start}</td>
+						<td>{session.end}</td>
+						<td>{session.description}</td>
 						<td>
 							<Dropdown {button} {content} />
 							{#snippet button()}
@@ -41,7 +43,7 @@
 							{#snippet content()}
 								<ul class="options">
 									<li><button>edit</button></li>
-									<li><button onclick={() => deleteConnection(connection.token)}>delete</button></li>
+									<li><button onclick={() => deleteConnection(session.token)}>delete</button></li>
 								</ul>
 							{/snippet}
 						</td>
