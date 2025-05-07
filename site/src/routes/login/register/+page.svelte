@@ -1,29 +1,35 @@
 <script lang="ts">
-	import { credentialStore } from '$lib/local-utils/credential-store.svelte';
-	import type { PageProps } from './$types';
+	import { credentialStore } from "$lib/local-utils/credential-store.svelte";
+	import type { PageProps } from "./$types";
 
 	let showPassword = $state(false);
 	let passwordInputType = $derived.by(() => (showPassword ? 'text' : 'password'));
 
-	let email = 'yodi.vandenhende@gmail.com';
+	let name = 'Yodi Vandenhende';
+	let email = 'yodi.vandenhende+test1@gmail.com';
 	let password = 'Tester@123';
 
 	function toggleShowPassword() {
 		showPassword = !showPassword;
 	}
 
-	let { form }: PageProps = $props();
-	if (form?.error) console.error(form.error);
-	if (form?.success) {
-		const { roles } = form.success;
-		credentialStore.roles = roles;
-	}
+	let {form}: PageProps = $props();
+	$effect(() =>{
+		if(form?.error) console.error(form.error);
+		if(form?.success) {
+			const {roles, activeUser} = form.success;
+			credentialStore.roles = roles;
+		}
+	})
+
 </script>
 
 <main>
 	<div class="login-container">
-		<form method="POST" action="/login">
+		<form method="POST">
 			<h1>Login</h1>
+			<label for="name">name</label>
+			<input type="name" name="name" id="name" value={name} />
 			<label for="email">Email</label>
 			<input type="email" name="email" id="email" value={email} />
 			<label for="password">Password</label>
@@ -35,9 +41,17 @@
 					<button onclick={toggleShowPassword}>◉</button>
 				{/if}
 			</div>
-			<button> Login </button>
+			<div class="password">
+				<input type={passwordInputType} name="passwordConfirm" id="passwordConfirm" value={password} />
+				{#if showPassword}
+					<button onclick={toggleShowPassword}>◎</button>
+				{:else}
+					<button onclick={toggleShowPassword}>◉</button>
+				{/if}
+			</div>
+			<button> Register </button>
 		</form>
-		<a href="/register">Register</a>
+	  <a href="/login">Login</a>
 	</div>
 </main>
 
@@ -62,13 +76,14 @@
 		border: 1px solid white;
 		border-radius: 5px;
 	}
-
-	.login-container form {
+  
+  .login-container form{
 		display: grid;
 		gap: 1em;
-	}
+  }
 
 	.password {
 		display: flex;
 	}
+
 </style>
