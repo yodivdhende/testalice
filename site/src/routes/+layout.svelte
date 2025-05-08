@@ -5,6 +5,8 @@
 	import backgroundImg from '$lib/assets/images/background.png';
 	import Navigation from '$lib/components/navigation.svelte';
 	import type { LayoutProps } from './$types';
+	import { sidePanelManager} from '$lib/managers/side-panel-manager.svelte';
+	import { CircleX } from '@lucide/svelte';
 
 	let { children}: LayoutProps = $props();
 </script>
@@ -22,6 +24,13 @@
 	<section>
 		{@render children()}
 	</section>
+	{#if sidePanelManager.component != null}
+		<div class="backdrop" onclick={()=> sidePanelManager.close()}></div>
+		<aside>
+			<button onclick={()=>sidePanelManager.close()}><CircleX /></button>
+			<sidePanelManager.component />
+		</aside>
+	{/if}
 </main>
 
 <style>
@@ -55,5 +64,25 @@
     grid-area: section;
     width:100%;
     height: 100%;
+  }
+
+  .backdrop {
+	position: absolute;
+	width: 100vw;
+	height: 100vh;
+	z-index: 1000;
+	background-color: rgba(0,0,0, 0.4);
+  }
+  
+  aside {
+	position: absolute;
+	right: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: end;
+	width: 600px;
+	height: 100vh;
+	z-index: 1010;
+	background-color: white;
   }
 </style>

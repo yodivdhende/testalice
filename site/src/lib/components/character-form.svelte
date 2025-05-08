@@ -1,7 +1,7 @@
 <script lang='ts'>
-	import type { Character } from "$lib/db/character.repo";
+	import type {  NewCharacter } from "$lib/db/character.repo";
 
-    let {character = $bindable<Character>(), users} = $props();
+    let {character = $bindable<NewCharacter>(), users} = $props();
 </script>
 <main>
 		<label for="owner">owner</label>
@@ -14,7 +14,7 @@
         {/if}
 		<label for="name">name</label>
 		<input id="name" type="text" bind:value={character.name} />
-		<label for="hp">hp</label>
+		<label for="hp">max hp</label>
 		<input type="number" bind:value={character.maxHp} />
 </main>
 <style>

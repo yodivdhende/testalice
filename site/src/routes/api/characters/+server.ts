@@ -1,20 +1,24 @@
-import { characterRepo } from "$lib/db/character.repo";
-import { NoAccesRequest, UnAutherizedRequestError } from "$lib/types/errors";
-import { getSessionToken } from "$lib/utils/cookies";
-import { authGuard, authGuardForUser, handleRequest } from "$lib/utils/request";
-import { json, type RequestHandler } from "@sveltejs/kit";
+import { characterRepo, isNewCharacter } from '$lib/db/character.repo';
+import { BadRequest } from '$lib/types/errors';
+import { getSessionToken } from '$lib/utils/cookies';
+import { authGuard, authGuardForUser, handleRequest } from '$lib/utils/request';
+import { json, type RequestHandler } from '@sveltejs/kit';
 
-export const GET: RequestHandler = async ({cookies}) => {
-    return handleRequest(async () => {
-        const token = getSessionToken(cookies);
-        const characters = await getCharactersForToken(token);
-        return json(characters)
-    })
-}
+export const GET: RequestHandler = async ({ cookies }) => {
+	return handleRequest(async () => {
+		const { roles, userId } = await authGuardForUser(getSessionToken(cookies), ['admin', 'user']);
+		if (roles.includes('admin')) return json(await characterRepo.getAll());
+		return json(await characterRepo.getForUser(userId));
+	});
+};
 
-export async function getCharactersForToken(token: string) {
-    const {roles, userId} = await authGuardForUser(token, ['admin', 'user']);
-    if(roles.includes('admin')) return characterRepo.getAll();
-    if(roles.includes('user')) return characterRepo.getForUser(userId);
-    throw new NoAccesRequest();
-}
+export const PUT: RequestHandler = async ({ cookies, request }) => {
+	return handleRequest(async () => {
+		await authGuard(getSessionToken(cookies), ['user']);
+		const body = await request.json();
+		if (isNewCharacter(body) == false) throw new BadRequest();
+		characterRepo.save(body);
+		return new Response();
+	});
+};
+

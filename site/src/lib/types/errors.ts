@@ -1,4 +1,4 @@
-import { error } from "@sveltejs/kit";
+import { error } from '@sveltejs/kit';
 
 export class RequestError extends Error {
 	public code: number;
@@ -8,16 +8,25 @@ export class RequestError extends Error {
 		this.code = code;
 		this.message = message;
 	}
-    public getError() {
-        return error(this.code, this.message)
-    }
+	public getError() {
+		return error(this.code, this.message);
+	}
 }
 
 export class UnAutherizedRequestError extends RequestError {
-	constructor(message: string = 'not autherized') {super(401, message)}
- }
+	constructor(message: string = 'not autherized') {
+		super(401, message);
+	}
+}
 
 export class NoAccesRequest extends RequestError {
-	constructor(message: string = 'not autherized') {super(403, message)}
- }
+	constructor(message: string = 'not autherized') {
+		super(403, message);
+	}
+}
 
+export class BadRequest extends RequestError {
+	constructor(message: string = 'invalid body') {
+		super(400, message);
+	}
+}

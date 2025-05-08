@@ -105,11 +105,13 @@ export const characterRepo = new CharacterRepo();
 export type Character = NewCharacter & {
 	id: number;
 	ownerName: string;
+	currentHp: number;
 };
 
 export function isCharacter(character: any): character is Character {
 	return (
 		typeof character?.id === 'number' &&
+		typeof character?.currentHp === 'number' &&
 		typeof character?.ownerName === 'string' &&
 		isNewCharacter(character)
 	);
@@ -118,7 +120,6 @@ export function isCharacter(character: any): character is Character {
 export type NewCharacter = {
 	name: string;
 	ownerId: number;
-	currentHp: number;
 	maxHp: number;
 };
 
@@ -126,7 +127,6 @@ export function isNewCharacter(character: any): character is NewCharacter {
 	return (
 		typeof character?.name === 'string' &&
 		typeof character?.ownerId === 'number' &&
-		typeof character?.currentHp === 'number' &&
 		typeof character?.maxHp === 'number'
 	);
 }
