@@ -1,23 +1,23 @@
-import type { Actions } from "@sveltejs/kit";
-import { requestConnectionTokenAndRole } from "../api/authentication/login/+server";
-import { setSessionToken } from "$lib/utils/cookies";
-import { getUserOfToken } from "../api/users/active/+server";
+import type { Actions } from '@sveltejs/kit';
 
 export const actions = {
-    default: async ({cookies,request}) => {
-        try{
-            const formdata = await request.formData();
-            const email = formdata.get('email');
-            const password = formdata.get('password');
-            const {token, roles}= await requestConnectionTokenAndRole({email,password})
-            const activeUser = await getUserOfToken(token);
-            setSessionToken(cookies, token);
-            return {success: {
-                activeUser,
-                roles,
-            }};
-        } catch (err){
-            return {error: err}
-        }
-    }
-} satisfies Actions
+	default: async ({ request, fetch }) => {
+		try {
+			const formdata = await request.formData();
+			const email = formdata.get('email');
+			const password = formdata.get('password');
+			const response = await fetch('/api/authentication/login', {
+				method: 'POST',
+				body: JSON.stringify({ email, password })
+			});
+			if (response.ok) {
+				const { roles } = await response.json();
+				return { success: { roles } };
+			}
+            const error = await response.json();
+			return { error };
+		} catch (err) {
+			return { error: err };
+		}
+	}
+} satisfies Actions;

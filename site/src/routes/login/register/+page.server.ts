@@ -1,24 +1,24 @@
-import { setSessionToken } from "$lib/utils/cookies";
-import type { Actions } from "@sveltejs/kit";
-import { requestRegistration } from "../../api/authentication/register/+server";
-import { getUserOfToken } from "../../api/users/active/+server";
+import type { Actions } from '@sveltejs/kit';
 
 export const actions = {
-    default: async ({cookies, request}) => {
-        try{
-        const formData = await request.formData();
-        const name= formData.get('name');
-        const email = formData.get('email');
-        const password = formData.get('password');
-        const {token, roles} = await requestRegistration({name, email, password});
-        const activeUser = await getUserOfToken(token);
-        setSessionToken(cookies, token);
-        return {success: {
-                activeUser,
-                roles,
-            }};
-        } catch (err){
-            return {error: err}
-        }
-    }
-} satisfies Actions
+	default: async ({ request, fetch }) => {
+		try {
+			const formData = await request.formData();
+			const name = formData.get('name');
+			const email = formData.get('email');
+			const password = formData.get('password');
+			const response = await fetch('/api/authentication/register', {
+				method: 'POST',
+				body: JSON.stringify({ name, email, password })
+			});
+			if (response.ok) {
+				const { roles } = await response.json();
+				return { success: { roles } };
+			}
+			const error = response.json();
+			return { error };
+		} catch (err) {
+			return { error: err };
+		}
+	}
+} satisfies Actions;

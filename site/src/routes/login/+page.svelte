@@ -37,7 +37,7 @@
 			</div>
 			<button> Login </button>
 		</form>
-		<a href="/register">Register</a>
+		<a href="login/register">Register</a>
 	</div>
 </main>
 

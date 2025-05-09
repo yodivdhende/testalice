@@ -5,24 +5,22 @@ import { handleRequest } from '$lib/utils/request';
 import { type RequestHandler, json } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ params }) => {
-    return handleRequest(async ()=> json(await getCharacter(params)));
+	return handleRequest(async () => {
+		const { id } = params;
+		const numberId = isNumberOrError(id);
+		const character = await characterRepo.getById(numberId);
+		return json(character);
+	});
 };
 
 export const POST: RequestHandler = async ({ request }) => {
-    return handleRequest(async ()=> {
-		await saveCharacter(await request.json());
+	return handleRequest(async () => {
+		const { character } = await request.json();
+		if (isCharacter(character) === false && isNewCharacter(character) === false){
+			throw new RequestError(400, 'body was not of type character');
+		}
+		await characterRepo.save(character);
 		return new Response();
-    });
+	});
 };
 
-export async function getCharacter({ id }: { id?: any }) {
-	const numberId = isNumberOrError(id);
-	return await characterRepo.getById(numberId);
-}
-
-export async function saveCharacter({ character }: { character: any }) {
-	if (isCharacter(character) || isNewCharacter(character)) {
-		await characterRepo.save(character);
-	}
-	return new RequestError(400, 'body was not of type character');
-}

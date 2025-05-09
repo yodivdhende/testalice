@@ -17,7 +17,7 @@
 	$effect(() =>{
 		if(form?.error) console.error(form.error);
 		if(form?.success) {
-			const {roles, activeUser} = form.success;
+			const {roles} = form.success;
 			credentialStore.roles = roles;
 		}
 	})
