@@ -1,11 +1,12 @@
 import { authenticationRepo } from '$lib/db/authentication.repo';
 import { sessionRepo } from '$lib/db/session.repo';
 import { RequestError, UnAutherizedRequestError } from '$lib/types/errors';
+import { setSessionToken } from '$lib/utils/cookies';
 import { handleRequest } from '$lib/utils/request';
 import { getTommorow } from '$lib/utils/time';
 import { json, type RequestHandler } from '@sveltejs/kit';
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, cookies}) => {
 	return handleRequest(async () => {
 		const { email, password } = await request.json();
 		if (typeof email !== 'string' && typeof password !== 'string') {
@@ -17,9 +18,10 @@ export const POST: RequestHandler = async ({ request }) => {
 		const token = await sessionRepo.create({
 			userId,
 			roles,
-			endDate: getTommorow(),
-			descripiton: 'api login'
+			end: getTommorow(),
+			description: `api login ${email}`
 		});
+		setSessionToken(cookies, token)
 		return json({ token, roles });
 	});
 };

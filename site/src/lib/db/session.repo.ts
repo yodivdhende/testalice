@@ -1,30 +1,26 @@
-import { type UserRole } from '$lib/types/roles';
+import { isPublicUserRole, type UserRole } from '$lib/types/roles';
 import { v4 as uuidv4 } from 'uuid';
 import { mysqlconnFn } from './mysql';
 import { type Connection as MySqlConnection } from 'mysql2/promise';
+import { rollupVersion } from 'vite';
 
 class SessionRepo {
 	public async create({
 		userId,
 		roles,
-		endDate,
-		descripiton
-	}: {
-		userId: number | null;
-		roles: UserRole[];
-		endDate?: Date;
-		descripiton?: string;
-	}): Promise<string> {
+		end,
+		description	
+	}: NewSession): Promise<string> {
 		await this.removeExpiredSessions();
 		const connection = await mysqlconnFn();
-		const token = await this.addSessions(connection, { userId, endDate, descripiton });
+		const token = await this.addSessions(connection, { userId, end: end ?? undefined, description: description ?? undefined });
 		await this.addSessionRoles(connection, { roles, token });
 		return token;
 	}
 
 	private async addSessions(
 		connection: MySqlConnection,
-		{ userId, endDate, descripiton }: { userId: number | null; endDate?: Date; descripiton?: string }
+		{ userId, end, description }: { userId: number | null; end?: Date; description?: string }
 	): Promise<string> {
 		const sessionToken = uuidv4();
 		await connection.execute(
@@ -32,7 +28,7 @@ class SessionRepo {
             INSERT INTO \`Sessions\`(Token, UserId,Start, End, Description)
             VALUES (?, ?,NOW(), ?, ?)
             `,
-			[sessionToken, userId, this.convertDateToDateTimeString(endDate), descripiton ?? null]
+			[sessionToken, userId, this.convertDateToDateTimeString(end), description ?? null]
 		);
 		return sessionToken;
 	}
@@ -161,11 +157,35 @@ class SessionRepo {
 }
 
 export const sessionRepo = new SessionRepo();
-export type Session = {
-	token: string;
+export type NewSession = {
 	userId: number | null;
-	start: Date;
 	end: Date | null;
 	description: string;
 	roles: UserRole[];
+}
+export function isNewSession(session: any): session is NewSession {
+	return 'userId' in session
+	&& (typeof session.userId === 'number' || session.userId === null) 
+	&& 'end' in session
+	&& (session.end instanceof Date || session.end === null) 
+	&& 'description' in session
+	&& typeof  session.description === 'string' 
+	&& 'roles' in session
+	&& Array.isArray(session.roles)
+	&& session.roles.every((role: any) => isPublicUserRole(role))
+}
+
+export type Session = NewSession & {
+	token: string;
+	start: Date;
 };
+
+export function isSession(session: any): session is Session {
+	return isNewSession(session)
+	&& 'token' in session
+	&& typeof session.token === 'string'
+	&& 'start' in session
+	&& session.start instanceof Date
+}
+
+

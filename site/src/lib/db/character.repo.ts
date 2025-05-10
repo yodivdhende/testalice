@@ -36,7 +36,6 @@ class CharacterRepo {
 	public async getForUser(userId: number) {
 		const connection = await mysqlconnFn();
 		const [result] = await connection.execute(`${this.characterSelector} WHERE u.id = ?`, [userId]);
-		console.log(`%c getForUser`, `background:white;color:black`, {result});
 		return [] as Character[];
 	}
 

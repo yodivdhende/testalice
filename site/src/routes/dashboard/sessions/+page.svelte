@@ -15,6 +15,7 @@
 </script>
 
 <main>
+	<a href="sessions/new">+ add</a>
 	<table>
 		<thead>
 			<tr>

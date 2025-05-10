@@ -1,8 +1,19 @@
-export const UserRole = {
+export const PublicUserRole = {
     user : 'user',
-    admin : 'admin',
     player : 'player',
     extra : 'extra',
+} as const;
+export type PublicUserRole = typeof PublicUserRole[keyof typeof PublicUserRole];
+export function isPublicUserRole(role: any): role is PublicUserRole{
+    return (
+        typeof role === 'string' &&
+        Object.values(PublicUserRole).includes(role as PublicUserRole)
+    )
+}
+
+export const UserRole = {
+    ...PublicUserRole,
+    admin : 'admin',
 } as const
 export type UserRole = typeof UserRole[keyof typeof UserRole];
 

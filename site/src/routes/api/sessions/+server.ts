@@ -1,7 +1,7 @@
-import { RequestError } from "$lib/types/errors";
-import { authGuard, handleRequest } from "$lib/utils/request";
+import { BadRequest, RequestError } from "$lib/types/errors";
+import { authGuard, authGuardForUser, handleRequest } from "$lib/utils/request";
 import { json, type RequestHandler } from "@sveltejs/kit";
-import { sessionRepo } from "$lib/db/session.repo";
+import { isNewSession, sessionRepo } from "$lib/db/session.repo";
 import { getSessionToken } from "$lib/utils/cookies";
 
 export const GET: RequestHandler = async ({ request, cookies}) => {
@@ -13,3 +13,15 @@ export const GET: RequestHandler = async ({ request, cookies}) => {
 		return json(connections);
 	});
 };
+
+export const POST: RequestHandler = async ({request, cookies}) => { 
+	return handleRequest(async ()=>{
+		const oldToken: string = getSessionToken(cookies);
+		await authGuardForUser(oldToken, ['admin']);
+		const newSession = await request.json();
+		if (isNewSession(newSession) === false) throw new BadRequest('body must be of newSessionType');
+		const token = await sessionRepo.create(newSession);
+		return json(token);
+	})
+}
+
