@@ -12,7 +12,8 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",
-		"host": "npm run dev -- --host 0.0.0.0"
+		"host": "npm run dev -- --host 0.0.0.0",
+		"start": "node ./websocket-server"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
@@ -40,6 +41,7 @@
 		"@threlte/core": "^8.0.1",
 		"@types/three": "^0.174.0",
 		"bcrypt": "^5.1.1",
+		"express": "^5.1.0",
 		"mysql2": "^3.13.0",
 		"socket.io": "^4.8.1",
 		"socket.io-client": "^4.8.1",

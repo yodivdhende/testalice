@@ -25,7 +25,7 @@
 		{@render children()}
 	</section>
 	{#if sidePanelManager.component != null}
-		<div class="backdrop" onclick={()=> sidePanelManager.close()}></div>
+		<div role='button' class="backdrop" onclick={()=> sidePanelManager.close()}></div>
 		<aside>
 			<button onclick={()=>sidePanelManager.close()}><CircleX /></button>
 			<sidePanelManager.component />
