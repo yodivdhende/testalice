@@ -1,15 +1,13 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { Server } from 'socket.io';
 import { defineConfig, type ViteDevServer } from 'vite';
+import { WebSocketMidiator } from './websocket-server/socket-server';
+import * as http from "http";
 
 const webSocketServer = {
 	name: 'webSocketServer',
 	configureServer(server: ViteDevServer) {
 		if(!server.httpServer) return;
-		const io = new Server(server.httpServer);
-		io.on('connection', (socket)=>{
-			socket.emit('eventFromServer', 'Hello World 👋')
-		})
+		new WebSocketMidiator(server.httpServer as http.Server)
 	}
 }
 

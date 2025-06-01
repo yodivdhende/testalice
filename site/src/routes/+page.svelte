@@ -1,9 +1,9 @@
 <script lang="ts">
-    import {io } from 'socket.io-client';
-    const socket = io();
+	import { browser } from "$app/environment";
 
-     socket.on('eventFromServer', (message)=> console.log(`%c ️🛰️`, `background:aqua;color:black`, {message}));
-
-    
+    if(browser){
+        const ws = new WebSocket('ws://localhost:5173/dashboard');
+        ws.addEventListener('open', ()=> ws.send('Hello world 📡'))
+    }
 </script>
 

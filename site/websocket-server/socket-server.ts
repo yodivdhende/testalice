@@ -1,26 +1,25 @@
-import { Server as SocketServer } from 'socket.io';
-import { type Server } from 'http';
-import { Socket } from 'socket.io-client';
+import * as http from 'http';
+import {WebSocketServer} from 'ws';
 
-export class WebSocketServer {
-	private io: SocketServer;
+export class WebSocketMidiator{
 
-	constructor(server: Server) {
-		this.io = new SocketServer(server);
-		this.io.use(this.authenticate);
-		this.io.on('connection', (socket) => {
-			socket.emit('eventFromServer', 'Hellow World 📡');
-		});
+	private dashboardServer = new WebSocketServer({noServer: true});
 
-	}
-	private async authenticate(socket, next) {
-		const token:string = socket.handshake.auth.token;
-		const response = await fetch('http://localhost:5173/api/login/token', {
-			method: 'POST',
-			body: JSON.stringify({token}),
+	constructor(server: http.Server) {
+		this.dashboardServer.on('connection', (ws) =>{
+			ws.on('message', (msg)=> console.log('message',msg))
 		})
-		if (response.ok) next();
-		next(new Error('Token not valid'));
+		this.dashboardServer.on('error', console.error)
+
+		server.on('upgrade', (request, socket, head) => {
+			const {pathname} = new URL(request.url??'', `ws://localhost:${5173}`);
+			if(pathname === '/dashboard'){
+				this.dashboardServer.handleUpgrade(request, socket, head, (ws) => {
+					this.dashboardServer.emit('connection', ws, request);
+				})
+			}
+		})
 	}
+	
 }
 

@@ -1,14 +1,12 @@
 import express from 'express';
-import { createServer } from 'http';
 import { handler } from '../build/handler.js';
-import { WebSocketServer } from './socket-server';
+import { WebSocketMidiator } from './socket-server.js';
 
 const port = 3000;
 const app = express();
-const server = createServer(app);
-
-new WebSocketServer(server);
 
 app.use(handler);
+const server = app.listen(port);
 
-server.listen(port);
+new WebSocketMidiator(server);
+
