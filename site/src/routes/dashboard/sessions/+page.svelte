@@ -1,8 +1,15 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import SessionRow from '../../../lib/components/session-row.svelte';
 	import { type PageProps } from './$types';
 
 	let { data }: PageProps = $props();
+	let connections: {type: 'Web', token: string}[] = $state([]);
+
+	if(browser) {
+		const webSocket = new WebSocket('ws://localhost:5173/dashboard');
+		webSocket.onmessage = async (event) => connections = await JSON.parse(event.data);
+	}
 
 </script>
 
@@ -23,7 +30,7 @@
 		<tbody>
 			{#if data.sessions}
 				{#each data.sessions as session}
-				<SessionRow {session} />
+				<SessionRow {session} connection={connections.find(connection => connection.token === session.token)}/>
 				{/each}
 			{/if}
 		</tbody>

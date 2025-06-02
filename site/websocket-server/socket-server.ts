@@ -1,9 +1,9 @@
 import * as http from 'http';
-import {DashboardSocketServer} from './dashbord-socket';
+import {dashboardSocketServer} from './dashbord-socket';
 
 export class WebSocketMidiator{
 
-	private dashboardServer = new DashboardSocketServer();
+	private dashboardServer = dashboardSocketServer;
 
 	constructor(server: http.Server) {
 

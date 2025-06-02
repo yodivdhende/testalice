@@ -1,7 +1,6 @@
-import { isBigInt64Array } from "util/types";
 import WebSocket, { WebSocketServer } from "ws";
 
-export class DashboardSocketServer {
+class DashboardSocketServer {
     private server = new WebSocketServer({noServer: true}); 
     private sessionInfos: Map<String, SessionInfo> = new Map();
 
@@ -19,29 +18,22 @@ export class DashboardSocketServer {
         })
     } 
 
-    private browdCastSessionInfo(sessionInfo: SessionInfo, isBinary: boolean){
+    public addSessionInfo(sessionInfo: SessionInfo) {
         this.sessionInfos.set(sessionInfo.sessionToken, sessionInfo);
+        this.browdCastSessionInfo(false)
+    }
+
+    private browdCastSessionInfo( isBinary: boolean){
         this.server.clients.forEach((client)=>{
             if(client.readyState !== WebSocket.OPEN) return;
-            client.send(this.sessionInfos.values, {binary: isBinary})
+            client.send(JSON.stringify(this.sessionInfos.values), {binary: isBinary})
         })
-
     }
 }
 
+export const dashboardSocketServer = new DashboardSocketServer();
 
 
-const sessionInfos: Map<String, SessionInfo> = new Map();
-
-export const handleDashbordSockets = (ws, req)=>{
-    ws.on('open', () =>  sockets.push(ws) );
-
-    ws.on('browdcastUpdate', (info: SessionInfo) => {
-        sessionInfos.set(info.sessionToken, info);
-        sockets.forEach(socket => socket.emit('update', sessionInfos.values))
-    });
-}
- 
 type WebSessionInfo ={
     sessionToken: "";
     connectionType: "Web";
