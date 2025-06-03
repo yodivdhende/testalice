@@ -6,7 +6,7 @@
 
 	let { data }: PageProps = $props();
 	let sessionToken: string | undefined = $derived(data.sessionToken);
-	let connections: { type: 'Web'; token: string }[] = $state([]);
+	let connections: SessionInfo[] = $state([]);
 
 	if (browser) {
 		const webSocket = new WebSocket('ws://localhost:5173/dashboard');
@@ -16,13 +16,11 @@
 					JSON.stringify({ sessionToken: sessionToken, connectionType: 'Web' } as SessionInfo)
 				);
 			}
-			webSocket.onmessage = (event) => {
-				const connections = JSON.parse(event.data);
-				console.log(`%c ws message`, `background:white;color:black`, connections);
-			}
-
+			webSocket.onmessage = (event) => connections = JSON.parse(event.data);
 		};
 	}
+	
+
 </script>
 
 <main>
@@ -42,10 +40,9 @@
 		<tbody>
 			{#if data.sessions}
 				{#each data.sessions as session}
-					<SessionRow
-						{session}
-						connection={connections.find((connection) => connection.token === session.token)}
-					/>
+					<SessionRow {session} 
+					 connection={connections.find(connection => connection.sessionToken === session.token)}
+					 />
 				{/each}
 			{/if}
 		</tbody>

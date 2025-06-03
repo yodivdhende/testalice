@@ -3,8 +3,10 @@
 	import { EthernetPort, Settings2 } from '@lucide/svelte';
 	import Dropdown from './dropdown.svelte';
 
-	let { session, connection }: { session: SessionView; connection?: ConnectionView } = $props();
+	let { session, connection}: { session: SessionView; connection?: ConnectionView } = $props();
 	let token: string | undefined = $derived(session.token);
+
+
 
 	async function deleteConnection(token: string) {
 		const response = await fetch(`/api/sessions/${token}`, {
@@ -22,7 +24,8 @@
 	};
 
 	type ConnectionView = {
-		type: 'Web';
+		sessionToken: string;
+		connectionType: string;
 	};
 </script>
 
@@ -30,7 +33,7 @@
 	<td>{session.token ?? ''}</td>
 	<td>
 		{#if connection}
-			{#if connection.type === 'Web'}
+			{#if connection.connectionType === 'Web'}
         <EthernetPort />
 			{/if}
 		{/if}
