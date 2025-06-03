@@ -1,10 +1,11 @@
 import WebSocket, { WebSocketServer } from "ws";
 
 class DashboardSocketServer {
-    private server = new WebSocketServer({noServer: true}); 
+    private server:WebSocketServer 
     private sessionInfos: Map<String, SessionInfo> = new Map();
 
     constructor() {
+        this.server = new WebSocketServer({ noServer: true });
 		this.server.on('connection', (ws) =>{
             ws.on('message', this.browdCastSessionInfo)
 		});
@@ -35,13 +36,13 @@ export const dashboardSocketServer = new DashboardSocketServer();
 
 
 type WebSessionInfo ={
-    sessionToken: "";
+    sessionToken: string;
     connectionType: "Web";
 }
 
 type CYDSessionInfo={
-    sessionToken: "";
+    sessionToken: string;
     connectionType: "CYD";
     wifiStrength: number;
 }
-type SessionInfo = WebSessionInfo | CYDSessionInfo;
+export type SessionInfo = WebSessionInfo | CYDSessionInfo;

@@ -1,14 +1,21 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import type { SessionInfo } from '../../../../websocket-server/dashbord-socket';
 	import SessionRow from '../../../lib/components/session-row.svelte';
 	import { type PageProps } from './$types';
 
 	let { data }: PageProps = $props();
+	let sessionToken: string | undefined = $derived(data.sessionToken);
 	let connections: {type: 'Web', token: string}[] = $state([]);
 
 	if(browser) {
 		const webSocket = new WebSocket('ws://localhost:5173/dashboard');
-		webSocket.onmessage = async (event) => connections = await JSON.parse(event.data);
+		webSocket.onopen = () => {
+			if(sessionToken != null) {
+				webSocket.send(JSON.stringify({ sessionToken: sessionToken, connectionType: 'Web' } as SessionInfo));
+			}
+			webSocket.onmessage = async (event) => connections = await JSON.parse(event.data);
+		};
 	}
 
 </script>

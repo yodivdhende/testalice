@@ -8,5 +8,5 @@ const app = express();
 app.use(handler);
 const server = app.listen(port);
 
-new WebSocketMidiator(server);
+new WebSocketMidiator(server, port);
 

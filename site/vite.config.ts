@@ -7,7 +7,7 @@ const webSocketServer = {
 	name: 'webSocketServer',
 	configureServer(server: ViteDevServer) {
 		if(!server.httpServer) return;
-		new WebSocketMidiator(server.httpServer as http.Server)
+		new WebSocketMidiator(server.httpServer as http.Server, server.config.server.port);
 	}
 }
 
