@@ -1,13 +1,15 @@
 import WebSocket, { WebSocketServer } from "ws";
 
 class DashboardSocketServer {
-    private server:WebSocketServer 
-    private sessionInfos: Map<String, SessionInfo> = new Map();
+    private server = new WebSocketServer({ noServer: true });
+    private connectionInfo: Map<String, SessionInfo> = new Map();
 
     constructor() {
-        this.server = new WebSocketServer({ noServer: true });
 		this.server.on('connection', (ws) =>{
-            ws.on('message', this.browdCastSessionInfo)
+            ws.on('message', (data) => {
+                const dataObj: SessionInfo = JSON.parse(data.toString());
+                this.addSessionInfo(dataObj);
+            });
 		});
 
 		this.server.on('error', console.error)
@@ -20,14 +22,15 @@ class DashboardSocketServer {
     } 
 
     public addSessionInfo(sessionInfo: SessionInfo) {
-        this.sessionInfos.set(sessionInfo.sessionToken, sessionInfo);
+        this.connectionInfo.set(sessionInfo.sessionToken, sessionInfo);
         this.browdCastSessionInfo(false)
     }
 
-    private browdCastSessionInfo( isBinary: boolean){
+    private browdCastSessionInfo( isBinary: boolean = false){
         this.server.clients.forEach((client)=>{
             if(client.readyState !== WebSocket.OPEN) return;
-            client.send(JSON.stringify(this.sessionInfos.values), {binary: isBinary})
+            let sessionInfostring: string = JSON.stringify([...this.connectionInfo.values()]);
+            client.send(sessionInfostring, {binary: isBinary})
         })
     }
 }
