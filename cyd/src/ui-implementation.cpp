@@ -8,25 +8,16 @@
 #include <XPT2046_Touchscreen.h>
 
 /*Don't forget to set Sketchbook location in File/Preferences to the path of your UI project (the parent foder of this INO file)*/
+const uint16_t screenWidth  = 320;
+const uint16_t screenHeight = 240;
 
 /*Change to your screen resolution*/
-static const uint16_t screenWidth = 320;
-static const uint16_t screenHeight = 240;
-
 enum
 {
     SCREENBUFFER_SIZE_PIXELS = screenWidth * screenHeight / 10
 };
 static lv_color_t buf[SCREENBUFFER_SIZE_PIXELS];
 
-/*Touch screen config*/
-#define XPT2046_IRQ 36 //GPIO driver cảm ứng 
-#define XPT2046_MOSI 32
-#define XPT2046_MISO 39
-#define XPT2046_CLK 25
-#define XPT2046_CS 33
-SPIClass tsSpi = SPIClass(VSPI);
-XPT2046_Touchscreen ts(XPT2046_CS, XPT2046_IRQ);
 uint16_t touchScreenMinimumX = 200, touchScreenMaximumX = 3700, touchScreenMinimumY = 240,touchScreenMaximumY = 3800; //Chạy Calibration để lấy giá trị mỗi màn hình mỗi khácj
 
 #if LV_USE_LOG != 0
