@@ -3,6 +3,7 @@
 
 #include <TFT_eSPI.h>
 #include <Arduino.h>
+#include <XPT2046_Touchscreen.h>
 
 extern const uint16_t screenWidth;
 extern const uint16_t screenHeight;
