@@ -4,7 +4,7 @@
     - [ ]  Store:
         - [x] session token
         - [ ] Role
-    - [ ]  Display connections
+    - [x]  Display sessions
 - [ ] Role system
     - [ ]  Hide pages depending on Role
     - [ ]  Create guard for api depending on DB Role
