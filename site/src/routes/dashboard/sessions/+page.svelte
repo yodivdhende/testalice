@@ -9,7 +9,7 @@
 	let connections: SessionInfo[] = $state([]);
 
 	if (browser) {
-		const webSocket = new WebSocket('ws://localhost:5173/dashboard');
+		const webSocket = new WebSocket('ws://localhost:5173/connections');
 		webSocket.onopen = () => {
 			if (sessionToken != null) {
 				webSocket.send(
@@ -19,7 +19,6 @@
 			webSocket.onmessage = (event) => connections = JSON.parse(event.data);
 		};
 	}
-	
 
 </script>
 
