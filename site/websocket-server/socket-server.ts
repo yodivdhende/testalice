@@ -1,5 +1,5 @@
 import * as http from 'http';
-import {dashboardSocketServer} from './dashbord-socket';
+import {dashboardSocketServer} from './connection-socket';
 
 export class WebSocketMidiator{
 
