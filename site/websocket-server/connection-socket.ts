@@ -9,9 +9,10 @@ class DashboardSocketServer {
             ws.on('message', (data) => {
                 const dataObj: ConnecitonInfo = JSON.parse(data.toString());
                 this.addSessionInfo(ws, dataObj);
+                console.log('new connetion: ', this.connectionInfo.size)
             });
             ws.on('close', () => {
-                console.log('closing connection');
+                console.log('closing connection: ', this.connectionInfo.size);
                 this.connectionInfo.delete(ws);
                 this.browdCastSessionInfo(false);
             })
