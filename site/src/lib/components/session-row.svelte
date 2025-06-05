@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { invalidate } from '$app/navigation';
-	import { EthernetPort, Settings2 } from '@lucide/svelte';
+	import { EthernetPort, Settings2, Wifi } from '@lucide/svelte';
 	import Dropdown from './dropdown.svelte';
-	import type { ConnecitonInfo } from '../../../websocket-server/connection-socketet';
+	import type { ConnecitonInfo } from '../../../websocket-server/connection-socket';
 
-	let { session, connection}: { session: SessionView; connection?: ConnecitonInfo} = $props();
+	let { session, connection }: { session: SessionView; connection?: ConnecitonInfo } = $props();
 	let token: string | undefined = $derived(session.token);
-
-
 
 	async function deleteConnection(token: string) {
 		const response = await fetch(`/api/sessions/${token}`, {
@@ -23,7 +21,6 @@
 		end?: string;
 		description?: string;
 	};
-
 </script>
 
 <tr>
@@ -31,7 +28,10 @@
 	<td>
 		{#if connection}
 			{#if connection.connectionType === 'Web'}
-        <EthernetPort />
+				<EthernetPort />
+			{/if}
+			{#if connection.connectionType === 'CYD'}
+				<Wifi />
 			{/if}
 		{/if}
 	</td>
