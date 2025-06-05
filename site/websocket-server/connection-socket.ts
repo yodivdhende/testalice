@@ -12,7 +12,8 @@ class DashboardSocketServer {
             });
             ws.on('close', () => {
                 console.log('closing connection');
-                this.connectionInfo.delete(ws)
+                this.connectionInfo.delete(ws);
+                this.browdCastSessionInfo(false);
             })
 		});
 
