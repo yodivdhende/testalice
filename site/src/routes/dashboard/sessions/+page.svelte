@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import type { SessionInfo } from '../../../../websocket-server/dashbord-socket';
+	import type { SessionInfo } from '../../../../websocket-server/connection-socketet';
 	import SessionRow from '../../../lib/components/session-row.svelte';
 	import { type PageProps } from './$types';
 
@@ -19,7 +19,6 @@
 			webSocket.onmessage = (event) => connections = JSON.parse(event.data);
 		};
 	}
-
 </script>
 
 <main>

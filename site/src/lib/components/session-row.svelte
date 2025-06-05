@@ -2,8 +2,9 @@
 	import { invalidate } from '$app/navigation';
 	import { EthernetPort, Settings2 } from '@lucide/svelte';
 	import Dropdown from './dropdown.svelte';
+	import type { ConnecitonInfo } from '../../../websocket-server/connection-socketet';
 
-	let { session, connection}: { session: SessionView; connection?: ConnectionView } = $props();
+	let { session, connection}: { session: SessionView; connection?: ConnecitonInfo} = $props();
 	let token: string | undefined = $derived(session.token);
 
 
@@ -23,10 +24,6 @@
 		description?: string;
 	};
 
-	type ConnectionView = {
-		sessionToken: string;
-		connectionType: string;
-	};
 </script>
 
 <tr>

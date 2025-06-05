@@ -14,4 +14,4 @@ export const POST: RequestHandler = async ({ request, cookies}) => {
         setSessionToken(cookies, token);
         return json({token});
     })
- })
+ }
