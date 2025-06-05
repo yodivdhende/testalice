@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import type { SessionInfo } from '../../../../websocket-server/connection-socketet';
+	import type { ConnecitonInfo, WebConnectionInfo } from '../../../../websocket-server/connection-socket';
 	import SessionRow from '../../../lib/components/session-row.svelte';
 	import { type PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 	let sessionToken: string | undefined = $derived(data.sessionToken);
-	let connections: SessionInfo[] = $state([]);
+	let connections: ConnecitonInfo[] = $state([]);
 
 	if (browser) {
 		const webSocket = new WebSocket('ws://localhost:5173/connections');
 		webSocket.onopen = () => {
 			if (sessionToken != null) {
 				webSocket.send(
-					JSON.stringify({ sessionToken: sessionToken, connectionType: 'Web' } as SessionInfo)
+					JSON.stringify({ sessionToken: sessionToken, connectionType: 'Web' } as WebConnectionInfo)
 				);
 			}
 			webSocket.onmessage = (event) => connections = JSON.parse(event.data);
