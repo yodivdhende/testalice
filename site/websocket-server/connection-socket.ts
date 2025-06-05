@@ -2,14 +2,18 @@ import WebSocket, { WebSocketServer } from "ws";
 
 class DashboardSocketServer {
     private server = new WebSocketServer({ noServer: true });
-    private connectionInfo: Map<String, ConnecitonInfo> = new Map();
+    private connectionInfo: Map<WebSocket, ConnecitonInfo> = new Map();
 
     constructor() {
 		this.server.on('connection', (ws) =>{
             ws.on('message', (data) => {
                 const dataObj: ConnecitonInfo = JSON.parse(data.toString());
-                this.addSessionInfo(dataObj);
+                this.addSessionInfo(ws, dataObj);
             });
+            ws.on('close', () => {
+                console.log('closing connection');
+                this.connectionInfo.delete(ws)
+            })
 		});
 
 		this.server.on('error', console.error)
@@ -21,8 +25,8 @@ class DashboardSocketServer {
         })
     } 
 
-    public addSessionInfo(sessionInfo: ConnecitonInfo) {
-        this.connectionInfo.set(sessionInfo.sessionToken, sessionInfo);
+    private addSessionInfo(webSocket: WebSocket,sessionInfo: ConnecitonInfo) {
+        this.connectionInfo.set(webSocket, sessionInfo);
         this.browdCastSessionInfo(false)
     }
 
@@ -38,12 +42,12 @@ class DashboardSocketServer {
 export const dashboardSocketServer = new DashboardSocketServer();
 
 
-type WebConnectionInfo ={
+export type WebConnectionInfo ={
     sessionToken: string;
     connectionType: "Web";
 }
 
-type CYDConnectionInfo={
+export type CYDConnectionInfo={
     sessionToken: string;
     connectionType: "CYD";
     wifiStrength: number;
