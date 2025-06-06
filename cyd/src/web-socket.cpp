@@ -50,7 +50,7 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length)
             sendStatus();
             break;
         case WStype_TEXT:
-            logWhite("message:");
+            logWhite("message:", (char *)payload);
             break;
     }
 

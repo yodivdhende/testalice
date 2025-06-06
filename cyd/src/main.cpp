@@ -19,13 +19,12 @@ void setup () {
   if(connectToWifi() == false){
     return;
   };
-  webSocketSetup();
   // if(fetchCharacter() == false){
   //   return;
   // };
   // clearScreen();
   // uiSetup(); 
-
+  webSocketSetup();
 }
 
 
