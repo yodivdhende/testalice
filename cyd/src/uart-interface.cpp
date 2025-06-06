@@ -22,8 +22,7 @@ boolean shouldCheckSerial()
 
 void uartSerialLoop()
 {
-    if (shouldCheckSerial())
-    if (receivedMessage != "")
+    if (shouldCheckSerial() || receivedMessage != "")
     {
         if (Serial.available())
         {

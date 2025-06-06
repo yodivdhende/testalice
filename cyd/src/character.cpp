@@ -40,7 +40,7 @@ String httpGETRequest(const char* serverName) {
 bool fetchCharacter()
 {
   if(WiFi.status() == WL_CONNECTED) {
-    String characterUrl = server_url + "characters/" + String(character_id);
+    String characterUrl = api_url+ "characters/" + String(character_id);
     logWhite("fetching: ");
     logWhite(characterUrl.c_str());
 
