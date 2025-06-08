@@ -3,6 +3,7 @@
 #include <log.h>
 #include <ArduinoJson.h>
 #include <globals.h>
+#include <ui-downloading.h>
 
 WebSocketsClient webSocket;
 
@@ -29,7 +30,7 @@ void handleMessage(String message){
     if(messageObj.containsKey("goTo")){
         String screen = messageObj["goTo"];
         if(screen == "loading"){
-            //TODO navigate to loading screen;
+            UiLoadingSetup();
             return;
         }
         if(screen == "loot"){

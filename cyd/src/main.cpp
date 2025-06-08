@@ -5,8 +5,8 @@
 #include <ArduinoJson.h>
 #include <sd-reader.h>
 #include <connection.h>
-// #include <character.h>
-// #include <ui-implementation.h>
+#include <character.h>
+#include <ui-implementation.h>
 #include <uart-interface.h>
 #include <web-socket.h>
 
@@ -22,8 +22,8 @@ void setup () {
   // if(fetchCharacter() == false){
   //   return;
   // };
-  // clearScreen();
-  // uiSetup(); 
+  clearScreen();
+  uiSetup(); 
   webSocketSetup();
 }
 

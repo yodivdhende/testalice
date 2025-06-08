@@ -11,6 +11,11 @@
 const uint16_t screenWidth  = 320;
 const uint16_t screenHeight = 240;
 
+/*Loading sreen*/
+
+
+
+
 /*Change to your screen resolution*/
 enum
 {
@@ -119,13 +124,5 @@ void uiSetup()
 void uiLoop()
 {
     lv_timer_handler(); /* let the GUI do its work */
-
-    lv_label_set_text_fmt(ui_Name_Label, currentCharacter.name.c_str());
-
-    lv_arc_set_range(ui_Arc1, 0, currentCharacter.maxHp);
-    lv_arc_set_value(ui_Arc1, currentCharacter.currentHp);
-    String hpValue = String(currentCharacter.currentHp) + "/" + String(currentCharacter.maxHp);
-    lv_label_set_text_fmt(ui_HP_value, hpValue.c_str());
-
     delay(5);
 }
