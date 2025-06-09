@@ -1,12 +1,14 @@
 #include <Arduino.h>
+#include <globals.h>
+#include <log.h>
 #include <TFT_eSPI.h>
 #include <ArduinoJson.h>
-#include <log.h>
-#include <globals.h>
-#include <connection.h>
 #include <sd-reader.h>
+#include <connection.h>
 #include <character.h>
 #include <ui-implementation.h>
+#include <uart-interface.h>
+#include <web-socket.h>
 
 void setup () {
   screenSetup();
@@ -17,17 +19,19 @@ void setup () {
   if(connectToWifi() == false){
     return;
   };
-  if(fetchCharacter() == false){
-    return;
-  };
+  // if(fetchCharacter() == false){
+  //   return;
+  // };
   clearScreen();
   uiSetup(); 
-
+  webSocketSetup();
 }
 
 
 void loop (){
-  uiLoop();
+  // uiLoop(); 
+  uartSerialLoop();
+  webSocketLoop();
 }
 
 
