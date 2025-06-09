@@ -9,7 +9,6 @@
 
 
 bool setupSD() {
-  Serial.begin(115200);
 
   SPIClass spi = SPIClass(VSPI);
 

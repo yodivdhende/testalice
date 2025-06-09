@@ -18,6 +18,15 @@ void sendStatus() {
     webSocket.sendTXT(statusJsonString);
 }
 
+void sendLink(String token)
+{
+    JsonDocument linkObj;
+    linkObj["token"] = token;
+    String linkObjString = "";
+    serializeJson(linkObj, linkObjString);
+    webSocket.sendTXT(linkObjString);
+}
+
 void handleMessage(String message){
     JsonDocument messageObj;
     DeserializationError error = deserializeJson(messageObj, message);
