@@ -26,6 +26,7 @@ void uartSerialLoop()
             char incommingChar = Serial.read();
             if (incommingChar == '\n')
             {
+                sendLink(receivedMessage);
                 receivedMessage = "";
             }
             else
