@@ -1,23 +1,39 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import type { ConnecitonInfo, WebConnectionInfo } from '../../../../websocket-server/connection-socket';
+	import { invalidate } from '$app/navigation';
+	import Dropdown from '$lib/components/dropdown.svelte';
+	import { Settings2 } from '@lucide/svelte';
+	import type {
+		ConnecitonInfo,
+		WebConnectionInfo
+	} from '../../../../websocket-server/connection-socket';
 	import SessionRow from '../../../lib/components/session-row.svelte';
 	import { type PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 	let sessionToken: string | undefined = $derived(data.sessionToken);
 	let connections: ConnecitonInfo[] = $state([]);
+	let webSocket: WebSocket | undefined;
 
 	if (browser) {
-		const webSocket = new WebSocket('ws://localhost:5173/connections');
+		webSocket = new WebSocket('ws://localhost:5173/connections');
 		webSocket.onopen = () => {
 			if (sessionToken != null) {
-				webSocket.send(
+				webSocket!.send(
 					JSON.stringify({ sessionToken: sessionToken, connectionType: 'Web' } as WebConnectionInfo)
 				);
 			}
-			webSocket.onmessage = (event) => connections = JSON.parse(event.data);
+			webSocket!.onmessage = (event) => (connections = JSON.parse(event.data));
 		};
+	}
+
+	function sendCommand(command: string) {}
+
+	async function deleteConnection(token: string) {
+		const response = await fetch(`/api/sessions/${token}`, {
+			method: 'DELETE'
+		});
+		invalidate('/api/sessions');
 	}
 </script>
 
@@ -38,9 +54,26 @@
 		<tbody>
 			{#if data.sessions}
 				{#each data.sessions as session}
-					<SessionRow {session} 
-					 connection={connections.find(connection => connection.sessionToken === session.token)}
-					 />
+					<tr>
+						<SessionRow
+							{session}
+							connection={connections.find(
+								(connection) => connection.sessionToken === session.token
+							)}
+						/>
+						<td>
+							<Dropdown {button} {content} />
+							{#snippet button()}
+								<Settings2 />
+							{/snippet}
+							{#snippet content()}
+								<ul class="options">
+									<li><button>edit</button></li>
+									<li><button onclick={() => deleteConnection(session.token)}>delete</button></li>
+								</ul>
+							{/snippet}
+						</td>
+					</tr>
 				{/each}
 			{/if}
 		</tbody>
@@ -57,5 +90,12 @@
 	}
 	tr {
 		border-bottom: 1px solid silver;
+	}
+
+	.options li {
+		margin-top: 1em;
+	}
+	.options li:first-child {
+		margin-top: 0;
 	}
 </style>

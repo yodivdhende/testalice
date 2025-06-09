@@ -1,18 +1,8 @@
 <script lang="ts">
-	import { invalidate } from '$app/navigation';
-	import { EthernetPort, Settings2, Wifi } from '@lucide/svelte';
-	import Dropdown from './dropdown.svelte';
+	import { EthernetPort, Wifi } from '@lucide/svelte';
 	import type { ConnecitonInfo } from '../../../websocket-server/connection-socket';
 
 	let { session, connection }: { session: SessionView; connection?: ConnecitonInfo } = $props();
-	let token: string | undefined = $derived(session.token);
-
-	async function deleteConnection(token: string) {
-		const response = await fetch(`/api/sessions/${token}`, {
-			method: 'DELETE'
-		});
-		invalidate('/api/sessions');
-	}
 
 	type SessionView = {
 		token?: string;
@@ -23,7 +13,6 @@
 	};
 </script>
 
-<tr>
 	<td>{session.token ?? ''}</td>
 	<td>
 		{#if connection}
@@ -39,33 +28,9 @@
 	<td>{session.start ?? ''}</td>
 	<td>{session.end ?? ''}</td>
 	<td>{session.description ?? ''}</td>
-	<td>
-		{#if token}
-			<Dropdown {button} {content} />
-			{#snippet button()}
-				<Settings2 />
-			{/snippet}
-			{#snippet content()}
-				<ul class="options">
-					<li><button>edit</button></li>
-					<li><button onclick={() => deleteConnection(token)}>delete</button></li>
-				</ul>
-			{/snippet}
-		{/if}
-	</td>
-</tr>
 
 <style>
-	tr {
-		border-bottom: 1px solid silver;
-	}
 	td {
 		padding: 16px 8px;
-	}
-	.options li {
-		margin-top: 1em;
-	}
-	.options li:first-child {
-		margin-top: 0;
 	}
 </style>
