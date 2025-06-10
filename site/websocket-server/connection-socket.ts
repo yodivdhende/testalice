@@ -95,7 +95,7 @@ export type ConnectionCommand = {
 	goTo?: {
 		targetToken: string;
 		screen: Screen;
-		data: Record<string, unknown>;
+		data?: Record<string, unknown>;
 	};
 	link?: {
 		token: string;
@@ -106,7 +106,8 @@ export type Command = keyof ConnectionCommand;
 
 export const Screens = {
 	loading: 'loading',
-	loot: 'loot'
+	loot: 'loot',
+	virus: 'virus',
 } as const;
 export type Screen = (typeof Screens)[keyof typeof Screens];
 

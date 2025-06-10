@@ -43,7 +43,11 @@ void handleMessage(String message){
             return;
         }
         if(screen == "loot"){
-            //TODO navigate to loot screen;
+            UilootSetup();
+            return;
+        }
+        if(screen == "Virus"){
+            UiVirusSetup();
             return;
         }
     }
