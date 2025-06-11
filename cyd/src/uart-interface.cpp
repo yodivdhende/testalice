@@ -1,18 +1,15 @@
 #include <Arduino.h>
 #include <log.h>
+#include <globals.h>
+#include <web-socket.h>
 
 unsigned long lastTimeStamp = millis();
 String receivedMessage = "";
 
-void uartSetup()
-{
-    Serial.begin(9600);
-}
-
 boolean shouldCheckSerial()
 {
     long currentTimeStamp = millis();
-    if (currentTimeStamp - lastTimeStamp > 500)
+    if (currentTimeStamp - lastTimeStamp > 1000)
     {
         lastTimeStamp = currentTimeStamp;
         return true;
@@ -29,7 +26,7 @@ void uartSerialLoop()
             char incommingChar = Serial.read();
             if (incommingChar == '\n')
             {
-                logGreen(receivedMessage.c_str());
+                sendLink(receivedMessage);
                 receivedMessage = "";
             }
             else

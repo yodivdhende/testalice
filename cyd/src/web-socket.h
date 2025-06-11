@@ -3,6 +3,6 @@
 
 void  webSocketSetup();
 void webSocketLoop();
-
+void sendLink(String token);
 
 #endif

@@ -30,6 +30,7 @@ TFT_eSPI tft = TFT_eSPI( screenHeight ,screenWidth ); /* TFT instance */
 void clearScreen()
 {
   tft.fillScreen(TFT_BLACK);
+  tft.setCursor(0,0);
 }
 
 void screenSetup()

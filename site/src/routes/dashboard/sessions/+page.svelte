@@ -4,6 +4,7 @@
 	import Dropdown from '$lib/components/dropdown.svelte';
 	import { Settings2 } from '@lucide/svelte';
 	import type {
+		ConnectionCommand,
 		StatusCommandInfo,
 		WebStatusCommandInfo
 	} from '../../../../websocket-server/connection-socket';
@@ -19,7 +20,7 @@
 		webSocket = new WebSocket('ws://localhost:5173/connections');
 		webSocket.onopen = () => {
 			if (sessionToken != null) {
-				webSocket!.send(
+				webSocket?.send(
 					JSON.stringify({ sessionToken: sessionToken, connectionType: 'Web' } as WebStatusCommandInfo)
 				);
 			}
@@ -27,7 +28,15 @@
 		};
 	}
 
-	function sendCommand(command: string) {}
+	function sendCommand(command: "virus", token: string) {
+		if (command === "virus") {
+			webSocket?.send(
+				JSON.stringify({
+					goTo: { targetToken: token, screen: 'virus'}, 
+				} as ConnectionCommand 
+			));
+		}
+	}
 
 	async function deleteConnection(token: string) {
 		const response = await fetch(`/api/sessions/${token}`, {
@@ -35,6 +44,8 @@
 		});
 		invalidate('/api/sessions');
 	}
+
+
 </script>
 
 <main>
@@ -69,6 +80,7 @@
 							{#snippet content()}
 								<ul class="options">
 									<li><button>edit</button></li>
+									<li><button onclick={() => sendCommand("virus", session.token)}>send virus</button></li>
 									<li><button onclick={() => deleteConnection(session.token)}>delete</button></li>
 								</ul>
 							{/snippet}

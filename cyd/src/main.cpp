@@ -11,6 +11,7 @@
 #include <web-socket.h>
 
 void setup () {
+  Serial.begin(115200);
   screenSetup();
   logWhite("booting V0.0.3");
   if(setupSD() == false) {
@@ -22,16 +23,16 @@ void setup () {
   // if(fetchCharacter() == false){
   //   return;
   // };
-  clearScreen();
-  uiSetup(); 
+  // clearScreen();
+  // uiSetup(); 
   webSocketSetup();
 }
 
 
 void loop (){
   // uiLoop(); 
-  uartSerialLoop();
   webSocketLoop();
+  uartSerialLoop();
 }
 
 

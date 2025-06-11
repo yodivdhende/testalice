@@ -2,7 +2,7 @@
 #include <ui/ui.h>
 
 static int downloadBarValue = 0;
-static lv_time_t *downloadBarTimer;
+static lv_timer_t *downloadBarTimer;
 
 static void set_downloadBar(lv_timer_t *timer) {
     lv_bar_set_range(ui_DownloadBar, 0, 300);
