@@ -4,15 +4,15 @@
 	import Dropdown from '$lib/components/dropdown.svelte';
 	import { Settings2 } from '@lucide/svelte';
 	import type {
-		ConnecitonInfo,
-		WebConnectionInfo
+		StatusCommandInfo,
+		WebStatusCommandInfo
 	} from '../../../../websocket-server/connection-socket';
 	import SessionRow from '../../../lib/components/session-row.svelte';
 	import { type PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 	let sessionToken: string | undefined = $derived(data.sessionToken);
-	let connections: ConnecitonInfo[] = $state([]);
+	let connections: StatusCommandInfo[] = $state([]);
 	let webSocket: WebSocket | undefined;
 
 	if (browser) {
@@ -20,7 +20,7 @@
 		webSocket.onopen = () => {
 			if (sessionToken != null) {
 				webSocket!.send(
-					JSON.stringify({ sessionToken: sessionToken, connectionType: 'Web' } as WebConnectionInfo)
+					JSON.stringify({ sessionToken: sessionToken, connectionType: 'Web' } as WebStatusCommandInfo)
 				);
 			}
 			webSocket!.onmessage = (event) => (connections = JSON.parse(event.data));

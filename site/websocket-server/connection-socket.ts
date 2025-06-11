@@ -1,5 +1,3 @@
-import type { Connection } from 'mysql2';
-import { join } from 'path';
 import WebSocket, { WebSocketServer } from 'ws';
 
 class ConnectionSocketServer {
