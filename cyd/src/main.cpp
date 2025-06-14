@@ -24,13 +24,13 @@ void setup () {
   //   return;
   // };
   webSocketSetup();
-  // clearScreen();
-  // uiSetup(); 
+  clearScreen();
+  uiSetup(); 
 }
 
 
 void loop (){
-  // uiLoop(); 
+  uiLoop(); 
   webSocketLoop();
   uartSerialLoop();
 }

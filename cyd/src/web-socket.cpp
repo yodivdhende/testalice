@@ -39,7 +39,9 @@ void handleMessage(String message){
     }
 
     if(messageObj.containsKey("goTo")){
-        String screen = messageObj["goTo"];
+        String screen = messageObj["goTo"]["screen"];
+        Serial.println("screen:");
+        Serial.println(screen);
         if(screen == "loading"){
             UiLoadingSetup();
             return;
@@ -48,7 +50,8 @@ void handleMessage(String message){
             UiLootSetup();
             return;
         }
-        if(screen == "Virus"){
+        if(screen == "virus"){
+            Serial.println("virus message");
             UiVirusSetup();
             return;
         }
@@ -68,6 +71,7 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length)
         case WStype_TEXT:
             Serial.print("message: ");
             Serial.println((char *) payload);
+            handleMessage((String)(char *)payload);
             break;
     }
 
