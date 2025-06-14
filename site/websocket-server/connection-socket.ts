@@ -9,11 +9,12 @@ class ConnectionSocketServer {
 		this.server.on('connection', (ws) => {
 			ws.on('message', (data) => {
 				const command: ConnectionCommand = JSON.parse(data.toString());
+				console.log('socket message:', data.toString());
 				this.handleCommand(ws, command);
 			});
 			ws.on('close', () => {
 				this.connectionInfo.delete(ws);
-				this.browdCastSessionInfo(false);
+				this.browdCastSessionInfo();
 				console.log('closing connection: ', this.connectionInfo.size);
 			});
 		});

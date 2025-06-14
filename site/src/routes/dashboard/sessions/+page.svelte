@@ -21,10 +21,13 @@
 		webSocket.onopen = () => {
 			if (sessionToken != null) {
 				webSocket?.send(
-					JSON.stringify({ sessionToken: sessionToken, connectionType: 'Web' } as WebStatusCommandInfo)
+					JSON.stringify({status: { sessionToken: sessionToken, connectionType: 'Web' } as WebStatusCommandInfo})
 				);
 			}
-			webSocket!.onmessage = (event) => (connections = JSON.parse(event.data));
+			webSocket!.onmessage = (event) => {
+				console.log('socket message:', event.data);
+				connections = JSON.parse(event.data);
+			};
 		};
 	}
 
