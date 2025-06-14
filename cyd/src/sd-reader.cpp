@@ -67,7 +67,7 @@ bool readConfig(fs::FS &fs) {
   logWhite("Setting config");
 
   int characterId = configObject["characterId"];
-  String sessionToken = configObject["sessionToken"];
+  String sessionTokenString= configObject["sessionToken"];
   String ssid = configObject["wifi"]["ssid"];
   String password = configObject["wifi"]["password"];
   String baseUrl = configObject["domain"];
@@ -79,7 +79,7 @@ bool readConfig(fs::FS &fs) {
   api_url = apiUrl;
   domain = baseUrl;
   character_id = id;
-  sessionToken = sessionToken;
+  sessionToken = sessionTokenString;
   webSocketPort = port;
 
   return true;

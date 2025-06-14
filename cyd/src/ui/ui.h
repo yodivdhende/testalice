@@ -10,16 +10,24 @@
 extern "C" {
 #endif
 
+#if defined __has_include
+#if __has_include("lvgl.h")
 #include "lvgl.h"
+#elif __has_include("lvgl/lvgl.h")
+#include "lvgl/lvgl.h"
+#else
+#include "lvgl.h"
+#endif
+#else
+#include "lvgl.h"
+#endif
 
 #include "ui_helpers.h"
 #include "ui_events.h"
 
-
 // SCREEN: ui_LogoScreen
 void ui_LogoScreen_screen_init(void);
 extern lv_obj_t * ui_LogoScreen;
-extern lv_obj_t * ui_Logo;
 // CUSTOM VARIABLES
 
 // SCREEN: ui_DownloadScreen
@@ -32,25 +40,18 @@ extern lv_obj_t * ui_DownloadBar;
 // SCREEN: ui_LootScreen
 void ui_LootScreen_screen_init(void);
 extern lv_obj_t * ui_LootScreen;
-extern lv_obj_t * ui_ReceivedImage;
 extern lv_obj_t * ui_ReceivedLabel;
 // CUSTOM VARIABLES
 
 // SCREEN: ui_VirusScreen
 void ui_VirusScreen_screen_init(void);
 extern lv_obj_t * ui_VirusScreen;
-extern lv_obj_t * ui_VirusImage;
 extern lv_obj_t * ui_DangerLabel;
 // CUSTOM VARIABLES
 
 // EVENTS
 
 extern lv_obj_t * ui____initial_actions0;
-
-// IMAGES AND IMAGE SETS
-LV_IMG_DECLARE(ui_img_company_logo_png);    // assets/company_logo.png
-LV_IMG_DECLARE(ui_img_694104942);    // assets/cake-slice.png
-LV_IMG_DECLARE(ui_img_virus_png);    // assets/virus.png
 
 // UI INIT
 void ui_init(void);

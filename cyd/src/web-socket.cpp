@@ -4,17 +4,18 @@
 #include <ArduinoJson.h>
 #include <globals.h>
 #include <ui-downloading.h>
+#include <ui-loot.h>
+#include <ui-virus.h>
 
 WebSocketsClient webSocket;
 
 void sendStatus() {
-    JsonDocument status;
-    JsonObject statusData;
-    statusData["sessionToken"] = sessionToken;
-    statusData["connectionType"] = "CYD";
-    status["status"]=statusData;
+    JsonDocument statusData;
+    JsonObject status = statusData.createNestedObject("status");
+    status["sessionToken"] = sessionToken;
+    status["connectionType"] = "CYD";
     String statusJsonString = "";
-    serializeJson(status, statusJsonString);
+    serializeJson(statusData, statusJsonString);
     webSocket.sendTXT(statusJsonString);
 }
 
@@ -32,7 +33,8 @@ void handleMessage(String message){
     DeserializationError error = deserializeJson(messageObj, message);
 
     if(error){
-        logRed(error.c_str());
+        Serial.println("error:" );
+        Serial.println(error.c_str());
         return;
     }
 
@@ -43,7 +45,7 @@ void handleMessage(String message){
             return;
         }
         if(screen == "loot"){
-            UilootSetup();
+            UiLootSetup();
             return;
         }
         if(screen == "Virus"){
@@ -57,14 +59,15 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length)
 {
     switch(type){
         case WStype_DISCONNECTED:
-            logRed("Disconnected");
+            Serial.println("Websocket Disconnected");
             break;
         case WStype_CONNECTED:
-            logGreen("Connected");
+            Serial.println("Websocket Connected");
             sendStatus();
             break;
         case WStype_TEXT:
-            logWhite("message:", (char *)payload);
+            Serial.print("message: ");
+            Serial.println((char *) payload);
             break;
     }
 
@@ -80,5 +83,4 @@ void webSocketSetup()
 void webSocketLoop()
 {
     webSocket.loop();
-
 }

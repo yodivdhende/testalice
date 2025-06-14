@@ -10,13 +10,4 @@ void ui_LogoScreen_screen_init(void)
     ui_LogoScreen = lv_obj_create(NULL);
     lv_obj_remove_flag(ui_LogoScreen, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
 
-    ui_Logo = lv_image_create(ui_LogoScreen);
-    lv_image_set_src(ui_Logo, &ui_img_company_logo_png);
-    lv_obj_set_width(ui_Logo, LV_SIZE_CONTENT);   /// 800
-    lv_obj_set_height(ui_Logo, LV_SIZE_CONTENT);    /// 600
-    lv_obj_set_align(ui_Logo, LV_ALIGN_CENTER);
-    lv_obj_add_flag(ui_Logo, LV_OBJ_FLAG_CLICKABLE);     /// Flags
-    lv_obj_remove_flag(ui_Logo, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
-    lv_image_set_scale(ui_Logo, 100);
-
 }

@@ -11,7 +11,6 @@
 // SCREEN: ui_LogoScreen
 void ui_LogoScreen_screen_init(void);
 lv_obj_t * ui_LogoScreen;
-lv_obj_t * ui_Logo;
 // CUSTOM VARIABLES
 
 // SCREEN: ui_DownloadScreen
@@ -24,14 +23,12 @@ lv_obj_t * ui_DownloadBar;
 // SCREEN: ui_LootScreen
 void ui_LootScreen_screen_init(void);
 lv_obj_t * ui_LootScreen;
-lv_obj_t * ui_ReceivedImage;
 lv_obj_t * ui_ReceivedLabel;
 // CUSTOM VARIABLES
 
 // SCREEN: ui_VirusScreen
 void ui_VirusScreen_screen_init(void);
 lv_obj_t * ui_VirusScreen;
-lv_obj_t * ui_VirusImage;
 lv_obj_t * ui_DangerLabel;
 // CUSTOM VARIABLES
 

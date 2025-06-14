@@ -4,9 +4,6 @@ SET(SOURCES ui_LogoScreen.c
     ui_VirusScreen.c
     ui.c
     ui_comp_hook.c
-    ui_helpers.c
-    ui_img_company_logo_png.c
-    ui_img_694104942.c
-    ui_img_virus_png.c)
+    ui_helpers.c)
 
 add_library(ui ${SOURCES})

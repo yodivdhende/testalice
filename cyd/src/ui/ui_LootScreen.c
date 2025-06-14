@@ -12,17 +12,6 @@ void ui_LootScreen_screen_init(void)
     lv_obj_set_style_bg_color(ui_LootScreen, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui_LootScreen, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    ui_ReceivedImage = lv_image_create(ui_LootScreen);
-    lv_image_set_src(ui_ReceivedImage, &ui_img_694104942);
-    lv_obj_set_width(ui_ReceivedImage, LV_SIZE_CONTENT);   /// 200
-    lv_obj_set_height(ui_ReceivedImage, LV_SIZE_CONTENT);    /// 200
-    lv_obj_set_x(ui_ReceivedImage, 0);
-    lv_obj_set_y(ui_ReceivedImage, 2);
-    lv_obj_set_align(ui_ReceivedImage, LV_ALIGN_CENTER);
-    lv_obj_add_flag(ui_ReceivedImage, LV_OBJ_FLAG_CLICKABLE);     /// Flags
-    lv_obj_remove_flag(ui_ReceivedImage, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
-    lv_image_set_scale(ui_ReceivedImage, 100);
-
     ui_ReceivedLabel = lv_label_create(ui_LootScreen);
     lv_obj_set_width(ui_ReceivedLabel, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_ReceivedLabel, LV_SIZE_CONTENT);    /// 1

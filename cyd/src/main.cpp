@@ -13,7 +13,7 @@
 void setup () {
   Serial.begin(115200);
   screenSetup();
-  logWhite("booting V0.0.3");
+  logWhite("booting V0.0.4");
   if(setupSD() == false) {
     return;
   };
@@ -23,9 +23,9 @@ void setup () {
   // if(fetchCharacter() == false){
   //   return;
   // };
+  webSocketSetup();
   // clearScreen();
   // uiSetup(); 
-  webSocketSetup();
 }
 
 
