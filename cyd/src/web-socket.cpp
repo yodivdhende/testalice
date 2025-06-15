@@ -9,7 +9,8 @@
 
 WebSocketsClient webSocket;
 
-void sendStatus() {
+void sendStatus()
+{
     JsonDocument statusData;
     JsonObject status = statusData.createNestedObject("status");
     status["sessionToken"] = sessionToken;
@@ -19,38 +20,48 @@ void sendStatus() {
     webSocket.sendTXT(statusJsonString);
 }
 
-void sendLink(String token)
+void sendLink(String token, boolean status)
 {
-    JsonDocument linkObj;
-    linkObj["token"] = token;
+    JsonDocument linkData;
+    JsonObject link = linkData.createNestedObject("link");
+    link["origin"] = sessionToken;
+    link["linkTarget"] = token;
+    link["isLinked"] = status;
     String linkObjString = "";
-    serializeJson(linkObj, linkObjString);
+    serializeJson(linkData, linkObjString);
+    Serial.println(linkObjString);
     webSocket.sendTXT(linkObjString);
 }
 
-void handleMessage(String message){
+void handleMessage(String message)
+{
     JsonDocument messageObj;
     DeserializationError error = deserializeJson(messageObj, message);
 
-    if(error){
-        Serial.println("error:" );
+    if (error)
+    {
+        Serial.println("error:");
         Serial.println(error.c_str());
         return;
     }
 
-    if(messageObj.containsKey("goTo")){
+    if (messageObj.containsKey("goTo"))
+    {
         String screen = messageObj["goTo"]["screen"];
         Serial.println("screen:");
         Serial.println(screen);
-        if(screen == "loading"){
+        if (screen == "loading")
+        {
             UiLoadingSetup();
             return;
         }
-        if(screen == "loot"){
+        if (screen == "loot")
+        {
             UiLootSetup();
             return;
         }
-        if(screen == "virus"){
+        if (screen == "virus")
+        {
             Serial.println("virus message");
             UiVirusSetup();
             return;
@@ -58,28 +69,28 @@ void handleMessage(String message){
     }
 }
 
-void webSocketEvent(WStype_t type, uint8_t * payload, size_t length)
+void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 {
-    switch(type){
-        case WStype_DISCONNECTED:
-            Serial.println("Websocket Disconnected");
-            break;
-        case WStype_CONNECTED:
-            Serial.println("Websocket Connected");
-            sendStatus();
-            break;
-        case WStype_TEXT:
-            Serial.print("message: ");
-            Serial.println((char *) payload);
-            handleMessage((String)(char *)payload);
-            break;
+    switch (type)
+    {
+    case WStype_DISCONNECTED:
+        Serial.println("Websocket Disconnected");
+        break;
+    case WStype_CONNECTED:
+        Serial.println("Websocket Connected");
+        sendStatus();
+        break;
+    case WStype_TEXT:
+        Serial.print("message: ");
+        Serial.println((char *)payload);
+        handleMessage((String)(char *)payload);
+        break;
     }
-
 }
 
 void webSocketSetup()
 {
-    webSocket.begin(domain,webSocketPort,"/connections");
+    webSocket.begin(domain, webSocketPort, "/connections");
     webSocket.onEvent(webSocketEvent);
     webSocket.setReconnectInterval(5000);
 }

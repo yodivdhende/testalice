@@ -9,7 +9,7 @@ class ConnectionSocketServer {
 		this.server.on('connection', (ws) => {
 			ws.on('message', (data) => {
 				const command: ConnectionCommand = JSON.parse(data.toString());
-				console.log('socket message:', data.toString());
+				// console.log('socket message:', data.toString());
 				this.handleCommand(ws, command);
 			});
 			ws.on('close', () => {
@@ -17,6 +17,7 @@ class ConnectionSocketServer {
 				this.browdCastSessionInfo();
 				console.log('closing connection: ', this.connectionInfo.size);
 			});
+			ws.on('error', (error)=> console.error(error));
 		});
 
 		this.server.on('error', console.error);
@@ -39,7 +40,7 @@ class ConnectionSocketServer {
 	private handleCommand(webSocket: WebSocket, command: ConnectionCommand) {
 		if (command.status) this.addSessionInfo(webSocket, command.status);
 		if (command.goTo) this.sendGoTo(command.goTo);
-        if (command.link) this.handleLink(command.link);
+		if (command.link) this.handleLink(command.link);
 	}
 
 	private addSessionInfo(webSocket: WebSocket, sessionInfo: StatusCommandInfo) {
@@ -56,34 +57,33 @@ class ConnectionSocketServer {
 		});
 	}
 
-	private handleLink({ token }: NonNullable<ConnectionCommand['link']>) {
-		const linkInitDate = this.links.get(token);
-		if (linkInitDate == null) {
-			const newDate = new Date();
-			this.links.set(token, newDate);
-			console.dir('adding link: ', this.links.values());
+	private handleLink({ origin, linkTarget, isLinked }: NonNullable<ConnectionCommand['link']>) {
+		const linkInitDate = this.links.get(linkTarget);
+		if (isLinked === false) {
 			return;
 		}
-		if (linkInitDate.getTime() > this.getTimeInFuture(3)) {
-			this.connectionInfo.entries().forEach(([WebSocket, info]) => {
-				if (info.sessionToken === token) {
-					WebSocket.send(
-						JSON.stringify({
-							goTo: {
-								targetToken: token,
-								screen: 'loot'
-							}
-						} as ConnectionCommand)
-					);
-				}
-			});
-			this.links.delete(token);
+		if (linkInitDate == null) {
+			const newDate = new Date();
+			this.links.set(linkTarget, newDate);
+			this.sendCommandToConnection(origin,{ goTo: { targetToken: origin, screen: 'loading' } } );
+			return;
+		}
+		const timePasted = (new Date()).getTime() - linkInitDate.getTime();
+		if ( timePasted > 3000 && timePasted < 4800 ) {
 			console.dir('link after 3s: ', this.links.values());
+			this.sendCommandToConnection(origin,{ goTo: { targetToken: origin, screen: 'loot' } } );
 		}
 	}
 
-	private getTimeInFuture(secconds: number) {
-		return new Date().getTime() + secconds * 1000;
+	private sendCommandToConnection(token: string, command: ConnectionCommand) {
+		this.connectionInfo.entries().forEach(([WebSocket, info]) => {
+			if (info.sessionToken === token) {
+				WebSocket.send(
+					JSON.stringify(command)
+				);
+			}
+		});
+
 	}
 }
 
@@ -97,7 +97,9 @@ export type ConnectionCommand = {
 		data?: Record<string, unknown>;
 	};
 	link?: {
-		token: string;
+		origin: string,
+		linkTarget: string,
+		isLinked: boolean,
 	};
 };
 
