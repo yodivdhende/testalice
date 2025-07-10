@@ -1,133 +1,70 @@
-DROP TABLE IF EXISTS Users;
-CREATE TABLE Users (
-  Id int NOT NULL AUTO_INCREMENT,
-  Name varchar(255),
-  Email varchar(255),
-  Password varchar(255),
-  PRIMARY KEY (Id)
-)
-;
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: db:3306
+-- Gegenereerd op: 10 jul 2025 om 20:34
+-- Serverversie: 8.0.32
+-- PHP-versie: 8.2.8
 
-INSERT INTO Users (Name,Email, Password)
-VALUES ('Yodi','yodi.vandenhende@gmail.com', '$2b$13$evbfN7v/BJgCDtmdftgnyOgHvoUt3JZuZZnqvBjne6YMbXHLS9ReW'),
-('Player2','yodi.vandenhende+player2@gmail.com', '$2b$13$evbfN7v/BJgCDtmdftgnyOgHvoUt3JZuZZnqvBjne6YMbXHLS9ReW'),
-('Player3','yodi.vandenhende+player3@gmail.com', '$2b$13$evbfN7v/BJgCDtmdftgnyOgHvoUt3JZuZZnqvBjne6YMbXHLS9ReW'),
-('Player4','yodi.vandenhende+player4@gmail.com', '$2b$13$evbfN7v/BJgCDtmdftgnyOgHvoUt3JZuZZnqvBjne6YMbXHLS9ReW'),
-('Extra5','yodi.vandenhende+extra5@gmail.com', '$2b$13$evbfN7v/BJgCDtmdftgnyOgHvoUt3JZuZZnqvBjne6YMbXHLS9ReW'),
-('Extra6','yodi.vandenhende+extra6@gmail.com', '$2b$13$evbfN7v/BJgCDtmdftgnyOgHvoUt3JZuZZnqvBjne6YMbXHLS9ReW'),
-('Extra7','yodi.vandenhende+extra7@gmail.com', '$2b$13$evbfN7v/BJgCDtmdftgnyOgHvoUt3JZuZZnqvBjne6YMbXHLS9ReW')
-;
-
-DROP TABLE IF EXISTS Admins;
-CREATE TABLE Admins(
-  UserId int,
-  PRIMARY KEY (UserId)
-)
-;
-
-INSERT INTO Admins (UserId)
-VALUES (1)
-;
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
 
-DROP TABLE IF EXISTS Characters;
-CREATE TABLE Characters (
-  Id int NOT NULL AUTO_INCREMENT,
-  Name varchar(254),
-  Owner int,
-  CurrentHp int,
-  MaxHp int,
-  PRIMARY KEY (Id),
-  FOREIGN KEY (Owner) REFERENCES Users(Id)
-)
-;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
-INSERT INTO Characters (Name, Owner, CurrentHP, MaxHP)
-VALUES ('Bob', 2, 10, 10),
-('Alice', 3, 10, 10),
-('Eve', 4, 10, 10),
-('Mallory', 2, 10, 10),
-('Patric', 2, 10, 10)
-;
+--
+-- Database: `testaliceDB`
+--
 
-DROP TABLE IF EXISTS Party;
-CREATE TABLE Party (
-  Id int NOT NULL AUTO_INCREMENT,
-  Name varchar(254),
-  PRIMARY KEY (Id)
-)
-;
+-- --------------------------------------------------------
 
-INSERT INTO Party (Name)
-VALUES ('Party 1'),
-('Party 2')
-;
+--
+-- Tabelstructuur voor tabel `Skill_Groups`
+--
 
-DROP TABLE IF EXISTS Party_Members;
-CREATE TABLE Party_Members (
-  Party int,
-  Member int,
-  CONSTRAINT PK_Party_Members PRIMARY KEY (Party, Member),
-  FOREIGN KEY (Party) REFERENCES Party(Id),
-  FOREIGN KEY (Member) REFERENCES Characters(Id)
-)
-;
+CREATE TABLE `Skill_Groups` (
+  `Id` int NOT NULL,
+  `Name` varchar(255) NOT NULL,
+  `Description` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO Party_Members (Party, Member)
-VALUES (1, 1),
-(1, 2),
-(2, 4)
-;
+--
+-- Gegevens worden geëxporteerd voor tabel `Skill_Groups`
+--
 
-DROP TABLE IF EXISTS Events;
-CREATE TABLE Events (
-  Id int NOT NULL AUTO_INCREMENT,
-  Name varchar(254),
-  StartTime datetime,
-  EndTime datetime,
-  PRIMARY KEY (Id)
-)
-;
+INSERT INTO `Skill_Groups` (`Id`, `Name`, `Description`) VALUES
+(1, 'Enginerring', 'Creating and repairing stuf'),
+(2, 'Medicen', 'Healing stuf'),
+(3, 'Infromatics', 'Computer stuf'),
+(4, 'Research', 'looking into stuf'),
+(5, 'Servival', 'Keep on living');
 
-INSERT INTO Events (Name, StartTime, EndTime)
-VALUES ('Event 1', '2023-10-01 10:00:00', '2023-10-03 12:00:00')
-;
+--
+-- Indexen voor geëxporteerde tabellen
+--
 
-DROP TABLE IF EXISTS Event_Participants;
-CREATE TABLE Event_Participants (
-  `Event` int,
-  User int,
-  `Character` int DEFAULT NULL,
-  CONSTRAINT PK_Event_Participants PRIMARY KEY (Event, User),
-  FOREIGN KEY (Event) REFERENCES Events(Id),
-  FOREIGN KEY (User) REFERENCES Users(Id)
-)
-;
+--
+-- Indexen voor tabel `Skill_Groups`
+--
+ALTER TABLE `Skill_Groups`
+  ADD PRIMARY KEY (`Id`);
 
-INSERT INTO Event_Participants (`Event`, User, `Character`)
-VALUES(1,1,NULL),
-(1,2,1),
-(1,3,2),
-(1,5,NULL),
-(1,6,NULL),
-(1,7,NULL)
-;
+--
+-- AUTO_INCREMENT voor geëxporteerde tabellen
+--
 
-DROP TABLE IF EXISTS `Sessions`;
-CREATE TABLE `Sessions`(
-  Token varchar(255) NOT NULL,
-  UserId int, 
-  Description varchar(500),
-  Start datetime NOT NULL,
-  End datetime,
-  PRIMARY KEY (Token)
-)
-;
+--
+-- AUTO_INCREMENT voor een tabel `Skill_Groups`
+--
+ALTER TABLE `Skill_Groups`
+  MODIFY `Id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+COMMIT;
 
-Drop Table IF EXISTS `Session_Roles`;
-CREATE TABLE `Session_Roles` (
-  Token varchar(255) NOT NULL,
-  Role varchar(255) NOT NULL,
-  CONSTRAINT PK_Sessions_Roles PRIMARY KEY (Token, Role),
-  FOREIGN KEY (Token) REFERENCES Sessions(Token)
-)
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
