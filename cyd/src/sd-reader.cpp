@@ -9,7 +9,6 @@
 
 
 bool setupSD() {
-  Serial.begin(115200);
 
   SPIClass spi = SPIClass(VSPI);
 
@@ -66,15 +65,23 @@ bool readConfig(fs::FS &fs) {
   }
 
   logWhite("Setting config");
+
   int characterId = configObject["characterId"];
+  String sessionTokenString= configObject["sessionToken"];
   String ssid = configObject["wifi"]["ssid"];
   String password = configObject["wifi"]["password"];
-  String url = configObject["url"];
+  String baseUrl = configObject["domain"];
+  String apiUrl= configObject["apiUrl"];
   int id = configObject["characterId"];
+  int port = configObject["webSocketPort"];
   wifi_ssid = ssid;
   wifi_password = password;
-  server_url = url;
+  api_url = apiUrl;
+  domain = baseUrl;
   character_id = id;
+  sessionToken = sessionTokenString;
+  webSocketPort = port;
 
   return true;
 }
+
