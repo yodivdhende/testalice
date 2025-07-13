@@ -2,6 +2,7 @@ import { isCharacter, type Character } from './character.repo';
 import { mysqlconnFn } from './mysql';
 
 class EventParticipatnsRepo {
+
 	public async participate({
 		eventId,
 		userId,
@@ -84,3 +85,19 @@ class EventParticipatnsRepo {
 }
 
 export const eventParticipantsRepo = new EventParticipatnsRepo();
+
+export type EventParticapant = {
+	eventId: number;
+	characterId: number;
+	userId: number;
+}
+export function isEventParticapant(particiapant: unknown): particiapant is EventParticapant {
+	return typeof particiapant=== 'object'
+	&& particiapant != null
+	&& 'eventId' in particiapant
+	&& typeof particiapant.eventId === 'number'
+	&& 'userId' in particiapant
+	&& typeof particiapant.userId === 'number'
+	&& 'cahrcterId' in particiapant
+	&& typeof particiapant.cahrcterId === 'number'
+}

@@ -1,63 +1,8 @@
 import { mysqlconnFn } from './mysql';
 
 class EventRepo {
-	public async createEvent({ name, start, end }: NewLarpEvent) {
-		try {
-			const connection = await mysqlconnFn();
-			await connection.execute(
-				`
-                INSERT Events (Name, StartTime, EndTime)
-                VALUES (?,?,?)
-            `,
-				[name, start, end]
-			);
-		} catch (err) {
-			throw err;
-		}
-	}
 
-	public async editEvent({ id, name, start, end }: LarpEvent) {
-		try {
-			const connection = await mysqlconnFn();
-			await connection.execute(
-				`
-                UPDATE Events
-                SET name = ?,
-                StartTime = ?,
-                EndTime = ?
-                WHERE id = ?
-            `,
-				[name, start, end, id]
-			);
-		} catch (err) {
-			throw err;
-		}
-	}
-
-	public async partisapate({
-		eventId,
-		userId,
-		characterId
-	}: {
-		eventId: number;
-		userId: number;
-		characterId: number;
-	}) {
-		try {
-			const connection = await mysqlconnFn();
-			await connection.execute(
-				`
-                INSERT Event_Participants (Event, User, Character)
-                VALUES (?,?,?)
-            `,
-				[eventId, userId, characterId]
-			);
-		} catch (err) {
-			throw err;
-		}
-	}
-
-	public async getEvents(): Promise<LarpEvent[]> {
+	public async getAll(): Promise<LarpEvent[]> {
 		try {
 			const connection = await mysqlconnFn();
 			const [result] = await connection.execute(`
@@ -81,8 +26,46 @@ class EventRepo {
 			throw err;
 		}
 	}
+	
+	public save({id, name, start, end}: LarpEvent) {
+		if(id == null)	return this.create({name, start, end});
+		return this.edit({id,name,start,end});
+	}
 
-	public async deleteEvent({id}: {id: number})  {
+	public async create({ name, start, end }: Omit<LarpEvent, 'id'>) {
+		try {
+			const connection = await mysqlconnFn();
+			await connection.execute(
+				`
+                INSERT Events (Name, StartTime, EndTime)
+                VALUES (?,?,?)
+            `,
+				[name, start, end]
+			);
+		} catch (err) {
+			throw err;
+		}
+	}
+
+	public async edit({ id, name, start, end }: LarpEvent) {
+		try {
+			const connection = await mysqlconnFn();
+			await connection.execute(
+				`
+                UPDATE Events
+                SET name = ?,
+                StartTime = ?,
+                EndTime = ?
+                WHERE id = ?
+            `,
+				[name, start, end, id]
+			);
+		} catch (err) {
+			throw err;
+		}
+	}
+
+	public async delete({id}: {id: number})  {
 		try {
 			const connection = await mysqlconnFn();
 			await connection.execute(`
@@ -95,7 +78,7 @@ class EventRepo {
 		}
 	}
     
-	public async getEventsForCharacter({characterId}: {characterId: number}): Promise<LarpEvent[]> {
+	public async getForCharacter({characterId}: {characterId: number}): Promise<LarpEvent[]> {
 		try {
 			const connection = await mysqlconnFn();
 			const [result] = await connection.execute(`
@@ -131,27 +114,24 @@ class EventRepo {
 
 export const eventRepo = new EventRepo();
 
-type NewLarpEvent = {
+type LarpEvent = {
+	id: number | null;
 	name: string;
 	start: Date;
 	end: Date;
 };
-function isNewLarpEvent(event: unknown): event is NewLarpEvent {
-	return (
-		typeof event === 'object' &&
+export function isLarpEvent(event: unknown): event is LarpEvent {
+	return typeof event === 'object' &&
 		event != null &&
 		'name' in event &&
 		typeof event.name === 'string' &&
 		'start' in event &&
 		event.start instanceof Date &&
 		'end' in event &&
-		event.end instanceof Date
-	);
-}
-
-type LarpEvent = NewLarpEvent & {
-	id: number;
-};
-function isLarpEvent(event: unknown): event is LarpEvent {
-	return isNewLarpEvent(event);
+		event.end instanceof Date &&
+		'id' in event &&
+		(
+			event.id == null ||
+			typeof event.id === 'number'
+		)		
 }
