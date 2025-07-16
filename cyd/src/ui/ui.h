@@ -47,11 +47,96 @@ extern lv_obj_t * ui_ReceivedLabel;
 void ui_VirusScreen_screen_init(void);
 extern lv_obj_t * ui_VirusScreen;
 extern lv_obj_t * ui_DangerLabel;
+extern lv_obj_t * ui_Panel1;
+// CUSTOM VARIABLES
+
+// SCREEN: ui_Home
+void ui_Home_screen_init(void);
+extern lv_obj_t * ui_Home;
+extern lv_obj_t * ui_Header;
+extern lv_obj_t * ui_TimeLabel;
+extern lv_obj_t * ui_WifiImage;
+extern lv_obj_t * ui_BateryImage;
+extern lv_obj_t * ui_NameLabel;
+extern lv_obj_t * ui_HomeButton;
+extern lv_obj_t * ui_SkillContainer;
+void ui_event_SkillsButton(lv_event_t * e);
+extern lv_obj_t * ui_SkillsButton;
+extern lv_obj_t * ui_SkillButtonLabel;
+extern lv_obj_t * ui_ImplantContainer;
+void ui_event_ImplantsButton(lv_event_t * e);
+extern lv_obj_t * ui_ImplantsButton;
+extern lv_obj_t * ui_ImplantsButtonLabel;
+extern lv_obj_t * ui_ItemContainer;
+void ui_event_ItemsButton(lv_event_t * e);
+extern lv_obj_t * ui_ItemsButton;
+extern lv_obj_t * ui_ItemsButtonLabel;
+extern lv_obj_t * ui_MessagesContainer;
+void ui_event_MessagesButton(lv_event_t * e);
+extern lv_obj_t * ui_MessagesButton;
+extern lv_obj_t * ui_MessagesButtonLabel;
+// CUSTOM VARIABLES
+
+// SCREEN: ui_Skills
+void ui_Skills_screen_init(void);
+extern lv_obj_t * ui_Skills;
+extern lv_obj_t * ui_Header3;
+extern lv_obj_t * ui_TimeLabel3;
+extern lv_obj_t * ui_WifiImage3;
+extern lv_obj_t * ui_BateryImage3;
+extern lv_obj_t * ui_NameLabel3;
+void ui_event_HomeButton3(lv_event_t * e);
+extern lv_obj_t * ui_HomeButton3;
+// CUSTOM VARIABLES
+
+// SCREEN: ui_Implants
+void ui_Implants_screen_init(void);
+extern lv_obj_t * ui_Implants;
+extern lv_obj_t * ui_Header2;
+extern lv_obj_t * ui_TimeLabel2;
+extern lv_obj_t * ui_WifiImage2;
+extern lv_obj_t * ui_BateryImage2;
+extern lv_obj_t * ui_NameLabel2;
+void ui_event_HomeButton2(lv_event_t * e);
+extern lv_obj_t * ui_HomeButton2;
+// CUSTOM VARIABLES
+
+// SCREEN: ui_Items
+void ui_Items_screen_init(void);
+extern lv_obj_t * ui_Items;
+extern lv_obj_t * ui_Header4;
+extern lv_obj_t * ui_TimeLabel4;
+extern lv_obj_t * ui_WifiImage4;
+extern lv_obj_t * ui_BateryImage4;
+extern lv_obj_t * ui_NameLabel4;
+void ui_event_HomeButton4(lv_event_t * e);
+extern lv_obj_t * ui_HomeButton4;
+// CUSTOM VARIABLES
+
+// SCREEN: ui_Messages
+void ui_Messages_screen_init(void);
+extern lv_obj_t * ui_Messages;
+extern lv_obj_t * ui_Header5;
+extern lv_obj_t * ui_TimeLabel5;
+extern lv_obj_t * ui_WifiImage5;
+extern lv_obj_t * ui_BateryImage5;
+extern lv_obj_t * ui_NameLabel5;
+void ui_event_HomeButton5(lv_event_t * e);
+extern lv_obj_t * ui_HomeButton5;
 // CUSTOM VARIABLES
 
 // EVENTS
 
 extern lv_obj_t * ui____initial_actions0;
+
+// IMAGES AND IMAGE SETS
+LV_IMG_DECLARE(ui_img_wifi_png);    // assets/wifi.png
+LV_IMG_DECLARE(ui_img_53718616);    // assets/battery-full.png
+LV_IMG_DECLARE(ui_img_house_sm_png);    // assets/house_sm.png
+LV_IMG_DECLARE(ui_img_user_png);    // assets/user.png
+LV_IMG_DECLARE(ui_img_1577569611);    // assets/brain-circuit.png
+LV_IMG_DECLARE(ui_img_1177636178);    // assets/wrench (1).png
+LV_IMG_DECLARE(ui_img_9038990);    // assets/message-square (1).png
 
 // UI INIT
 void ui_init(void);

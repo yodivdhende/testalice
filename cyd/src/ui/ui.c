@@ -30,6 +30,82 @@ lv_obj_t * ui_ReceivedLabel;
 void ui_VirusScreen_screen_init(void);
 lv_obj_t * ui_VirusScreen;
 lv_obj_t * ui_DangerLabel;
+lv_obj_t * ui_Panel1;
+// CUSTOM VARIABLES
+
+// SCREEN: ui_Home
+void ui_Home_screen_init(void);
+lv_obj_t * ui_Home;
+lv_obj_t * ui_Header;
+lv_obj_t * ui_TimeLabel;
+lv_obj_t * ui_WifiImage;
+lv_obj_t * ui_BateryImage;
+lv_obj_t * ui_NameLabel;
+lv_obj_t * ui_HomeButton;
+lv_obj_t * ui_SkillContainer;
+void ui_event_SkillsButton(lv_event_t * e);
+lv_obj_t * ui_SkillsButton;
+lv_obj_t * ui_SkillButtonLabel;
+lv_obj_t * ui_ImplantContainer;
+void ui_event_ImplantsButton(lv_event_t * e);
+lv_obj_t * ui_ImplantsButton;
+lv_obj_t * ui_ImplantsButtonLabel;
+lv_obj_t * ui_ItemContainer;
+void ui_event_ItemsButton(lv_event_t * e);
+lv_obj_t * ui_ItemsButton;
+lv_obj_t * ui_ItemsButtonLabel;
+lv_obj_t * ui_MessagesContainer;
+void ui_event_MessagesButton(lv_event_t * e);
+lv_obj_t * ui_MessagesButton;
+lv_obj_t * ui_MessagesButtonLabel;
+// CUSTOM VARIABLES
+
+// SCREEN: ui_Skills
+void ui_Skills_screen_init(void);
+lv_obj_t * ui_Skills;
+lv_obj_t * ui_Header3;
+lv_obj_t * ui_TimeLabel3;
+lv_obj_t * ui_WifiImage3;
+lv_obj_t * ui_BateryImage3;
+lv_obj_t * ui_NameLabel3;
+void ui_event_HomeButton3(lv_event_t * e);
+lv_obj_t * ui_HomeButton3;
+// CUSTOM VARIABLES
+
+// SCREEN: ui_Implants
+void ui_Implants_screen_init(void);
+lv_obj_t * ui_Implants;
+lv_obj_t * ui_Header2;
+lv_obj_t * ui_TimeLabel2;
+lv_obj_t * ui_WifiImage2;
+lv_obj_t * ui_BateryImage2;
+lv_obj_t * ui_NameLabel2;
+void ui_event_HomeButton2(lv_event_t * e);
+lv_obj_t * ui_HomeButton2;
+// CUSTOM VARIABLES
+
+// SCREEN: ui_Items
+void ui_Items_screen_init(void);
+lv_obj_t * ui_Items;
+lv_obj_t * ui_Header4;
+lv_obj_t * ui_TimeLabel4;
+lv_obj_t * ui_WifiImage4;
+lv_obj_t * ui_BateryImage4;
+lv_obj_t * ui_NameLabel4;
+void ui_event_HomeButton4(lv_event_t * e);
+lv_obj_t * ui_HomeButton4;
+// CUSTOM VARIABLES
+
+// SCREEN: ui_Messages
+void ui_Messages_screen_init(void);
+lv_obj_t * ui_Messages;
+lv_obj_t * ui_Header5;
+lv_obj_t * ui_TimeLabel5;
+lv_obj_t * ui_WifiImage5;
+lv_obj_t * ui_BateryImage5;
+lv_obj_t * ui_NameLabel5;
+void ui_event_HomeButton5(lv_event_t * e);
+lv_obj_t * ui_HomeButton5;
 // CUSTOM VARIABLES
 
 // EVENTS
@@ -45,6 +121,77 @@ lv_obj_t * ui____initial_actions0;
 ///////////////////// ANIMATIONS ////////////////////
 
 ///////////////////// FUNCTIONS ////////////////////
+void ui_event_SkillsButton(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+
+    if(event_code == LV_EVENT_CLICKED) {
+        _ui_screen_change(&ui_Skills, LV_SCR_LOAD_ANIM_MOVE_LEFT, 500, 0, &ui_Skills_screen_init);
+    }
+}
+
+void ui_event_ImplantsButton(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+
+    if(event_code == LV_EVENT_CLICKED) {
+        _ui_screen_change(&ui_Implants, LV_SCR_LOAD_ANIM_MOVE_LEFT, 500, 0, &ui_Implants_screen_init);
+    }
+}
+
+void ui_event_ItemsButton(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+
+    if(event_code == LV_EVENT_CLICKED) {
+        _ui_screen_change(&ui_Items, LV_SCR_LOAD_ANIM_MOVE_LEFT, 500, 0, &ui_Items_screen_init);
+    }
+}
+
+void ui_event_MessagesButton(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+
+    if(event_code == LV_EVENT_CLICKED) {
+        _ui_screen_change(&ui_Messages, LV_SCR_LOAD_ANIM_MOVE_LEFT, 500, 0, &ui_Messages_screen_init);
+    }
+}
+
+void ui_event_HomeButton3(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+
+    if(event_code == LV_EVENT_CLICKED) {
+        _ui_screen_change(&ui_Home, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 500, 0, &ui_Home_screen_init);
+    }
+}
+
+void ui_event_HomeButton2(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+
+    if(event_code == LV_EVENT_CLICKED) {
+        _ui_screen_change(&ui_Home, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 500, 0, &ui_Home_screen_init);
+    }
+}
+
+void ui_event_HomeButton4(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+
+    if(event_code == LV_EVENT_CLICKED) {
+        _ui_screen_change(&ui_Home, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 500, 0, &ui_Home_screen_init);
+    }
+}
+
+void ui_event_HomeButton5(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+
+    if(event_code == LV_EVENT_CLICKED) {
+        _ui_screen_change(&ui_Home, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 500, 0, &ui_Home_screen_init);
+    }
+}
 
 ///////////////////// SCREENS ////////////////////
 
@@ -58,6 +205,11 @@ void ui_init(void)
     ui_DownloadScreen_screen_init();
     ui_LootScreen_screen_init();
     ui_VirusScreen_screen_init();
+    ui_Home_screen_init();
+    ui_Skills_screen_init();
+    ui_Implants_screen_init();
+    ui_Items_screen_init();
+    ui_Messages_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
     lv_disp_load_scr(ui_LogoScreen);
 }
