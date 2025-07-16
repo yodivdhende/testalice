@@ -22,4 +22,10 @@ void ui_VirusScreen_screen_init(void)
     lv_obj_set_style_text_color(ui_DangerLabel, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui_DangerLabel, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
+    ui_Panel1 = lv_obj_create(ui_VirusScreen);
+    lv_obj_set_width(ui_Panel1, 100);
+    lv_obj_set_height(ui_Panel1, 50);
+    lv_obj_set_align(ui_Panel1, LV_ALIGN_CENTER);
+    lv_obj_remove_flag(ui_Panel1, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+
 }
