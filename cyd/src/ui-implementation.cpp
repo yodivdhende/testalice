@@ -97,7 +97,6 @@ void uiSetup()
     Serial.println("I am LVGL_Arduino");
 
     lv_init();
-
 #if LV_USE_LOG != 0
     lv_log_register_print_cb(my_print); /* register print function for debugging */
 #endif

@@ -10,64 +10,14 @@ void ui_Skills_screen_init(void)
     ui_Skills = lv_obj_create(NULL);
     lv_obj_remove_flag(ui_Skills, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
 
-    ui_Header3 = lv_obj_create(ui_Skills);
-    lv_obj_remove_style_all(ui_Header3);
-    lv_obj_set_width(ui_Header3, 320);
-    lv_obj_set_height(ui_Header3, 24);
-    lv_obj_set_x(ui_Header3, -1);
-    lv_obj_set_y(ui_Header3, -107);
-    lv_obj_set_align(ui_Header3, LV_ALIGN_CENTER);
-    lv_obj_remove_flag(ui_Header3, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);      /// Flags
-    lv_obj_set_style_bg_color(ui_Header3, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_Header3, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    ui_Header4 = ui_Header_create(ui_Skills);
+    lv_obj_set_x(ui_Header4, -1);
+    lv_obj_set_y(ui_Header4, -107);
 
-    ui_TimeLabel3 = lv_label_create(ui_Header3);
-    lv_obj_set_width(ui_TimeLabel3, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_TimeLabel3, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_TimeLabel3, 140);
-    lv_obj_set_y(ui_TimeLabel3, lv_pct(0));
-    lv_obj_set_align(ui_TimeLabel3, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_TimeLabel3, "10:45");
-
-    ui_WifiImage3 = lv_image_create(ui_Header3);
-    lv_image_set_src(ui_WifiImage3, &ui_img_wifi_png);
-    lv_obj_set_width(ui_WifiImage3, LV_SIZE_CONTENT);   /// 48
-    lv_obj_set_height(ui_WifiImage3, LV_SIZE_CONTENT);    /// 48
-    lv_obj_set_x(ui_WifiImage3, 75);
-    lv_obj_set_y(ui_WifiImage3, 0);
-    lv_obj_set_align(ui_WifiImage3, LV_ALIGN_CENTER);
-    lv_obj_add_flag(ui_WifiImage3, LV_OBJ_FLAG_CLICKABLE);     /// Flags
-    lv_obj_remove_flag(ui_WifiImage3, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
-    lv_image_set_scale(ui_WifiImage3, 120);
-
-    ui_BateryImage3 = lv_image_create(ui_Header3);
-    lv_image_set_src(ui_BateryImage3, &ui_img_53718616);
-    lv_obj_set_width(ui_BateryImage3, LV_SIZE_CONTENT);   /// 48
-    lv_obj_set_height(ui_BateryImage3, LV_SIZE_CONTENT);    /// 48
-    lv_obj_set_x(ui_BateryImage3, 105);
-    lv_obj_set_y(ui_BateryImage3, 0);
-    lv_obj_set_align(ui_BateryImage3, LV_ALIGN_CENTER);
-    lv_obj_add_flag(ui_BateryImage3, LV_OBJ_FLAG_CLICKABLE);     /// Flags
-    lv_obj_remove_flag(ui_BateryImage3, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
-    lv_image_set_scale(ui_BateryImage3, 120);
-
-    ui_NameLabel3 = lv_label_create(ui_Header3);
-    lv_obj_set_width(ui_NameLabel3, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_NameLabel3, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_NameLabel3, 40);
-    lv_obj_set_y(ui_NameLabel3, 0);
-    lv_obj_set_align(ui_NameLabel3, LV_ALIGN_LEFT_MID);
-    lv_label_set_text(ui_NameLabel3, "Name");
-    lv_obj_set_style_text_align(ui_NameLabel3, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_HomeButton3 = lv_imagebutton_create(ui_Header3);
-    lv_imagebutton_set_src(ui_HomeButton3, LV_IMAGEBUTTON_STATE_RELEASED, NULL, &ui_img_house_sm_png, NULL);
-    lv_obj_set_width(ui_HomeButton3, 22);
-    lv_obj_set_height(ui_HomeButton3, 22);
-    lv_obj_set_x(ui_HomeButton3, -144);
-    lv_obj_set_y(ui_HomeButton3, 0);
-    lv_obj_set_align(ui_HomeButton3, LV_ALIGN_CENTER);
-
-    lv_obj_add_event_cb(ui_HomeButton3, ui_event_HomeButton3, LV_EVENT_ALL, NULL);
+    ui_SkillTitle = lv_label_create(ui_Skills);
+    lv_obj_set_width(ui_SkillTitle, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_SkillTitle, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_align(ui_SkillTitle, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_SkillTitle, "Skills");
 
 }

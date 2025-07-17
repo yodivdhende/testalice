@@ -1,8 +1,9 @@
-ui_LogoScreen.c
+ui_comp_header.c
+ui_comp.c
+ui_Home.c
 ui_DownloadScreen.c
 ui_LootScreen.c
 ui_VirusScreen.c
-ui_Home.c
 ui_Skills.c
 ui_Implants.c
 ui_Items.c

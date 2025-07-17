@@ -23,11 +23,30 @@ extern "C" {
 #endif
 
 #include "ui_helpers.h"
+#include "ui_comp.h"
+#include "ui_comp_hook.h"
 #include "ui_events.h"
 
-// SCREEN: ui_LogoScreen
-void ui_LogoScreen_screen_init(void);
-extern lv_obj_t * ui_LogoScreen;
+// SCREEN: ui_Home
+void ui_Home_screen_init(void);
+extern lv_obj_t * ui_Home;
+extern lv_obj_t * ui_Header;
+void ui_event_SkillsButton(lv_event_t * e);
+extern lv_obj_t * ui_SkillsButton;
+extern lv_obj_t * ui_SkillsButtonImage;
+extern lv_obj_t * ui_SkillButtonLabel;
+void ui_event_ImplantsButton(lv_event_t * e);
+extern lv_obj_t * ui_ImplantsButton;
+extern lv_obj_t * ui_ImplantButtonImage;
+extern lv_obj_t * ui_ImplantsButtonLabel;
+void ui_event_ItemsButton(lv_event_t * e);
+extern lv_obj_t * ui_ItemsButton;
+extern lv_obj_t * ui_ItemsButtonImage;
+extern lv_obj_t * ui_ItemsButtonLabel;
+void ui_event_MessagesButton(lv_event_t * e);
+extern lv_obj_t * ui_MessagesButton;
+extern lv_obj_t * ui_MessagesButtonImage;
+extern lv_obj_t * ui_MessagesButtonLabel;
 // CUSTOM VARIABLES
 
 // SCREEN: ui_DownloadScreen
@@ -50,79 +69,32 @@ extern lv_obj_t * ui_DangerLabel;
 extern lv_obj_t * ui_Panel1;
 // CUSTOM VARIABLES
 
-// SCREEN: ui_Home
-void ui_Home_screen_init(void);
-extern lv_obj_t * ui_Home;
-extern lv_obj_t * ui_Header;
-extern lv_obj_t * ui_TimeLabel;
-extern lv_obj_t * ui_WifiImage;
-extern lv_obj_t * ui_BateryImage;
-extern lv_obj_t * ui_NameLabel;
-extern lv_obj_t * ui_HomeButton;
-extern lv_obj_t * ui_SkillContainer;
-void ui_event_SkillsButton(lv_event_t * e);
-extern lv_obj_t * ui_SkillsButton;
-extern lv_obj_t * ui_SkillButtonLabel;
-extern lv_obj_t * ui_ImplantContainer;
-void ui_event_ImplantsButton(lv_event_t * e);
-extern lv_obj_t * ui_ImplantsButton;
-extern lv_obj_t * ui_ImplantsButtonLabel;
-extern lv_obj_t * ui_ItemContainer;
-void ui_event_ItemsButton(lv_event_t * e);
-extern lv_obj_t * ui_ItemsButton;
-extern lv_obj_t * ui_ItemsButtonLabel;
-extern lv_obj_t * ui_MessagesContainer;
-void ui_event_MessagesButton(lv_event_t * e);
-extern lv_obj_t * ui_MessagesButton;
-extern lv_obj_t * ui_MessagesButtonLabel;
-// CUSTOM VARIABLES
-
 // SCREEN: ui_Skills
 void ui_Skills_screen_init(void);
 extern lv_obj_t * ui_Skills;
-extern lv_obj_t * ui_Header3;
-extern lv_obj_t * ui_TimeLabel3;
-extern lv_obj_t * ui_WifiImage3;
-extern lv_obj_t * ui_BateryImage3;
-extern lv_obj_t * ui_NameLabel3;
-void ui_event_HomeButton3(lv_event_t * e);
-extern lv_obj_t * ui_HomeButton3;
+extern lv_obj_t * ui_Header4;
+extern lv_obj_t * ui_SkillTitle;
 // CUSTOM VARIABLES
 
 // SCREEN: ui_Implants
 void ui_Implants_screen_init(void);
 extern lv_obj_t * ui_Implants;
-extern lv_obj_t * ui_Header2;
-extern lv_obj_t * ui_TimeLabel2;
-extern lv_obj_t * ui_WifiImage2;
-extern lv_obj_t * ui_BateryImage2;
-extern lv_obj_t * ui_NameLabel2;
-void ui_event_HomeButton2(lv_event_t * e);
-extern lv_obj_t * ui_HomeButton2;
+extern lv_obj_t * ui_Header3;
+extern lv_obj_t * ui_ImplantsTitle;
 // CUSTOM VARIABLES
 
 // SCREEN: ui_Items
 void ui_Items_screen_init(void);
 extern lv_obj_t * ui_Items;
-extern lv_obj_t * ui_Header4;
-extern lv_obj_t * ui_TimeLabel4;
-extern lv_obj_t * ui_WifiImage4;
-extern lv_obj_t * ui_BateryImage4;
-extern lv_obj_t * ui_NameLabel4;
-void ui_event_HomeButton4(lv_event_t * e);
-extern lv_obj_t * ui_HomeButton4;
+extern lv_obj_t * ui_Header2;
+extern lv_obj_t * ui_ItemsTitle;
 // CUSTOM VARIABLES
 
 // SCREEN: ui_Messages
 void ui_Messages_screen_init(void);
 extern lv_obj_t * ui_Messages;
-extern lv_obj_t * ui_Header5;
-extern lv_obj_t * ui_TimeLabel5;
-extern lv_obj_t * ui_WifiImage5;
-extern lv_obj_t * ui_BateryImage5;
-extern lv_obj_t * ui_NameLabel5;
-void ui_event_HomeButton5(lv_event_t * e);
-extern lv_obj_t * ui_HomeButton5;
+extern lv_obj_t * ui_Header1;
+extern lv_obj_t * ui_MessagesTitle;
 // CUSTOM VARIABLES
 
 // EVENTS
