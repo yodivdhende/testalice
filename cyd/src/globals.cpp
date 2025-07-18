@@ -37,7 +37,7 @@ void screenSetup()
 {
   tsSpi.begin(XPT2046_CLK, XPT2046_MISO, XPT2046_MOSI, XPT2046_CS);
   ts.begin(tsSpi);
-  ts.setRotation(0);
+  ts.setRotation(1);
   tft.init();
   tft.setRotation(0) ;
   clearScreen();
