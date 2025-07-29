@@ -1,11 +1,13 @@
 import { characterRepo, isCharacter, isNewCharacter } from '$lib/db/character.repo';
 import { isNumberOrError } from '$lib/request.utils';
 import { RequestError } from '$lib/types/errors';
-import { handleRequest } from '$lib/utils/request';
+import { getSessionToken } from '$lib/utils/cookies';
+import { authGuardForUser, handleRequest } from '$lib/utils/request';
 import { type RequestHandler, json } from '@sveltejs/kit';
 
-export const GET: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async ({ cookies, params }) => {
 	return handleRequest(async () => {
+		await authGuardForUser(getSessionToken(cookies), ['user']);
 		const { id } = params;
 		const numberId = isNumberOrError(id);
 		const character = await characterRepo.getById(numberId);

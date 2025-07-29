@@ -30,3 +30,10 @@ export class BadRequest extends RequestError {
 		super(400, message);
 	}
 }
+
+export class NotFoundRequest extends RequestError {
+	constructor(message: string = 'Item not found') {
+		super(404, message);
+	}
+}
+

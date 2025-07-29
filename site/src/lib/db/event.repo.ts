@@ -1,3 +1,4 @@
+import { dateToSqlstring } from '$lib/utils/time';
 import { mysqlconnFn } from './mysql';
 
 class EventRepo {
@@ -10,7 +11,7 @@ class EventRepo {
                     Id as id,
                     Name as name,
                     StartTime as start,
-                    EndTime as end,
+                    EndTime as end
                 FROM Events
             `);
 			if (Array.isArray(result) === false) return [];
@@ -22,6 +23,29 @@ class EventRepo {
 					console.log(`%c sql result is not event`, `background:red;color:black`, { eventResult });
 			}
 			return events;
+		} catch (err) {
+			throw err;
+		}
+	}
+
+	public async getWithId(id: number): Promise<LarpEvent | undefined> {
+		try {
+			const connection = await mysqlconnFn();
+			const [result] = await connection.execute(`
+                SELECT
+                    Id as id,
+                    Name as name,
+                    StartTime as start,
+                    EndTime as end
+                FROM Events
+				WHERE id = ?
+            `, [id]);
+			if (Array.isArray(result) === false) return;
+			if (result.length === 0) return;
+			for (let eventResult of result) {
+				if (isLarpEvent(eventResult)) return eventResult;
+			}
+			return;
 		} catch (err) {
 			throw err;
 		}
@@ -40,7 +64,7 @@ class EventRepo {
                 INSERT Events (Name, StartTime, EndTime)
                 VALUES (?,?,?)
             `,
-				[name, start, end]
+				[name, dateToSqlstring(start), dateToSqlstring(end)]
 			);
 		} catch (err) {
 			throw err;
@@ -58,7 +82,7 @@ class EventRepo {
                 EndTime = ?
                 WHERE id = ?
             `,
-				[name, start, end, id]
+				[name, dateToSqlstring(start), dateToSqlstring(end), id]
 			);
 		} catch (err) {
 			throw err;
@@ -114,24 +138,37 @@ class EventRepo {
 
 export const eventRepo = new EventRepo();
 
-type LarpEvent = {
+export type LarpEvent = {
 	id: number | null;
 	name: string;
 	start: Date;
 	end: Date;
 };
 export function isLarpEvent(event: unknown): event is LarpEvent {
-	return typeof event === 'object' &&
-		event != null &&
-		'name' in event &&
-		typeof event.name === 'string' &&
-		'start' in event &&
-		event.start instanceof Date &&
-		'end' in event &&
-		event.end instanceof Date &&
-		'id' in event &&
+	if(typeof event !== 'object' || event == null ) return false;
+	const hasId = 'id' in event &&
 		(
 			event.id == null ||
 			typeof event.id === 'number'
 		)		
+	const hasName = 'name' in event && typeof event.name === 'string' 
+	const hasStart = 'start' in event && event.start instanceof Date 
+	const hasEnd = 'end' in event && event.end instanceof Date 
+	return hasId && hasName && hasStart && hasEnd;
+}
+export type StringLarpEvent = Omit<LarpEvent, 'start' | 'end'> &{
+	start: string;
+	end: string;
+}
+export function isStringLarpEvent(event: unknown): event is StringLarpEvent{
+	if(typeof event !== 'object' || event == null ) return false;
+	const hasId = 'id' in event &&
+		(
+			event.id == null ||
+			typeof event.id === 'number'
+		)		
+	const hasName = 'name' in event && typeof event.name === 'string' 
+	const hasStart = 'start' in event && typeof event.start === 'string'
+	const hasEnd = 'end' in event && typeof event.end === 'string'
+	return hasId && hasName && hasStart && hasEnd;
 }

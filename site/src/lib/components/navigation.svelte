@@ -18,6 +18,9 @@
 	{#if roles.includes('admin')}
 		<a href="/dashboard/sessions">Sessions</a>
 	{/if}
+	{#if roles.includes('admin')}
+		<a href="/dashboard/events">Events</a>
+	{/if}
 </nav>
 
 <style>
