@@ -1,15 +1,14 @@
 <script lang="ts">
-	import { invalidate } from "$app/navigation";
+	import { goto, invalidate } from "$app/navigation";
+	import EventForm from "$lib/components/event-form.svelte";
 	import type { LarpEvent } from "$lib/db/event.repo";
-	import { sidePanelManager } from "$lib/managers/side-panel-manager.svelte";
-	import EventForm from "../event-form.svelte";
 
     let event: LarpEvent = $state({
         id: null,
         name: '',
         start: new Date(),
         end: new Date(),
-        status: 'Draft',
+		status: 'Draft',
     });
 
    async function save(){
@@ -18,15 +17,16 @@
             body: JSON.stringify(event),
         })
         if(response.ok){
-            invalidate('/api/events');
-            sidePanelManager.close();
+            await invalidate('/api/events');
+			await goto('.');
         }
     }
 
 </script>
 
 <main>
-	<h1>edit event</h1>
+	<a href=".">back</a>
+	<h1>new event</h1>
 	{#if event != null}
 		<EventForm bind:event={event}  />
 	{/if}
@@ -37,7 +37,9 @@
 
 <style>
 	main {
-		width: 100%;
-		height: 100%;
+		display: flex;
+		flex-direction: column;
+		padding: 8px;
+		background-color: white;
 	}
 </style>

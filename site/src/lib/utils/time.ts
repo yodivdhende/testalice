@@ -7,5 +7,6 @@ export function dateToSqlstring(date: Date): string {
 }
 
 export function dateToHTMLDateTime(date: Date): string {
-    return date.toISOString().split('.')[0];
+    // return date.toISOString().split('.')[0];
+    return date.toISOString().split('T')[0];
 }

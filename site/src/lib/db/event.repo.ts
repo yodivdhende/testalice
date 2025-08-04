@@ -1,3 +1,4 @@
+import { EventStatus  } from '$lib/types/event-status';
 import { dateToSqlstring } from '$lib/utils/time';
 import { mysqlconnFn } from './mysql';
 
@@ -11,7 +12,8 @@ class EventRepo {
                     Id as id,
                     Name as name,
                     StartTime as start,
-                    EndTime as end
+                    EndTime as end,
+					Status as status
                 FROM Events
             `);
 			if (Array.isArray(result) === false) return [];
@@ -36,7 +38,8 @@ class EventRepo {
                     Id as id,
                     Name as name,
                     StartTime as start,
-                    EndTime as end
+                    EndTime as end,
+					Status as status
                 FROM Events
 				WHERE id = ?
             `, [id]);
@@ -51,27 +54,27 @@ class EventRepo {
 		}
 	}
 	
-	public save({id, name, start, end}: LarpEvent) {
-		if(id == null)	return this.create({name, start, end});
-		return this.edit({id,name,start,end});
+	public save({id, name, start, end, status}: LarpEvent) {
+		if(id == null)	return this.create({name, start, end, status});
+		return this.edit({id,name,start,end, status});
 	}
 
-	public async create({ name, start, end }: Omit<LarpEvent, 'id'>) {
+	public async create({ name, start, end, status}: Omit<LarpEvent, 'id'>) {
 		try {
 			const connection = await mysqlconnFn();
 			await connection.execute(
 				`
-                INSERT Events (Name, StartTime, EndTime)
-                VALUES (?,?,?)
+                INSERT Events (Name, StartTime, EndTime, Status)
+                VALUES (?,?,?, ?)
             `,
-				[name, dateToSqlstring(start), dateToSqlstring(end)]
+				[name, dateToSqlstring(start), dateToSqlstring(end), status]
 			);
 		} catch (err) {
 			throw err;
 		}
 	}
 
-	public async edit({ id, name, start, end }: LarpEvent) {
+	public async edit({ id, name, start, end, status}: LarpEvent) {
 		try {
 			const connection = await mysqlconnFn();
 			await connection.execute(
@@ -79,10 +82,11 @@ class EventRepo {
                 UPDATE Events
                 SET name = ?,
                 StartTime = ?,
-                EndTime = ?
+                EndTime = ?,
+				Status = ?
                 WHERE id = ?
             `,
-				[name, dateToSqlstring(start), dateToSqlstring(end), id]
+				[name, dateToSqlstring(start), dateToSqlstring(end), status, id]
 			);
 		} catch (err) {
 			throw err;
@@ -110,16 +114,12 @@ class EventRepo {
                     e.Id as id,
                     e.Name as name,
                     e.StartTime as start,
-                    e.EndTime as end
+                    e.EndTime as end,
+					e.Status as status
                 FROM Events e
                 JOIN Event_Participants ep
                     on ep.event = e.id
                 WHERE ep.CharacterId = ?
-                GROUP BY
-                     id,
-                     name,
-                     start,
-                     end
             `,[characterId]);
 			if (Array.isArray(result) === false) return [];
 			if (result.length === 0) return [];
@@ -134,6 +134,7 @@ class EventRepo {
 			throw err;
 		}
 	}
+	
 }
 
 export const eventRepo = new EventRepo();
@@ -143,6 +144,7 @@ export type LarpEvent = {
 	name: string;
 	start: Date;
 	end: Date;
+	status: EventStatus;
 };
 export function isLarpEvent(event: unknown): event is LarpEvent {
 	if(typeof event !== 'object' || event == null ) return false;
@@ -154,7 +156,8 @@ export function isLarpEvent(event: unknown): event is LarpEvent {
 	const hasName = 'name' in event && typeof event.name === 'string' 
 	const hasStart = 'start' in event && event.start instanceof Date 
 	const hasEnd = 'end' in event && event.end instanceof Date 
-	return hasId && hasName && hasStart && hasEnd;
+	const hasEventStatus = 'status' in event && Object.values(EventStatus).includes(event.status as any);
+	return hasId && hasName && hasStart && hasEnd && hasEventStatus;
 }
 export type StringLarpEvent = Omit<LarpEvent, 'start' | 'end'> &{
 	start: string;

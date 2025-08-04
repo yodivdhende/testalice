@@ -1,17 +1,12 @@
 <script lang="ts">
 	import { CirclePlus } from '@lucide/svelte';
 	import { type PageProps } from './$types';
-	import { sidePanelManager } from '$lib/managers/side-panel-manager.svelte';
-	import EditEvent from '$lib/components/side-panels/edit-event.svelte';
 
 	let { data }: PageProps = $props();
-    function openNewEventPanel(){
-        sidePanelManager.open(EditEvent);
-    };
 </script>
 
 <main>
-    <button onclick={openNewEventPanel}><CirclePlus /></button>
+    <a href="events/new"><CirclePlus /></a>
 	<table>
 		<thead>
 			<tr>
