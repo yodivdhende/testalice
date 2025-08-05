@@ -13,7 +13,6 @@
 			start: new Date(loadEvent.start),
 			end: new Date(loadEvent.end),
 		}
-		console.log(`%c result`, `background:yellow;color:black`, {...result});
 		event = result;
 	})
 
@@ -23,22 +22,40 @@
 		const {id: eventId} = eventToSave;
 		if(eventId == null) return;
 		try {
-		console.log(`%c event to save`, `background:lime;color:black`, {eventToSave});
-		const result = await fetch(`/api/events/${eventId}`, {
-			method: 'post',
-			body: JSON.stringify(eventToSave),
-			headers: {
-				'content-type': 'application/json',
+			const result = await fetch(`/api/events/${eventId}`, {
+				method: 'post',
+				body: JSON.stringify(eventToSave),
+				headers: {
+					'content-type': 'application/json',
+				}
+			})
+			if(result.ok) {
+				await goto('.');
 			}
-		})
-		if(result.ok) {
-			goto('.');
-		}
-
 		} catch( err) {
 			//TODO make error component;
 		}
     }
+
+	async function remove() {
+		const eventToSave = $state.snapshot(event);
+		if(eventToSave == null) return;
+		const {id: eventId} = eventToSave;
+		if(eventId == null) return;
+		try {
+			const result = await fetch(`/api/events/${eventId}`, {
+				method: 'delete',
+				headers: {
+					'content-type': 'application/json',
+				}
+			})
+			if(result.ok) {
+				await goto('.');
+			}
+		} catch( err) {
+			//TODO make error component;
+		}
+	 }
 </script>
 
 <main>
@@ -48,6 +65,7 @@
 	{/if}
 	<div>
 		<button onclick={save}>save</button>
+		<button onclick={remove}>delete</button>
 	</div>
 </main>
 
