@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { EthernetPort, Wifi } from '@lucide/svelte';
-	import type { ConnecitonInfo } from '../../../websocket-server/connection-socket';
+	import { type StatusCommandInfo } from '../../../websocket-server/connection-socket';
 
-	let { session, connection }: { session: SessionView; connection?: ConnecitonInfo } = $props();
+	let { session, connection }: { session: SessionView; connection?: StatusCommandInfo } = $props();
 
 	type SessionView = {
 		token?: string;

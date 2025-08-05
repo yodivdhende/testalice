@@ -17,8 +17,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		const token = await sessionRepo.create({
 			userId: userId ?? null,
 			roles,
-			endDate: getTommorow(),
-			descripiton: 'api login'
+			end: getTommorow(),
+			description: 'api login'
 		});
 		setSessionToken(cookies, token);
 		return json({userId, roles});

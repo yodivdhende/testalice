@@ -9,7 +9,7 @@ export class WebSocketMidiator{
 
 		server.on('upgrade', (request, socket, head) => {
 			const {pathname} = new URL(request.url ??'', `ws://localhost/`);
-			if(pathname === '/connections') this.dashboardServer.handleUpgrade(request, socket, head);
+			if(pathname === '/connections') this.dashboardServer.handleUpgrade(request, socket, head, ()=>{}); //HACK: not sure if the callback is needed
 		})
 	}
 	

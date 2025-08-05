@@ -35,9 +35,4 @@ export const DELETE: RequestHandler = async ({ cookies, request }) => {
 	});
 };
 
-function getEventsForCharacter(characterid: unknown): Response {
-    if(typeof characterid !== 'number') throw new RequestError(400, 'charaterId need to be a number');
-    return json(await eventRepo.getForCharacter({characterId: characterid}));
-
-}
 
