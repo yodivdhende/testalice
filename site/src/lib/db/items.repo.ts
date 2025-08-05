@@ -1,6 +1,6 @@
 import { mysqlconnFn } from './mysql';
 
-class EventRepo {
+class ItemRepo {
 	public async getAll(): Promise<Item[]> {
 		try {
 			const connection = await mysqlconnFn();
@@ -25,13 +25,94 @@ class EventRepo {
 		}
 	}
 
-	public save({ id, name, description }: Item) {}
+	public async getWithId(id: number) {
+		try {
+			const connection = await mysqlconnFn();
+			const [result] = await connection.execute(
+				`
+        SELECT
+          i.Id as id,
+          i.Name as name,
+          i.Description as description
+        FROM Items i
+		WHERE i.Id = ?
+        `,
+				[id]
+			);
+			if (Array.isArray(result) === false) return null;
+			if (result.length === 0) return null;
+			const [item] = result;
+			if (isItem(item) === false) return null;
+			return item;
+		} catch (err) {
+			throw err;
+		}
+	}
 
-	public async create({ name, description }: Omit<Item, 'id'>) {}
+	public save(item: Item) {
+		if (item.id == null) return this.create(item);
+		return this.edit(item);
+	}
 
-	public async edit({ id, name, description }: Item) {}
+	public async create({ name, description }: Omit<Item, 'id'>) {
+		try {
+			const connection = await mysqlconnFn();
+			const [result] = await connection.execute(
+				`
+				INSERT INTO Items (Name, Description)
+				Values (?,?)
+        `,
+				[name, description]
+			);
+			console.log('create item', result);
+			if (Array.isArray(result) === false) return null;
+			if (result.length === 0) return null;
+			const [item] = result;
+			if (isItem(item) === false) return null;
+			return item;
+		} catch (err) {
+			throw err;
+		}
+	}
 
-	public async delete({ id }: { id: number }) {}
+	public async edit({ id, name, description }: Item) {
+		try {
+			const connection = await mysqlconnFn();
+			const [result] = await connection.execute(
+				`
+				UPDATE Items
+				SET Name = ?,
+				Description = ?
+				WHERE Id = ?
+        `,
+				[name, description, id]
+			);
+			console.log('edit item', result);
+			if (Array.isArray(result) === false) return null;
+			if (result.length === 0) return null;
+			const [item] = result;
+			if (isItem(item) === false) return null;
+			return item;
+		} catch (err) {
+			throw err;
+		}
+	}
+
+	public async delete({ id }: { id: number }) {
+		try {
+			const connection = await mysqlconnFn();
+			await connection.execute(
+				`
+                DELETE 
+                FROM Items 
+                WHERE Id = ?
+            `,
+				[id]
+			);
+		} catch (err) {
+			throw err;
+		}
+	}
 
 	public async getForCharacter({
 		characterId,
@@ -77,6 +158,7 @@ class EventRepo {
 		characterId: number;
 	}): Promise<void> {}
 }
+export const itemRepo = new ItemRepo();
 
 export type Item = {
 	id: number | null;

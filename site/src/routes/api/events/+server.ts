@@ -1,5 +1,5 @@
-import { eventRepo, isLarpEvent, isStringLarpEvent } from '$lib/db/event.repo';
-import { BadRequest, RequestError } from '$lib/types/errors';
+import { eventRepo, isLarpEvent } from '$lib/db/event.repo';
+import { BadRequest } from '$lib/types/errors';
 import { getSessionToken } from '$lib/utils/cookies';
 import { authGuard, authGuardForUser, handleRequest } from '$lib/utils/request';
 import { json, type RequestHandler } from '@sveltejs/kit';
