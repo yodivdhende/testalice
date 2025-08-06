@@ -58,8 +58,6 @@ class EventParticipatnsRepo {
 		                c.Name as name,
 		                c.Owner as ownerId,
 		                u.Name as ownerName,
-		                c.CurrentHP as currentHp,
-		                c.MaxHp as maxHp
 	                FROM Characters c 
 	                JOIN Users u
 		                on u.id = c.id

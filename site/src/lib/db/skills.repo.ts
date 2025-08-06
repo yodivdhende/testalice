@@ -73,7 +73,6 @@ class ItemRepo {
         `,
 				[name, description, groupId]
 			);
-			console.log('create item', result);
 			if (Array.isArray(result) === false) return null;
 			if (result.length === 0) return null;
 			const [skill] = result;
@@ -97,7 +96,6 @@ class ItemRepo {
         `,
 				[name, description, groupId,id]
 			);
-			console.log('edit item', result);
 			if (Array.isArray(result) === false) return null;
 			if (result.length === 0) return null;
 			const [skill] = result;
