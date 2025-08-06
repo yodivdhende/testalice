@@ -14,8 +14,6 @@
         {/if}
 		<label for="name">name</label>
 		<input id="name" type="text" bind:value={character.name} />
-		<label for="hp">max hp</label>
-		<input type="number" bind:value={character.maxHp} />
 </main>
 <style>
 	main {

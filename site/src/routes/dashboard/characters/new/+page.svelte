@@ -1,32 +1,26 @@
 <script lang="ts">
 	import { goto, invalidate } from '$app/navigation';
 	import CharacterForm from '$lib/components/character-form.svelte';
-	import { type Character } from '$lib/db/character.repo';
-	import { type PageProps } from './$types';
+	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
-	let character: Character | null = $state(null);
-	$effect(()=> {
-		const {character: loadCharacter} = data;
-		character = loadCharacter ?? null;
+	let character = $state({
+		name: '',
+		ownerId: 1
 	});
 	const users = $derived(data.users);
 
 	async function save() {
-		const characterToSave = $state.snapshot(character);
-		if (characterToSave == null) return;
-		const {id: characterId} = characterToSave;
-		console.log('characterToSave', characterToSave);
 		try {
-			const result = await fetch(`/api/characters/${characterId}`, {
-				method: 'post',
-				body: JSON.stringify(characterToSave),
+			const result = await fetch(`/api/characters`, {
+				method: 'put',
+				body: JSON.stringify(character),
 				headers: {
 					'content-type': 'application/json'
 				}
 			});
 			if (result.ok) {
-				await invalidate('/api/characters');
+        await invalidate('/api/characters');
 				await goto('.');
 			}
 		} catch (err) {
@@ -38,7 +32,7 @@
 <main>
 	<a href=".">back</a>
 	{#if character != null}
-		<CharacterForm bind:character={character} {users} />
+		<CharacterForm bind:character {users} />
 	{/if}
 	<div>
 		<button onclick={save}>save</button>

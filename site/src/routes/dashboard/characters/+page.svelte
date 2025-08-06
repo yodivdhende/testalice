@@ -1,24 +1,18 @@
 <script lang="ts">
 	import { CirclePlus } from '@lucide/svelte';
 	import { type PageProps } from './$types';
-	import { sidePanelManager } from '$lib/managers/side-panel-manager.svelte';
-	import EditCharacter from '$lib/components/side-panels/edit-character.svelte';
 
 	let { data }: PageProps = $props();
-    function openNewCharacterPanel(){
-        sidePanelManager.open(EditCharacter);
-    };
 </script>
 
 <main>
-    <button onclick={openNewCharacterPanel}><CirclePlus /></button>
+    <a href='characters/new'><CirclePlus /></a>
 	<table>
 		<thead>
 			<tr>
 				<th>Id</th>
 				<th>Name</th>
 				<th>Player</th>
-				<th>HP</th>
 			</tr>
 		</thead>
         <tbody>
@@ -27,7 +21,6 @@
                     <td><a href="characters/{character.id}">{character.id}</a></td>
                     <td>{character.name}</td>
                     <td>{character.ownerName}</td>
-                    <td>{character.currentHp}/{character.maxHp}</td>
                 </tr>
             {/each}
         </tbody>

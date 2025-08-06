@@ -6,9 +6,7 @@ class CharacterRepo {
 		c.Id as id,
 		c.Name as name,
 		c.Owner as ownerId,
-		u.Name as ownerName,
-		c.CurrentHP as currentHp,
-		c.MaxHp as maxHp
+		u.Name as ownerName
 	FROM Characters c 
 	JOIN Users u
 		on u.id = c.id
@@ -25,8 +23,6 @@ class CharacterRepo {
 				name: firstCharacter.name,
 				ownerId: firstCharacter.ownerId,
 				ownerName: firstCharacter.ownerName,
-				currentHp: firstCharacter.currentHp,
-				maxHp: firstCharacter.maxHp
 			};
 		} else {
 			throw new Error(`character not found with id: ${id}`);
@@ -36,7 +32,8 @@ class CharacterRepo {
 	public async getForUser(userId: number) {
 		const connection = await mysqlconnFn();
 		const [result] = await connection.execute(`${this.characterSelector} WHERE u.id = ?`, [userId]);
-		return [] as Character[];
+		if(isCharacter(result) === false) return null;
+		return result;
 	}
 
 	public async getAll(): Promise<Character[]> {
@@ -50,8 +47,6 @@ class CharacterRepo {
 						name: character.name,
 						ownerId: character.ownerId,
 						ownerName: character.ownerName,
-						currentHp: character.currentHp,
-						maxHp: character.maxHp
 					};
 				} else {
 					console.error(`can't convert to character: `, { character });
@@ -62,36 +57,34 @@ class CharacterRepo {
 	}
 
 	public async save(character: NewCharacter | Character) {
-		if (isNewCharacter(character)) return this.insert(character);
-		if (isCharacter(character)) return this.update(character);
+		if (isNewCharacter(character)) return this.create(character);
+		if (isCharacter(character)) return this.edit(character);
 	}
 
-	private async insert(character: NewCharacter) {
+	private async create(character: NewCharacter) {
 		try {
 			(await mysqlconnFn()).execute(
 				`
-				INSERT Characters (Name, Owner, CurrentHp, MaxHp)
-				VALUE (?, ?, ?, ?)
+				INSERT Characters (Name, Owner)
+				VALUE (?, ?)
 			`,
-				[character.name, character.ownerId, character.maxHp, character.maxHp]
+				[character.name, character.ownerId]
 			);
 		} catch (error) {
 			throw error;
 		}
 	}
 
-	private async update(character: Character) {
+	private async edit(character: Character) {
 		try {
 			(await mysqlconnFn()).execute(
 				`
 				UPDATE Characters
 				SET Name = ?,
-					Owner = ?,
-					currentHp = ?,
-					maxHp = ?
+					Owner = ?
 				WHERE id = ?
 			`,
-				[character.name, character.ownerId, character.maxHp, character.maxHp, character.id]
+				[character.name, character.ownerId,  character.id]
 			);
 		} catch (error) {
 			throw error;
@@ -104,13 +97,11 @@ export const characterRepo = new CharacterRepo();
 export type Character = NewCharacter & {
 	id: number;
 	ownerName: string;
-	currentHp: number;
 };
 
 export function isCharacter(character: any): character is Character {
 	return (
 		typeof character?.id === 'number' &&
-		typeof character?.currentHp === 'number' &&
 		typeof character?.ownerName === 'string' &&
 		isNewCharacter(character)
 	);
@@ -119,13 +110,11 @@ export function isCharacter(character: any): character is Character {
 export type NewCharacter = {
 	name: string;
 	ownerId: number;
-	maxHp: number;
 };
 
 export function isNewCharacter(character: any): character is NewCharacter {
 	return (
 		typeof character?.name === 'string' &&
-		typeof character?.ownerId === 'number' &&
-		typeof character?.maxHp === 'number'
+		typeof character?.ownerId === 'number' 
 	);
 }

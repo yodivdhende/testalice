@@ -15,9 +15,13 @@ export const GET: RequestHandler = async ({ cookies, params }) => {
 	});
 };
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ cookies, params, request }) => {
 	return handleRequest(async () => {
-		const { character } = await request.json();
+		await authGuardForUser(getSessionToken(cookies), ['user']);
+		const {id} = params;
+		isNumberOrError(id);
+		const  character = await request.json();
+		console.log(character);
 		if (isCharacter(character) === false && isNewCharacter(character) === false){
 			throw new RequestError(400, 'body was not of type character');
 		}
