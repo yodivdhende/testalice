@@ -64,12 +64,9 @@ class ImplantRepo {
         `,
 				[name, description]
 			);
-			console.log('create implant', result);
-			if (Array.isArray(result) === false) return null;
-			if (result.length === 0) return null;
-			const [implant] = result;
-			if (isImplants(implant) === false) return null;
-			return implant;
+			if ('serverStatus' in result && result.serverStatus !== 2) return null;
+			if (('insertId' in result) === false || result.insertId == null) return null;
+			return result.insertId;
 		} catch (err) {
 			throw err;
 		}
@@ -87,12 +84,8 @@ class ImplantRepo {
         `,
 				[name, description, id]
 			);
-			console.log('edit implant', result);
-			if (Array.isArray(result) === false) return null;
-			if (result.length === 0) return null;
-			const [implant] = result;
-			if (isImplants(implant) === false) return null;
-			return implant;
+			if ('serverStatus' in result && result.serverStatus !== 2) return null;
+			return id;
 		} catch (err) {
 			throw err;
 		}

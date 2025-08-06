@@ -64,12 +64,9 @@ class ItemRepo {
         `,
 				[name, description]
 			);
-			console.log('create item', result);
-			if (Array.isArray(result) === false) return null;
-			if (result.length === 0) return null;
-			const [item] = result;
-			if (isItem(item) === false) return null;
-			return item;
+			if ('serverStatus' in result && result.serverStatus !== 2) return null;
+			if ('insertId' in result === false || result.insertId == null) return null;
+			return result.insertId;
 		} catch (err) {
 			throw err;
 		}
@@ -87,12 +84,8 @@ class ItemRepo {
         `,
 				[name, description, id]
 			);
-			console.log('edit item', result);
-			if (Array.isArray(result) === false) return null;
-			if (result.length === 0) return null;
-			const [item] = result;
-			if (isItem(item) === false) return null;
-			return item;
+			if ('serverStatus' in result && result.serverStatus !== 2) return null;
+			return id;
 		} catch (err) {
 			throw err;
 		}

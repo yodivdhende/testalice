@@ -62,13 +62,16 @@ class EventRepo {
 	public async create({ name, start, end, status}: Omit<LarpEvent, 'id'>) {
 		try {
 			const connection = await mysqlconnFn();
-			await connection.execute(
+			const [result] = await connection.execute(
 				`
                 INSERT Events (Name, StartTime, EndTime, Status)
                 VALUES (?,?,?, ?)
             `,
 				[name, dateToSqlstring(start), dateToSqlstring(end), status]
 			);
+			if ('serverStatus' in result && result.serverStatus !== 2) return null;
+			if ('insertId' in result === false || result.insertId == null) return null;
+			return result.insertId;
 		} catch (err) {
 			throw err;
 		}
@@ -77,7 +80,7 @@ class EventRepo {
 	public async edit({ id, name, start, end, status}: LarpEvent) {
 		try {
 			const connection = await mysqlconnFn();
-			await connection.execute(
+			const [result] = await connection.execute(
 				`
                 UPDATE Events
                 SET name = ?,
@@ -88,6 +91,8 @@ class EventRepo {
             `,
 				[name, dateToSqlstring(start), dateToSqlstring(end), status, id]
 			);
+			if ('serverStatus' in result && result.serverStatus !== 2) return null;
+			return id;
 		} catch (err) {
 			throw err;
 		}
