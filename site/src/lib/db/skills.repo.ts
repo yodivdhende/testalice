@@ -1,7 +1,6 @@
-import { group } from 'console';
 import { mysqlconnFn } from './mysql';
 
-class ItemRepo {
+class SkillRepo {
 	public async getAll(): Promise<Skill[]> {
 		try {
 			const connection = await mysqlconnFn();
@@ -163,10 +162,55 @@ class ItemRepo {
 		}
 	}
 
+	public async getAllGroups() {
+		try {
+			const connection = await mysqlconnFn();
+			const [result] = await connection.execute(`
+			 SELECT
+					sg.Id,
+					sg.Name,
+					sg.Description,
+				FROM Skill_Groups sg
+      `);
+			if (Array.isArray(result) === false) return [];
+			if (result.length === 0) return [];
+			const skillGroups: SkillGroup[] = [];
+			for (let skillGroupResult of result) {
+				if (isSkillGroup(skillGroupResult)) skillGroups.push(skillGroupResult);
+				else
+					console.log(`%c sql result is not a item`, `background:red;color:black`, { itemResult: skillGroupResult });
+			}
+			return skillGroups;
+		} catch (err) {
+			throw err;
+		}
+	}
+
+	public async getGroupWithId(id: number) {
+		try {
+			const connection = await mysqlconnFn();
+			const [result] = await connection.execute(`
+			 SELECT
+					sg.Id,
+					sg.Name,
+					sg.Description,
+				FROM Skill_Groups sg
+				WHERE sg.Id = ?
+      `, [id]);
+			if (Array.isArray(result) === false) return [];
+			const [skillGroupResult] = result;
+			if (isSkillGroup(skillGroupResult) === false) return null;
+			return skillGroupResult;
+		} catch (err) {
+			throw err;
+		}
+	}
+
 	public saveSkillGroup(skillGroup: SkillGroup){
 		if(skillGroup.id == null) return this.createSkillGroup(skillGroup);
 		return this.editSkillGroup(skillGroup);
 	}
+
 
 	private async createSkillGroup({ name, description}: Pick<SkillGroup, 'name'| 'description'>) {
 		try {
@@ -207,7 +251,7 @@ class ItemRepo {
 		characterId: number;
 	}): Promise<void> {}
 }
-export const itemRepo = new ItemRepo();
+export const skillRepo = new SkillRepo();
 
 export type Skill = {
 	id: number | null;
