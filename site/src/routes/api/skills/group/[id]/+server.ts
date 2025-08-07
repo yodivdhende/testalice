@@ -16,15 +16,15 @@ export const GET: RequestHandler = async ({ cookies, params }) => {
 	});
 };
 
-// export const DELETE: RequestHandler = async ({ cookies, params}) => {
-// 	return handleRequest(async () => {
-// 		await authGuard(getSessionToken(cookies), ['admin']);
-// 		const { id } = params;
-// 		const numberId = isNumberOrError(id);
-//         skillRepo.({id: numberId});
-// 		return new Response();
-// 	});
-// };
+export const DELETE: RequestHandler = async ({ cookies, params}) => {
+	return handleRequest(async () => {
+		await authGuard(getSessionToken(cookies), ['admin']);
+		const { id } = params;
+		const numberId = isNumberOrError(id);
+    skillRepo.deleteSkillGroup(numberId);
+		return new Response();
+	});
+};
 
 export const POST: RequestHandler = async ({cookies, params, request}) => {
 	return handleRequest(async ()=> {

@@ -243,6 +243,40 @@ class SkillRepo {
 		}
 	}
 
+	public async deleteSkillGroup(groupId: number) {
+		const SkillsDeleted = (await this.deleteAllSkillsWithGroup(groupId)) !== null;
+		if(SkillsDeleted) await this.deleteSkillGroupWithId(groupId);
+	}
+
+	private async deleteAllSkillsWithGroup(groupId: number) {
+		try {
+			const connection = await mysqlconnFn();
+			const [result] = await connection.execute(`
+				delete Skills
+				where GroupId = ?
+      `, [groupId]);
+			if ('serverStatus' in result && result.serverStatus !== 2) return null;
+			return groupId;
+		} catch (err) {
+			throw err;
+		}
+	}
+
+	private async deleteSkillGroupWithId(groupId: number) {
+		try {
+			const connection = await mysqlconnFn();
+			const [result] = await connection.execute(`
+				delete SkillGroup 
+				where Id = ?
+      `, [groupId]);
+			if ('serverStatus' in result && result.serverStatus !== 2) return null;
+			return groupId;
+		} catch (err) {
+			throw err;
+		}
+
+	}
+
 	public async addItemToCharacter({
 		item,
 		characterId
