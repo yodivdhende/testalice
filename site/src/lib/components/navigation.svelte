@@ -12,6 +12,15 @@
 	{#if roles.includes('user')}
 		<a href="/dashboard/users">Users</a>
 	{/if}
+	{#if roles.includes('admin')}
+		<a href="/dashboard/skills">Skills</a>
+	{/if}
+	{#if roles.includes('admin')}
+		<a href="/dashboard/items">Items</a>
+	{/if}
+	{#if roles.includes('admin')}
+		<a href="/dashboard/implants">Implants</a>
+	{/if}
 	{#if roles.includes('user')}
 		<a href="/dashboard/characters">Characters</a>
 	{/if}
@@ -20,12 +29,6 @@
 	{/if}
 	{#if roles.includes('admin')}
 		<a href="/dashboard/events">Events</a>
-	{/if}
-	{#if roles.includes('admin')}
-		<a href="/dashboard/items">Items</a>
-	{/if}
-	{#if roles.includes('admin')}
-		<a href="/dashboard/implants">Implants</a>
 	{/if}
 </nav>
 

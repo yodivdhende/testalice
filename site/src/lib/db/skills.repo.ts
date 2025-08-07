@@ -6,11 +6,11 @@ class SkillRepo {
 			const connection = await mysqlconnFn();
 			const [result] = await connection.execute(`
 			 SELECT
-					s.Id,
-					s.Name,
-					s.Description,
-					sg.Id,
-					sg.Name
+					s.Id as id,
+					s.Name as name,
+					s.Description as description,
+					sg.Id as groupId,
+					sg.Name as groupName
 				FROM Skills s
 				JOIN Skill_Groups sg
 					on s.Group = sg.Id
@@ -21,7 +21,9 @@ class SkillRepo {
 			for (let skillResult of result) {
 				if (isSkill(skillResult)) skills.push(skillResult);
 				else
-					console.log(`%c sql result is not a item`, `background:red;color:black`, { itemResult: skillResult });
+					console.log(`%c sql result is not a skill`, `background:red;color:black`, {
+						skillResult
+					});
 			}
 			return skills;
 		} catch (err) {
@@ -35,11 +37,11 @@ class SkillRepo {
 			const [result] = await connection.execute(
 				`
 			 SELECT
-					s.Id,
-					s.Name,
-					s.Description,
-					sg.Id,
-					sg.Name
+					s.Id as id,
+					s.Name as name,
+					s.Description as description,
+					sg.Id as groupId,
+					sg.Name as groupName
 				FROM Skills s
 				JOIN Skill_Groups sg
 					on s.Group = sg.Id
@@ -62,13 +64,17 @@ class SkillRepo {
 		return this.edit(item);
 	}
 
-	public async create({ name, description, groupId }: Pick<Skill, 'name' | 'description' | 'groupId'>) {
+	public async create({
+		name,
+		description,
+		groupId
+	}: Pick<Skill, 'name' | 'description' | 'groupId'>) {
 		try {
 			const connection = await mysqlconnFn();
 			const [result] = await connection.execute(
 				`
-				INSERT INTO Skills (Name, Description, Group)
-				Values (?,?, ?)
+				 INSERT INTO Skills (Name, Description, \`Group\`)
+				Values (?,?,?)
         `,
 				[name, description, groupId]
 			);
@@ -82,7 +88,12 @@ class SkillRepo {
 		}
 	}
 
-	public async edit({ id, name, description, groupId }: Pick<Skill, 'id' | 'name' | 'description' | 'groupId'>) {
+	public async edit({
+		id,
+		name,
+		description,
+		groupId
+	}: Pick<Skill, 'id' | 'name' | 'description' | 'groupId'>) {
 		try {
 			const connection = await mysqlconnFn();
 			const [result] = await connection.execute(
@@ -90,10 +101,10 @@ class SkillRepo {
 				UPDATE Skills 
 				SET Name = ?,
 				Description = ?,
-				Group = ?
+				\`Group\` = ?
 				WHERE Id = ?
         `,
-				[name, description, groupId,id]
+				[name, description, groupId, id]
 			);
 			if (Array.isArray(result) === false) return null;
 			if (result.length === 0) return null;
@@ -111,7 +122,7 @@ class SkillRepo {
 			await connection.execute(
 				`
                 DELETE 
-                FROM Skill 
+                FROM Skills
                 WHERE Id = ?
             `,
 				[id]
@@ -123,7 +134,7 @@ class SkillRepo {
 
 	public async getForCharacter({
 		characterId,
-		eventId,
+		eventId
 	}: {
 		characterId: number;
 		eventId: number | undefined;
@@ -146,7 +157,7 @@ class SkillRepo {
 					AND cs.Character = ?
 					${eventId ? 'AND cs.Event = ?' : ''}
         `,
-				[characterId, eventId],
+				[characterId, eventId]
 			);
 			if (Array.isArray(result) === false) return [];
 			if (result.length === 0) return [];
@@ -154,7 +165,9 @@ class SkillRepo {
 			for (let skillResult of result) {
 				if (isSkill(skillResult)) skills.push(skillResult);
 				else
-					console.log(`%c sql result is not a skill`, `background:red;color:black`, { skillResult });
+					console.log(`%c sql result is not a skill`, `background:red;color:black`, {
+						skillResult
+					});
 			}
 			return skills;
 		} catch (err) {
@@ -167,9 +180,9 @@ class SkillRepo {
 			const connection = await mysqlconnFn();
 			const [result] = await connection.execute(`
 			 SELECT
-					sg.Id,
-					sg.Name,
-					sg.Description,
+					sg.Id as id,
+					sg.Name as name,
+					sg.Description as description
 				FROM Skill_Groups sg
       `);
 			if (Array.isArray(result) === false) return [];
@@ -178,7 +191,9 @@ class SkillRepo {
 			for (let skillGroupResult of result) {
 				if (isSkillGroup(skillGroupResult)) skillGroups.push(skillGroupResult);
 				else
-					console.log(`%c sql result is not a item`, `background:red;color:black`, { itemResult: skillGroupResult });
+					console.log(`%c sql result is not a skillGroup`, `background:red;color:black`, {
+						skillGroupResult
+					});
 			}
 			return skillGroups;
 		} catch (err) {
@@ -189,14 +204,17 @@ class SkillRepo {
 	public async getGroupWithId(id: number) {
 		try {
 			const connection = await mysqlconnFn();
-			const [result] = await connection.execute(`
+			const [result] = await connection.execute(
+				`
 			 SELECT
 					sg.Id,
 					sg.Name,
 					sg.Description,
 				FROM Skill_Groups sg
 				WHERE sg.Id = ?
-      `, [id]);
+      `,
+				[id]
+			);
 			if (Array.isArray(result) === false) return [];
 			const [skillGroupResult] = result;
 			if (isSkillGroup(skillGroupResult) === false) return null;
@@ -206,19 +224,21 @@ class SkillRepo {
 		}
 	}
 
-	public saveSkillGroup(skillGroup: SkillGroup){
-		if(skillGroup.id == null) return this.createSkillGroup(skillGroup);
+	public saveSkillGroup(skillGroup: SkillGroup) {
+		if (skillGroup.id == null) return this.createSkillGroup(skillGroup);
 		return this.editSkillGroup(skillGroup);
 	}
 
-
-	private async createSkillGroup({ name, description}: Pick<SkillGroup, 'name'| 'description'>) {
+	private async createSkillGroup({ name, description }: Pick<SkillGroup, 'name' | 'description'>) {
 		try {
 			const connection = await mysqlconnFn();
-			const [result] = await connection.execute(`
+			const [result] = await connection.execute(
+				`
 				INSERT INTO Skill_Groups (Name, Description)
 				VALUES (?,?)
-      `, [name, description]);
+      `,
+				[name, description]
+			);
 			if ('serverStatus' in result && result.serverStatus !== 2) return null;
 			if ('insertId' in result === false || result.insertId == null) return null;
 			return result.insertId;
@@ -227,15 +247,22 @@ class SkillRepo {
 		}
 	}
 
-	private async editSkillGroup({id,  name, description}: Pick<SkillGroup, 'id' | 'name'| 'description'>) {
+	private async editSkillGroup({
+		id,
+		name,
+		description
+	}: Pick<SkillGroup, 'id' | 'name' | 'description'>) {
 		try {
 			const connection = await mysqlconnFn();
-			const [result] = await connection.execute(`
+			const [result] = await connection.execute(
+				`
 				UPDATE Skill_Groups
 				SET Name = ?,
 				Description = ?
 				WHERE Id = ?
-      `, [name, description, id]);
+      `,
+				[name, description, id]
+			);
 			if ('serverStatus' in result && result.serverStatus !== 2) return null;
 			return id;
 		} catch (err) {
@@ -245,16 +272,19 @@ class SkillRepo {
 
 	public async deleteSkillGroup(groupId: number) {
 		const SkillsDeleted = (await this.deleteAllSkillsWithGroup(groupId)) !== null;
-		if(SkillsDeleted) await this.deleteSkillGroupWithId(groupId);
+		if (SkillsDeleted) await this.deleteSkillGroupWithId(groupId);
 	}
 
 	private async deleteAllSkillsWithGroup(groupId: number) {
 		try {
 			const connection = await mysqlconnFn();
-			const [result] = await connection.execute(`
+			const [result] = await connection.execute(
+				`
 				delete Skills
 				where GroupId = ?
-      `, [groupId]);
+      `,
+				[groupId]
+			);
 			if ('serverStatus' in result && result.serverStatus !== 2) return null;
 			return groupId;
 		} catch (err) {
@@ -265,16 +295,18 @@ class SkillRepo {
 	private async deleteSkillGroupWithId(groupId: number) {
 		try {
 			const connection = await mysqlconnFn();
-			const [result] = await connection.execute(`
+			const [result] = await connection.execute(
+				`
 				delete SkillGroup 
 				where Id = ?
-      `, [groupId]);
+      `,
+				[groupId]
+			);
 			if ('serverStatus' in result && result.serverStatus !== 2) return null;
 			return groupId;
 		} catch (err) {
 			throw err;
 		}
-
 	}
 
 	public async addItemToCharacter({
@@ -316,7 +348,7 @@ export type SkillGroup = {
 	id: number | null;
 	name: string;
 	description: string;
-}
+};
 
 export function isSkillGroup(group: unknown): group is SkillGroup {
 	return (
@@ -329,6 +361,4 @@ export function isSkillGroup(group: unknown): group is SkillGroup {
 		'id' in group &&
 		(typeof group.id === 'number' || group.id === null)
 	);
-
 }
-
