@@ -1,28 +1,26 @@
 <script lang="ts">
-	 import { CirclePlus } from '@lucide/svelte';
+	import { CirclePlus } from '@lucide/svelte';
 	import { type PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 </script>
 
 <main>
-    <a href="skills/new"><CirclePlus /></a>
+    <a href="groups/new"><CirclePlus /></a>
 	<table>
 		<thead>
 			<tr>
 				<th>Id</th>
-				<th><a href="skills/groups/">Main</a></th>
 				<th>Name</th>
 				<th>Description</th>
 			</tr>
 		</thead>
         <tbody>
-            {#each data.skills as skill}
+            {#each data.groups as group}
                 <tr>
-                    <td><a href="skills/{skill.id}">{skill.id}</a></td>
-                    <td>{skill.groupName}</td>
-                    <td>{skill.name}</td>
-                    <td>{skill.description}</td>
+                    <td><a href="groups/{group.id}">{group.id}</a></td>
+                    <td>{group.name}</td>
+                    <td>{group.description}</td>
                 </tr>
             {/each}
         </tbody>

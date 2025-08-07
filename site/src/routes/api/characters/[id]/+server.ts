@@ -21,7 +21,6 @@ export const POST: RequestHandler = async ({ cookies, params, request }) => {
 		const {id} = params;
 		isNumberOrError(id);
 		const  character = await request.json();
-		console.log(character);
 		if (isCharacter(character) === false && isNewCharacter(character) === false){
 			throw new RequestError(400, 'body was not of type character');
 		}

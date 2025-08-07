@@ -22,7 +22,7 @@ class EventRepo {
 			for (let eventResult of result) {
 				if (isLarpEvent(eventResult)) events.push(eventResult);
 				else
-					console.log(`%c sql result is not event`, `background:red;color:black`, { eventResult });
+					console.error(`%c sql result is not event`, `background:red;color:black`, { eventResult });
 			}
 			return events;
 		} catch (err) {
@@ -132,7 +132,7 @@ class EventRepo {
 			for (let eventResult of result) {
 				if (isLarpEvent(eventResult)) events.push(eventResult);
 				else
-					console.log(`%c sql result is not event`, `background:red;color:black`, { eventResult });
+					console.error(`%c sql result is not event`, `background:red;color:black`, { eventResult });
 			}
 			return events;
 		} catch (err) {

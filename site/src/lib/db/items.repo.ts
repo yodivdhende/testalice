@@ -17,7 +17,7 @@ class ItemRepo {
 			for (let itemResult of result) {
 				if (isItem(itemResult)) items.push(itemResult);
 				else
-					console.log(`%c sql result is not a item`, `background:red;color:black`, { itemResult });
+					console.error(`%c sql result is not a item`, `background:red;color:black`, { itemResult });
 			}
 			return items;
 		} catch (err) {
@@ -135,7 +135,7 @@ class ItemRepo {
 			for (let itemResult of result) {
 				if (isItem(itemResult)) items.push(itemResult);
 				else
-					console.log(`%c sql result is not a item`, `background:red;color:black`, { itemResult });
+					console.error(`%c sql result is not a item`, `background:red;color:black`, { itemResult });
 			}
 			return items;
 		} catch (err) {

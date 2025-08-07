@@ -16,7 +16,6 @@
 		const characterToSave = $state.snapshot(character);
 		if (characterToSave == null) return;
 		const {id: characterId} = characterToSave;
-		console.log('characterToSave', characterToSave);
 		try {
 			const result = await fetch(`/api/characters/${characterId}`, {
 				method: 'post',

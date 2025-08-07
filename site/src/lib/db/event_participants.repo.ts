@@ -73,7 +73,7 @@ class EventParticipatnsRepo {
 			for (let characterResult of result) {
 				if (isCharacter(characterResult)) characters.push(characterResult);
 				else
-					console.log(`%c sql result is not a character`, `background:red;color:black`, { characterResult });
+					console.error(`%c sql result is not a character`, `background:red;color:black`, { characterResult });
 			}
 			return characters;
 		} catch (err) {

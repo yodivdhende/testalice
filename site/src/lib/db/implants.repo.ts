@@ -17,7 +17,7 @@ class ImplantRepo {
 			for (let implantResult of result) {
 				if (isImplants(implantResult)) implants.push(implantResult);
 				else
-					console.log(`%c sql result is not a item`, `background:red;color:black`, { implantResult });
+					console.error(`%c sql result is not a item`, `background:red;color:black`, { implantResult });
 			}
 			return implants;
 		} catch (err) {
@@ -135,7 +135,7 @@ class ImplantRepo {
 			for (let implantResult of result) {
 				if (isImplants(implantResult)) implants.push(implantResult);
 				else
-					console.log(`%c sql result is not a implant`, `background:red;color:black`, { implantResult });
+					console.error(`%c sql result is not a implant`, `background:red;color:black`, { implantResult });
 			}
 			return implants;
 		} catch (err) {

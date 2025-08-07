@@ -21,7 +21,7 @@ class SkillRepo {
 			for (let skillResult of result) {
 				if (isSkill(skillResult)) skills.push(skillResult);
 				else
-					console.log(`%c sql result is not a skill`, `background:red;color:black`, {
+					console.error(`%c sql result is not a skill`, `background:red;color:black`, {
 						skillResult
 					});
 			}
@@ -165,7 +165,7 @@ class SkillRepo {
 			for (let skillResult of result) {
 				if (isSkill(skillResult)) skills.push(skillResult);
 				else
-					console.log(`%c sql result is not a skill`, `background:red;color:black`, {
+					console.error(`%c sql result is not a skill`, `background:red;color:black`, {
 						skillResult
 					});
 			}
@@ -191,7 +191,7 @@ class SkillRepo {
 			for (let skillGroupResult of result) {
 				if (isSkillGroup(skillGroupResult)) skillGroups.push(skillGroupResult);
 				else
-					console.log(`%c sql result is not a skillGroup`, `background:red;color:black`, {
+					console.error(`%c sql result is not a skillGroup`, `background:red;color:black`, {
 						skillGroupResult
 					});
 			}
@@ -207,9 +207,9 @@ class SkillRepo {
 			const [result] = await connection.execute(
 				`
 			 SELECT
-					sg.Id,
-					sg.Name,
-					sg.Description,
+					sg.Id as id,
+					sg.Name as name,
+					sg.Description as description
 				FROM Skill_Groups sg
 				WHERE sg.Id = ?
       `,
@@ -280,8 +280,9 @@ class SkillRepo {
 			const connection = await mysqlconnFn();
 			const [result] = await connection.execute(
 				`
-				delete Skills
-				where GroupId = ?
+				DELETE
+				FROM Skills
+				WHERE \`Group\` = ?
       `,
 				[groupId]
 			);
@@ -297,8 +298,9 @@ class SkillRepo {
 			const connection = await mysqlconnFn();
 			const [result] = await connection.execute(
 				`
-				delete SkillGroup 
-				where Id = ?
+				DELETE
+				FROM Skill_Groups
+				WHERE Id = ?
       `,
 				[groupId]
 			);

@@ -1,31 +1,31 @@
 <script lang="ts">
 	import { goto, invalidate } from '$app/navigation';
-	import SkillForm from '$lib/components/skill-form.svelte';
-	import type { Skill } from '$lib/db/skills.repo';
+	import SkillGroupForm from '$lib/components/skill-group-form.svelte';
+	import type { SkillGroup } from '$lib/db/skills.repo';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
-	let skill: Skill | null = $state(null);
+	let group: SkillGroup | null = $state(null);
 	$effect(() => {
-		const { skill: loadSkill } = data;
-		skill = loadSkill;
+		const { group: loadGroup } = data;
+		group = loadGroup;
 	});
 
 	async function save() {
-		const skillToSave = $state.snapshot(skill);
-		if (skillToSave == null) return;
-		const { id: skillId } = skillToSave;
-		if (skillId == null) return;
+		const groupToSave = $state.snapshot(group);
+		if (groupToSave == null) return;
+		const { id: groupId } = groupToSave;
+		if (groupId == null) return;
 		try {
-			const result = await fetch(`/api/skills/${skillId}`, {
+			const result = await fetch(`/api/skills/groups/${groupId}`, {
 				method: 'post',
-				body: JSON.stringify(skillToSave),
+				body: JSON.stringify(groupToSave),
 				headers: {
 					'content-type': 'application/json'
 				}
 			});
 			if (result.ok) {
-				await invalidate('/api/skills');
+				await invalidate('/api/skills/groups');
 				await goto('.');
 			}
 		} catch (err) {
@@ -34,18 +34,19 @@
 	}
 
 	async function remove() {
-		const skillToSave = $state.snapshot(skill);
-		if (skillToSave == null) return;
-		const { id: skillId } = skillToSave;
-		if (skillId == null) return;
+		const groupToRemove = $state.snapshot(group);
+		if (groupToRemove == null) return;
+		const { id: groupId } = groupToRemove;
+		if (groupId == null) return;
 		try {
-			const result = await fetch(`/api/skills/${skillId}`, {
+			const result = await fetch(`/api/skills/groups/${groupId}`, {
 				method: 'delete',
 				headers: {
 					'content-type': 'application/json'
 				}
 			});
 			if (result.ok) {
+				await invalidate('/api/skills/groups');
 				await goto('.');
 			}
 		} catch (err) {
@@ -56,8 +57,8 @@
 
 <main>
 	<a href=".">back</a>
-	{#if skill != null}
-		<SkillForm bind:skill groups={data.groups ?? []} />
+	{#if group != null}
+		<SkillGroupForm bind:group={group} />
 	{/if}
 	<div>
 		<button onclick={save}>save</button>

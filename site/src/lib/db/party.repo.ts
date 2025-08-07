@@ -31,7 +31,7 @@ class PartyRepo {
                         })
                     }
                 }
-				else console.log(`%c sql result is not party line`, `background:red;color:black`, { eventResult: partyResult });
+				else console.error(`%c sql result is not party line`, `background:red;color:black`, { eventResult: partyResult });
 			}
 			return parties;
 		} catch (err) {
@@ -134,7 +134,7 @@ class PartyRepo {
                         }
                     }
                 }
-				else console.log(`%c sql result is not party line`, `background:red;color:black`, { eventResult: partyLine });
+				else console.error(`%c sql result is not party line`, `background:red;color:black`, { eventResult: partyLine });
 			}
 			return partyResult;
 		} catch (err) {
