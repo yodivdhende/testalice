@@ -1,34 +1,34 @@
 <script lang="ts">
 	import { credentialStore } from '$lib/local-utils/credential-store.svelte';
+	import Dropdown from './dropdown.svelte';
 
 	const roles = $derived(credentialStore.roles);
 </script>
 
 <nav>
-	<a href="/">Home</a>
+	<a class="navigation-button" href="/">Home</a>
 	{#if roles.includes('user') === false}
-		<a href="/login">login</a>
+		<a class="navigation-button" href="/login">login</a>
 	{/if}
 	{#if roles.includes('user')}
-		<a href="/dashboard/users">Users</a>
+		<a class="navigation-button" href="/dashboard/users">Users</a>
 	{/if}
 	{#if roles.includes('admin')}
-		<a href="/dashboard/skills">Skills</a>
-	{/if}
-	{#if roles.includes('admin')}
-		<a href="/dashboard/items">Items</a>
-	{/if}
-	{#if roles.includes('admin')}
-		<a href="/dashboard/implants">Implants</a>
+		<div class="dropdown-header">
+			<button class="navigation-button">Manage</button>
+			<ul>
+				<li><a class="navigation-button" href="/dashboard/manage/skills">Skills</a></li>
+				<li><a class="navigation-button" href="/dashboard/manage/items">Items</a></li>
+				<li><a class="navigation-button" href="/dashboard/manage/implants">Implants</a></li>
+				<li><a class="navigation-button" href="/dashboard/manage/events">Events</a></li>
+			</ul>
+		</div>
 	{/if}
 	{#if roles.includes('user')}
-		<a href="/dashboard/characters">Characters</a>
+		<a class="navigation-button" href="/dashboard/characters">Characters</a>
 	{/if}
 	{#if roles.includes('admin')}
-		<a href="/dashboard/sessions">Sessions</a>
-	{/if}
-	{#if roles.includes('admin')}
-		<a href="/dashboard/events">Events</a>
+		<a class="navigation-button" href="/dashboard/sessions">Sessions</a>
 	{/if}
 </nav>
 
@@ -39,13 +39,35 @@
 		border-bottom: 1px solid white;
 		font-size: 2rem;
 	}
-	a {
+	.navigation-button {
 		display: block;
+		background-color: black;
 		padding: 1em;
 		height: 100%;
 		color: white;
 		text-decoration: none;
+		line-height: 1em;
 		border: 1px solid white;
 		border-top: none;
+		font-size: 1em;
+	}
+	.navigation-button:hover {
+		background-color: darkslategray;
+	}
+
+	.dropdown-header {
+		position: relative;
+		height: 100%;
+		cursor: pointer;
+	}
+
+	.dropdown-header ul {
+		position: absolute;
+		opacity: 0;
+	}
+
+	.dropdown-header > .navigation-button:focus + ul {
+		opacity: 1;
+		flex-direction: column;
 	}
 </style>
