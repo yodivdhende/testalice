@@ -1,9 +1,8 @@
-import { EventStatus  } from '$lib/types/event-status';
+import { EventStatus } from '$lib/types/event-status';
 import { dateToSqlstring } from '$lib/utils/time';
 import { mysqlconnFn } from './mysql';
 
 class EventRepo {
-
 	public async getAll(): Promise<LarpEvent[]> {
 		try {
 			const connection = await mysqlconnFn();
@@ -13,7 +12,7 @@ class EventRepo {
                     Name as name,
                     StartTime as start,
                     EndTime as end,
-					Status as status
+										Status as status
                 FROM Events
             `);
 			if (Array.isArray(result) === false) return [];
@@ -22,7 +21,9 @@ class EventRepo {
 			for (let eventResult of result) {
 				if (isLarpEvent(eventResult)) events.push(eventResult);
 				else
-					console.error(`%c sql result is not event`, `background:red;color:black`, { eventResult });
+					console.error(`%c sql result is not event`, `background:red;color:black`, {
+						eventResult
+					});
 			}
 			return events;
 		} catch (err) {
@@ -33,7 +34,8 @@ class EventRepo {
 	public async getWithId(id: number): Promise<LarpEvent | undefined> {
 		try {
 			const connection = await mysqlconnFn();
-			const [result] = await connection.execute(`
+			const [result] = await connection.execute(
+				`
                 SELECT
                     Id as id,
                     Name as name,
@@ -42,7 +44,9 @@ class EventRepo {
 					Status as status
                 FROM Events
 				WHERE id = ?
-            `, [id]);
+            `,
+				[id]
+			);
 			if (Array.isArray(result) === false) return;
 			if (result.length === 0) return;
 			for (let eventResult of result) {
@@ -53,13 +57,13 @@ class EventRepo {
 			throw err;
 		}
 	}
-	
-	public save({id, name, start, end, status}: LarpEvent) {
-		if(id == null)	return this.create({name, start, end, status});
-		return this.edit({id,name,start,end, status});
+
+	public save({ id, name, start, end, status }: LarpEvent) {
+		if (id == null) return this.create({ name, start, end, status });
+		return this.edit({ id, name, start, end, status });
 	}
 
-	public async create({ name, start, end, status}: Omit<LarpEvent, 'id'>) {
+	public async create({ name, start, end, status }: Omit<LarpEvent, 'id'>) {
 		try {
 			const connection = await mysqlconnFn();
 			const [result] = await connection.execute(
@@ -77,7 +81,7 @@ class EventRepo {
 		}
 	}
 
-	public async edit({ id, name, start, end, status}: LarpEvent) {
+	public async edit({ id, name, start, end, status }: LarpEvent) {
 		try {
 			const connection = await mysqlconnFn();
 			const [result] = await connection.execute(
@@ -98,23 +102,27 @@ class EventRepo {
 		}
 	}
 
-	public async delete({id}: {id: number})  {
+	public async delete({ id }: { id: number }) {
 		try {
 			const connection = await mysqlconnFn();
-			await connection.execute(`
+			await connection.execute(
+				`
                 DELETE 
                 FROM Events
                 WHERE Id = ?
-            `, [id]);
+            `,
+				[id]
+			);
 		} catch (err) {
 			throw err;
 		}
 	}
-    
-	public async getForCharacter({characterId}: {characterId: number}): Promise<LarpEvent[]> {
+
+	public async getForCharacter({ characterId }: { characterId: number }): Promise<LarpEvent[]> {
 		try {
 			const connection = await mysqlconnFn();
-			const [result] = await connection.execute(`
+			const [result] = await connection.execute(
+				`
                 SELECT
                     e.Id as id,
                     e.Name as name,
@@ -125,21 +133,24 @@ class EventRepo {
                 JOIN Event_Participants ep
                     on ep.event = e.id
                 WHERE ep.CharacterId = ?
-            `,[characterId]);
+            `,
+				[characterId]
+			);
 			if (Array.isArray(result) === false) return [];
 			if (result.length === 0) return [];
 			const events: LarpEvent[] = [];
 			for (let eventResult of result) {
 				if (isLarpEvent(eventResult)) events.push(eventResult);
 				else
-					console.error(`%c sql result is not event`, `background:red;color:black`, { eventResult });
+					console.error(`%c sql result is not event`, `background:red;color:black`, {
+						eventResult
+					});
 			}
 			return events;
 		} catch (err) {
 			throw err;
 		}
 	}
-	
 }
 
 export const eventRepo = new EventRepo();
@@ -152,31 +163,24 @@ export type LarpEvent = {
 	status: EventStatus;
 };
 export function isLarpEvent(event: unknown): event is LarpEvent {
-	if(typeof event !== 'object' || event == null ) return false;
-	const hasId = 'id' in event &&
-		(
-			event.id == null ||
-			typeof event.id === 'number'
-		)		
-	const hasName = 'name' in event && typeof event.name === 'string' 
-	const hasStart = 'start' in event && event.start instanceof Date 
-	const hasEnd = 'end' in event && event.end instanceof Date 
-	const hasEventStatus = 'status' in event && Object.values(EventStatus).includes(event.status as any);
+	if (typeof event !== 'object' || event == null) return false;
+	const hasId = 'id' in event && (event.id == null || typeof event.id === 'number');
+	const hasName = 'name' in event && typeof event.name === 'string';
+	const hasStart = 'start' in event && event.start instanceof Date;
+	const hasEnd = 'end' in event && event.end instanceof Date;
+	const hasEventStatus =
+		'status' in event && Object.values(EventStatus).includes(event.status as any);
 	return hasId && hasName && hasStart && hasEnd && hasEventStatus;
 }
-export type StringLarpEvent = Omit<LarpEvent, 'start' | 'end'> &{
+export type StringLarpEvent = Omit<LarpEvent, 'start' | 'end'> & {
 	start: string;
 	end: string;
-}
-export function isStringLarpEvent(event: unknown): event is StringLarpEvent{
-	if(typeof event !== 'object' || event == null ) return false;
-	const hasId = 'id' in event &&
-		(
-			event.id == null ||
-			typeof event.id === 'number'
-		)		
-	const hasName = 'name' in event && typeof event.name === 'string' 
-	const hasStart = 'start' in event && typeof event.start === 'string'
-	const hasEnd = 'end' in event && typeof event.end === 'string'
+};
+export function isStringLarpEvent(event: unknown): event is StringLarpEvent {
+	if (typeof event !== 'object' || event == null) return false;
+	const hasId = 'id' in event && (event.id == null || typeof event.id === 'number');
+	const hasName = 'name' in event && typeof event.name === 'string';
+	const hasStart = 'start' in event && typeof event.start === 'string';
+	const hasEnd = 'end' in event && typeof event.end === 'string';
 	return hasId && hasName && hasStart && hasEnd;
 }

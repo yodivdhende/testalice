@@ -1,8 +1,19 @@
 <script lang="ts">
 	import { CirclePlus } from '@lucide/svelte';
 	import { type PageProps } from './$types';
+	import { dateToHTMLDateTime } from '$lib/utils/time';
+	import type { LarpEvent } from '$lib/db/event.repo';
 
 	let { data }: PageProps = $props();
+    let events: LarpEvent[] = $state([]);
+    $effect(() =>{
+        const {events: loadEvent} = data;
+        events = loadEvent.map(event => ({
+            ...event,
+            start: new Date(event.start),
+            end: new Date(event.end),
+        }) as LarpEvent)
+    })
 </script>
 
 <main>
@@ -14,15 +25,17 @@
 				<th>Name</th>
 				<th>start</th>
 				<th>end</th>
+				<th>status</th>
 			</tr>
 		</thead>
         <tbody>
-            {#each data.events as event}
+            {#each events as event}
                 <tr>
                     <td><a href="events/{event.id}">{event.id}</a></td>
                     <td>{event.name}</td>
-                    <td>{event.start}</td>
-                    <td>{event.end}</td>
+                    <td>{dateToHTMLDateTime(event.start)}</td>
+                    <td>{dateToHTMLDateTime(event.end)}</td>
+                    <td>{event.status}</td>
                 </tr>
             {/each}
         </tbody>
