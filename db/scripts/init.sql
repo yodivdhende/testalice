@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db:3306
--- Gegenereerd op: 18 jul 2025 om 19:34
+-- Gegenereerd op: 26 sep 2025 om 17:25
 -- Serverversie: 8.0.32
 -- PHP-versie: 8.2.8
 
@@ -64,20 +64,43 @@ INSERT INTO `Characters` (`Id`, `Name`, `Owner`) VALUES
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `Character_Implants`
+-- Tabelstructuur voor tabel `Character_Versions`
 --
 
-CREATE TABLE `Character_Implants` (
+CREATE TABLE `Character_Versions` (
   `Id` int NOT NULL,
-  `Character` int DEFAULT NULL,
+  `Character` int NOT NULL,
+  `Name` varchar(254) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Gegevens worden geëxporteerd voor tabel `Character_Versions`
+--
+
+INSERT INTO `Character_Versions` (`Id`, `Character`, `Name`) VALUES
+(1, 1, 'Version 1'),
+(2, 1, 'Version 2'),
+(3, 2, 'Version 1'),
+(4, 3, 'Version 1'),
+(5, 4, 'Version 1');
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `Character_Version_Implants`
+--
+
+CREATE TABLE `Character_Version_Implants` (
+  `Id` int NOT NULL,
+  `CharacterVersion` int DEFAULT NULL,
   `Implant` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Gegevens worden geëxporteerd voor tabel `Character_Implants`
+-- Gegevens worden geëxporteerd voor tabel `Character_Version_Implants`
 --
 
-INSERT INTO `Character_Implants` (`Id`, `Character`, `Implant`) VALUES
+INSERT INTO `Character_Version_Implants` (`Id`, `CharacterVersion`, `Implant`) VALUES
 (1, 1, 1),
 (2, 1, 2),
 (3, 2, 1),
@@ -86,26 +109,51 @@ INSERT INTO `Character_Implants` (`Id`, `Character`, `Implant`) VALUES
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `Character_Items`
+-- Tabelstructuur voor tabel `Character_Version_Items`
 --
 
-CREATE TABLE `Character_Items` (
+CREATE TABLE `Character_Version_Items` (
   `Id` int NOT NULL,
-  `Character` int DEFAULT NULL,
+  `CharacterVersion` int DEFAULT NULL,
   `Item` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Gegevens worden geëxporteerd voor tabel `Character_Items`
+-- Gegevens worden geëxporteerd voor tabel `Character_Version_Items`
 --
 
-INSERT INTO `Character_Items` (`Id`, `Character`, `Item`) VALUES
+INSERT INTO `Character_Version_Items` (`Id`, `CharacterVersion`, `Item`) VALUES
 (1, 1, 1),
 (2, 1, 2),
 (3, 1, 1),
 (4, 2, 1),
 (5, 2, 2),
 (6, 2, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `Character_Version_Skills`
+--
+
+CREATE TABLE `Character_Version_Skills` (
+  `Id` int NOT NULL,
+  `CharacterVersion` int DEFAULT NULL,
+  `Skill` int DEFAULT NULL,
+  `Value` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Gegevens worden geëxporteerd voor tabel `Character_Version_Skills`
+--
+
+INSERT INTO `Character_Version_Skills` (`Id`, `CharacterVersion`, `Skill`, `Value`) VALUES
+(1, 1, 1, 10),
+(2, 1, 2, 40),
+(3, 1, 3, 50),
+(4, 2, 1, 40),
+(5, 2, 2, 30),
+(6, 2, 4, 30);
 
 -- --------------------------------------------------------
 
@@ -136,14 +184,14 @@ INSERT INTO `Events` (`Id`, `Name`, `StartTime`, `EndTime`) VALUES
 CREATE TABLE `Event_Participants` (
   `Event` int NOT NULL,
   `User` int NOT NULL,
-  `Character` int DEFAULT NULL
+  `CharacterVersion` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Gegevens worden geëxporteerd voor tabel `Event_Participants`
 --
 
-INSERT INTO `Event_Participants` (`Event`, `User`, `Character`) VALUES
+INSERT INTO `Event_Participants` (`Event`, `User`, `CharacterVersion`) VALUES
 (1, 1, NULL),
 (1, 2, 1),
 (1, 3, 2),
@@ -380,20 +428,35 @@ ALTER TABLE `Characters`
   ADD KEY `Owner` (`Owner`);
 
 --
--- Indexen voor tabel `Character_Implants`
+-- Indexen voor tabel `Character_Versions`
 --
-ALTER TABLE `Character_Implants`
+ALTER TABLE `Character_Versions`
   ADD PRIMARY KEY (`Id`),
-  ADD KEY `Character` (`Character`),
+  ADD KEY `Character` (`Character`);
+
+--
+-- Indexen voor tabel `Character_Version_Implants`
+--
+ALTER TABLE `Character_Version_Implants`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `CharacterVersion` (`CharacterVersion`),
   ADD KEY `Implant` (`Implant`);
 
 --
--- Indexen voor tabel `Character_Items`
+-- Indexen voor tabel `Character_Version_Items`
 --
-ALTER TABLE `Character_Items`
+ALTER TABLE `Character_Version_Items`
   ADD PRIMARY KEY (`Id`),
-  ADD KEY `Character` (`Character`),
+  ADD KEY `CharacterVersion` (`CharacterVersion`),
   ADD KEY `Item` (`Item`);
+
+--
+-- Indexen voor tabel `Character_Version_Skills`
+--
+ALTER TABLE `Character_Version_Skills`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `CharacterVersion` (`CharacterVersion`),
+  ADD KEY `Skill` (`Skill`);
 
 --
 -- Indexen voor tabel `Events`
@@ -481,15 +544,21 @@ ALTER TABLE `Characters`
   MODIFY `Id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT voor een tabel `Character_Implants`
+-- AUTO_INCREMENT voor een tabel `Character_Versions`
 --
-ALTER TABLE `Character_Implants`
-  MODIFY `Id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+ALTER TABLE `Character_Versions`
+  MODIFY `Id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT voor een tabel `Character_Items`
+-- AUTO_INCREMENT voor een tabel `Character_Version_Items`
 --
-ALTER TABLE `Character_Items`
+ALTER TABLE `Character_Version_Items`
+  MODIFY `Id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT voor een tabel `Character_Version_Skills`
+--
+ALTER TABLE `Character_Version_Skills`
   MODIFY `Id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
@@ -517,12 +586,6 @@ ALTER TABLE `Messages`
   MODIFY `Id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT voor een tabel `Party`
---
-ALTER TABLE `Party`
-  MODIFY `Id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
 -- AUTO_INCREMENT voor een tabel `Skills`
 --
 ALTER TABLE `Skills`
@@ -545,24 +608,16 @@ ALTER TABLE `Users`
 --
 
 --
--- Beperkingen voor tabel `Characters`
+-- Beperkingen voor tabel `Character_Versions`
 --
-ALTER TABLE `Characters`
-  ADD CONSTRAINT `Characters_ibfk_1` FOREIGN KEY (`Owner`) REFERENCES `Users` (`Id`);
+ALTER TABLE `Character_Versions`
+  ADD CONSTRAINT `Character_Versions_Characters` FOREIGN KEY (`Character`) REFERENCES `Characters` (`Id`);
 
 --
--- Beperkingen voor tabel `Character_Implants`
+-- Beperkingen voor tabel `Character_Version_Skills`
 --
-ALTER TABLE `Character_Implants`
-  ADD CONSTRAINT `Character_Implants_ibfk_1` FOREIGN KEY (`Character`) REFERENCES `Characters` (`Id`),
-  ADD CONSTRAINT `Character_Implants_ibfk_2` FOREIGN KEY (`Implant`) REFERENCES `Implants` (`Id`);
-
---
--- Beperkingen voor tabel `Character_Items`
---
-ALTER TABLE `Character_Items`
-  ADD CONSTRAINT `Character_Items_ibfk_1` FOREIGN KEY (`Character`) REFERENCES `Characters` (`Id`),
-  ADD CONSTRAINT `Character_Items_ibfk_2` FOREIGN KEY (`Item`) REFERENCES `Items` (`Id`);
+ALTER TABLE `Character_Version_Skills`
+  ADD CONSTRAINT `Character_Version_Skills_ibfk_1` FOREIGN KEY (`CharacterVersion`) REFERENCES `Character_Versions` (`Id`);
 
 --
 -- Beperkingen voor tabel `Event_Participants`
