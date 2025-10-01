@@ -59,6 +59,40 @@ class SkillRepo {
 		}
 	}
 
+	public async getWithIds(ids: number[]): Promise<Skill[]> {
+		try {
+			const connection = await mysqlconnFn();
+			const [result] = await connection.execute(
+				`
+				SELECT
+					s.Id,
+					s.Name,
+					s.Description,
+					sg.Id,
+					sg.Name
+				FROM Skills s
+				JOIN Skill_Groups sg
+					on s.Group = sg.Id
+				WHERE s.Id in :ids 
+        `,
+				{ids}
+			);
+			if (Array.isArray(result) === false) return [];
+			if (result.length === 0) return [];
+			const skills: Skill[] = [];
+			for (let skillResult of result) {
+				if (isSkill(skillResult)) skills.push(skillResult);
+				else
+					console.error(`%c sql result is not a skill`, `background:red;color:black`, {
+						skillResult
+					});
+			}
+			return skills;
+		} catch (err) {
+			throw err;
+		}
+	}
+
 	public save(item: Skill) {
 		if (item.id == null) return this.create(item);
 		return this.edit(item);
@@ -132,48 +166,6 @@ class SkillRepo {
 		}
 	}
 
-	public async getForCharacter({
-		characterId,
-		eventId
-	}: {
-		characterId: number;
-		eventId: number | undefined;
-	}): Promise<Skill[]> {
-		try {
-			const connection = await mysqlconnFn();
-			const [result] = await connection.execute(
-				`
-				SELECT
-					s.Id,
-					s.Name,
-					s.Description,
-					sg.Id,
-					sg.Name
-				FROM Skills s
-				JOIN Skill_Groups sg
-					on s.Group = sg.Id
-        JOIN Character_Skills cs 
-          ON s.Id = cs.ItemId
-					AND cs.Character = ?
-					${eventId ? 'AND cs.Event = ?' : ''}
-        `,
-				[characterId, eventId]
-			);
-			if (Array.isArray(result) === false) return [];
-			if (result.length === 0) return [];
-			const skills: Skill[] = [];
-			for (let skillResult of result) {
-				if (isSkill(skillResult)) skills.push(skillResult);
-				else
-					console.error(`%c sql result is not a skill`, `background:red;color:black`, {
-						skillResult
-					});
-			}
-			return skills;
-		} catch (err) {
-			throw err;
-		}
-	}
 
 	public async getAllGroups() {
 		try {
@@ -311,13 +303,6 @@ class SkillRepo {
 		}
 	}
 
-	public async addItemToCharacter({
-		item,
-		characterId
-	}: {
-		item: Skill;
-		characterId: number;
-	}): Promise<void> {}
 }
 export const skillRepo = new SkillRepo();
 
