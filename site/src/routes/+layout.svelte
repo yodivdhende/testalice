@@ -1,22 +1,20 @@
 <script lang="ts">
 	import '../app.css';
-	// import Scene from '$lib/components/scene.svelte';
-	// import { Canvas } from '@threlte/core';
-	import backgroundImg from '$lib/assets/images/background.png';
-	import Navigation from '$lib/components/navigation.svelte';
+	import { Canvas } from '@threlte/core';
 	import type { LayoutProps } from './$types';
 	import { sidePanelManager} from '$lib/managers/side-panel-manager.svelte';
 	import { CircleX } from '@lucide/svelte';
+	// import CanvasPortalTarget from '$lib/components/canvas-portal-target.svelte';
+	import Scene from '$lib/scene.svelte';
+	import Navigation from '$lib/components/navigation.svelte';
 
 	let { children}: LayoutProps = $props();
 </script>
 
 <main>
 	<div class="background">
-		<img src={backgroundImg} alt="backgroundImg" />
-		<!-- <Canvas>
-		<Scene></Scene>
-	</Canvas> -->
+		<!-- <img src={backgroundImg} alt="backgroundImg" /> -->
+		<Scene />
 	</div>
 	<header>
 		<Navigation />
@@ -48,6 +46,7 @@
 	.background {
     grid-column: 1 / -1;
     grid-row: 1 / -1;
+		background-color: black;
 	}
 
 	img {

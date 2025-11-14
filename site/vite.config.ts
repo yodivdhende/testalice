@@ -12,5 +12,6 @@ const webSocketServer = {
 }
 
 export default defineConfig({
-	plugins: [sveltekit(), webSocketServer]
+	plugins: [sveltekit(), webSocketServer],
+	assetsInclude: ['**/*.glb'],
 });

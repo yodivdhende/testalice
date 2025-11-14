@@ -38,6 +38,7 @@
 		background-color: black;
 		border-bottom: 1px solid white;
 		font-size: 2rem;
+		z-index: 1;
 	}
 	.navigation-button {
 		display: block;
