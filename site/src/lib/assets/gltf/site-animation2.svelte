@@ -6,25 +6,19 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
 <script lang="ts">
   import { AnimationAction, Group, LoopOnce, Material, Mesh } from 'three'
   import { T } from '@threlte/core'
-  import { interactivity, useCursor, useGltf, useGltfAnimations } from '@threlte/extras'
+  import { interactivity, useGltf, useGltfAnimations } from '@threlte/extras'
   import SiteAnimation from '$lib/assets/gltf/site-animation.glb'
 	import { Spring } from 'svelte/motion';
 
-  let { fallback, error, children, ref = $bindable(), ...props } = $props()
-
+  let { fallback, error, children, ref = $bindable(), ...props} = $props()
   ref = new Group()
-
   const gltf = useGltf<{
     nodes: Record<string, Mesh>,
     materials: Record<string, Material>
   }>(SiteAnimation as string)
-
-  export const { actions, mixer } = useGltfAnimations(gltf, ref)
+  export const { actions, mixer } = useGltfAnimations(gltf, ref);
 
   interactivity();
-  
-  const { onPointerEnter, onPointerLeave} = useCursor();
-
 
   let started = $state(false);
 	const sphereProps = {
@@ -47,12 +41,10 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
 		return {
 			scale,
 			onHover: () => {
-        onPointerEnter();
         if(started === false) return;
         scale.set(1.2);
       },
 			onHoverLeave: ()=> {
-        onPointerLeave();
         if(started === false) return;
         scale.set(1);
       },
@@ -68,6 +60,10 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
     started = true;
 		animateOnce($actions['CameraAction']);
     Object.entries($actions)
+    .map(entry=>{
+      console.log('entry', entry);
+      return entry;
+    })
     .filter(([name, _action]) => name.includes('Move'))
     .forEach(([_, action]) => animateOnce(action));
 	}
@@ -135,8 +131,8 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
         material={gltf.materials.Wireframe}
         position={[0, 1, 0]}
         scale={sphereProps.Sphere01.scale.current}
-        onpointerenter={sphereProps.Sphere01.onHover}
-        onpointerleave={sphereProps.Sphere01.onHoverLeave}
+        onpointerEnter={sphereProps.Sphere01.onHover}
+        onpointerLeave={sphereProps.Sphere01.onHoverLeave}
         onclick={sphereProps.Sphere01.onClick}
       />
       <T.Mesh
@@ -145,8 +141,8 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
         material={gltf.materials.Wireframe}
         position={[0, 1, 0]}
         scale={sphereProps.Sphere02.scale.current}
-        onpointerenter={sphereProps.Sphere02.onHover}
-        onpointerleave={sphereProps.Sphere02.onHoverLeave}
+        onpointerEnter={sphereProps.Sphere02.onHover}
+        onpointerLeave={sphereProps.Sphere02.onHoverLeave}
         onclick={sphereProps.Sphere02.onClick}
       />
       <T.Mesh
@@ -155,8 +151,8 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
         material={gltf.materials.Wireframe}
         position={[0, 1, 0]}
         scale={sphereProps.Sphere03.scale.current}
-        onpointerenter={sphereProps.Sphere03.onHover}
-        onpointerleave={sphereProps.Sphere03.onHoverLeave}
+        onpointerEnter={sphereProps.Sphere03.onHover}
+        onpointerLeave={sphereProps.Sphere03.onHoverLeave}
         onclick={sphereProps.Sphere03.onClick}
       />
       <T.Mesh
@@ -165,8 +161,8 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
         material={gltf.materials.Wireframe}
         position={[0, 1, 0]}
         scale={sphereProps.Sphere04.scale.current}
-        onpointerenter={sphereProps.Sphere04.onHover}
-        onpointerleave={sphereProps.Sphere04.onHoverLeave}
+        onpointerEnter={sphereProps.Sphere04.onHover}
+        onpointerLeave={sphereProps.Sphere04.onHoverLeave}
         onclick={sphereProps.Sphere04.onClick}
       />
       <T.Mesh
@@ -175,8 +171,8 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
         material={gltf.materials.Wireframe}
         position={[0, 1, 0]}
         scale={sphereProps.Sphere05.scale.current}
-        onpointerenter={sphereProps.Sphere05.onHover}
-        onpointerleave={sphereProps.Sphere05.onHoverLeave}
+        onpointerEnter={sphereProps.Sphere05.onHover}
+        onpointerLeave={sphereProps.Sphere05.onHoverLeave}
         onclick={sphereProps.Sphere05.onClick}
       />
       <T.Mesh
@@ -185,8 +181,8 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
         material={gltf.materials.Wireframe}
         position={[0, 1, 0]}
         scale={sphereProps.Sphere06.scale.current}
-        onpointerenter={sphereProps.Sphere06.onHover}
-        onpointerleave={sphereProps.Sphere06.onHoverLeave}
+        onpointerEnter={sphereProps.Sphere06.onHover}
+        onpointerLeave={sphereProps.Sphere06.onHoverLeave}
         onclick={sphereProps.Sphere06.onClick}
       />
       <T.Mesh
@@ -195,8 +191,8 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
         material={gltf.materials.Wireframe}
         position={[0, 1, 0]}
         scale={sphereProps.Sphere07.scale.current}
-        onpointerenter={sphereProps.Sphere07.onHover}
-        onpointerleave={sphereProps.Sphere07.onHoverLeave}
+        onpointerEnter={sphereProps.Sphere07.onHover}
+        onpointerLeave={sphereProps.Sphere07.onHoverLeave}
         onclick={sphereProps.Sphere07.onClick}
       />
       <T.Mesh
