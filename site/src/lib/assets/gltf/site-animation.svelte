@@ -4,10 +4,12 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
 -->
 
 <script lang="ts">
-  import { AnimationAction, Group, LoopOnce, Material, Mesh } from 'three'
-  import { T } from '@threlte/core'
+  import { AnimationAction, Color, Group, LoopOnce, Material, Mesh, MeshBasicMaterial, MeshStandardMaterial, MirroredRepeatWrapping, RepeatWrapping, TextureLoader, Vector2 } from 'three'
+  import { T, useTask } from '@threlte/core'
   import { interactivity, useCursor, useGltf, useGltfAnimations } from '@threlte/extras'
-  import SiteAnimation from '$lib/assets/gltf/site-animation.glb'
+  import SiteAnimation from '$lib/assets/gltf/site-animation.glb';
+  import WorldReverseImage from '$lib/assets/images/WorldReverseBlue.png';
+  import FloorTexture from '$lib/assets/images/Grid.png';
 	import { Spring } from 'svelte/motion';
 
   let { fallback, error, children, ref = $bindable(), ...props } = $props()
@@ -25,8 +27,8 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
   
   const { onPointerEnter, onPointerLeave} = useCursor();
 
-
   let started = $state(false);
+
 	const sphereProps = {
 		Sphere01: createSphere(),
 		Sphere02: createSphere(),
@@ -36,6 +38,8 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
 		Sphere06: createSphere(),
 		Sphere07: createSphere(),
 	} as const;
+
+  const wireframeMaterial = createWorldTexture();
 
 	sphereProps.Sphere01.onClick = () => {
 		start();
@@ -78,28 +82,37 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
 		action.setLoop(LoopOnce, 1).play();
 	}
 
-//   spinSpheres();
+  function createWorldTexture() {
+    const material = new MeshStandardMaterial();
+    const worldTexture = new TextureLoader().load(WorldReverseImage);
+    worldTexture.flipY = false;
+    material.alphaMap = worldTexture;
+    // material.emissiveMap = worldTexture;
+    material.transparent = true;
+    material.emissive = new Color().setRGB(0, 240, 255);
+    material.emissiveIntensity = 1;
+    material.color = new Color().setRGB(0, 240, 255);
+    return material;
+  }
 
-//  function spinSpheres() {
-//     const sphereGroup = createSphereGroup();
-//     if(!sphereGroup) return;
-//     const clip = $actions['Spin']?.getClip();
-//     if(!clip) return;
-//     const spinAction = mixer.clipAction(clip, sphereGroup);
-//     spinAction.play();
-//   }
+  let sphereRotation = $state(0); 
+  useTask((delta)=>{
+    sphereRotation += delta * 0.5;
+  })
 
-//   function createSphereGroup() {
-//     const nodes = $gltf?.nodes;
-//     if(!nodes) return null;
-//     const Objects = Object.entries($gltf?.nodes)
-//       .filter(([name, Object3D]) => name.includes('Sphere'))
-//       .map(([_name, Object3D]) => {
-//         Object3D.rotation.set(0, 0, 0);
-//         return Object3D;
-//     });
-//     return new AnimationObjectGroup(...Objects);
-//   }
+  const floorMaterial = createFloorMaterial();
+  function createFloorMaterial() {
+    const material = new MeshBasicMaterial();
+    const planeTexture = new TextureLoader().load(FloorTexture);
+    const vectorValue = 7;
+    planeTexture.repeat = new Vector2(vectorValue, vectorValue);
+    planeTexture.wrapS = planeTexture.wrapT = MirroredRepeatWrapping;
+    material.map = planeTexture;
+    material.opacity = 0.2;
+    material.transparent = true;
+    return material;
+  }
+
 </script>
 
 <T
@@ -111,7 +124,17 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
     {@render fallback?.()}
   {:then gltf}
     <T.Group name="Scene">
-      <T.PerspectiveCamera
+      <T.OrthographicCamera
+        name="Camera"
+        makeDefault={true}
+        zoom={100}
+        far={100}
+        fov={22.9}
+        near={0.1}
+        position={[7.07, 1, 7.06]}
+        rotation={[0, Math.PI / 4, 0]}
+      />
+      <!-- <T.PerspectiveCamera
         name="Camera"
         makeDefault={true}
         far={100}
@@ -119,7 +142,7 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
         fov={22.9}
         position={[7.07, 1, 7.06]}
         rotation={[0, Math.PI / 4, 0]}
-      />
+      /> -->
       <T.DirectionalLight
         name="Sun"
         intensity={1}
@@ -132,8 +155,9 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
       <T.Mesh
         name="Sphere01"
         geometry={gltf.nodes.Sphere01.geometry}
-        material={gltf.materials.Wireframe}
+        material={wireframeMaterial}
         position={[0, 1, 0]}
+        rotation.y={sphereRotation}
         scale={sphereProps.Sphere01.scale.current}
         onpointerenter={sphereProps.Sphere01.onHover}
         onpointerleave={sphereProps.Sphere01.onHoverLeave}
@@ -142,8 +166,9 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
       <T.Mesh
         name="Sphere02"
         geometry={gltf.nodes.Sphere02.geometry}
-        material={gltf.materials.Wireframe}
+        material={wireframeMaterial}
         position={[0, 1, 0]}
+        rotation.y={sphereRotation}
         scale={sphereProps.Sphere02.scale.current}
         onpointerenter={sphereProps.Sphere02.onHover}
         onpointerleave={sphereProps.Sphere02.onHoverLeave}
@@ -152,8 +177,9 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
       <T.Mesh
         name="Sphere03"
         geometry={gltf.nodes.Sphere03.geometry}
-        material={gltf.materials.Wireframe}
+        material={wireframeMaterial}
         position={[0, 1, 0]}
+        rotation.y={sphereRotation}
         scale={sphereProps.Sphere03.scale.current}
         onpointerenter={sphereProps.Sphere03.onHover}
         onpointerleave={sphereProps.Sphere03.onHoverLeave}
@@ -162,8 +188,9 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
       <T.Mesh
         name="Sphere04"
         geometry={gltf.nodes.Sphere04.geometry}
-        material={gltf.materials.Wireframe}
+        material={wireframeMaterial}
         position={[0, 1, 0]}
+        rotation.y={sphereRotation}
         scale={sphereProps.Sphere04.scale.current}
         onpointerenter={sphereProps.Sphere04.onHover}
         onpointerleave={sphereProps.Sphere04.onHoverLeave}
@@ -172,8 +199,9 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
       <T.Mesh
         name="Sphere05"
         geometry={gltf.nodes.Sphere05.geometry}
-        material={gltf.materials.Wireframe}
+        material={wireframeMaterial}
         position={[0, 1, 0]}
+        rotation.y={sphereRotation}
         scale={sphereProps.Sphere05.scale.current}
         onpointerenter={sphereProps.Sphere05.onHover}
         onpointerleave={sphereProps.Sphere05.onHoverLeave}
@@ -182,8 +210,9 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
       <T.Mesh
         name="Sphere06"
         geometry={gltf.nodes.Sphere06.geometry}
-        material={gltf.materials.Wireframe}
+        material={wireframeMaterial}
         position={[0, 1, 0]}
+        rotation.y={sphereRotation}
         scale={sphereProps.Sphere06.scale.current}
         onpointerenter={sphereProps.Sphere06.onHover}
         onpointerleave={sphereProps.Sphere06.onHoverLeave}
@@ -192,8 +221,9 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
       <T.Mesh
         name="Sphere07"
         geometry={gltf.nodes.Sphere07.geometry}
-        material={gltf.materials.Wireframe}
+        material={wireframeMaterial}
         position={[0, 1, 0]}
+        rotation.y={sphereRotation}
         scale={sphereProps.Sphere07.scale.current}
         onpointerenter={sphereProps.Sphere07.onHover}
         onpointerleave={sphereProps.Sphere07.onHoverLeave}
@@ -202,7 +232,7 @@ Command: npx @threlte/gltf@3.0.0-next.11 ./site-animation.glb
       <T.Mesh
         name="Plane"
         geometry={gltf.nodes.Plane.geometry}
-        material={gltf.materials.Floor}
+        material={floorMaterial}
         scale={58.28}
       />
       <T.Mesh
