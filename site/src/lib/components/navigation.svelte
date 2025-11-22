@@ -1,8 +1,22 @@
 <script lang="ts">
+	import { afterNavigate } from '$app/navigation';
 	import { credentialStore } from '$lib/local-utils/credential-store.svelte';
-	import Dropdown from './dropdown.svelte';
+	import { sectionManager } from '$lib/managers/section-manager.svelte';
 
 	const roles = $derived(credentialStore.roles);
+
+	afterNavigate((navigation) => {
+		console.log(`%c afterNaviation`, `background:lime;color:black`, {
+			from: navigation.from?.url.pathname,
+			to: navigation.to?.url.pathname,
+		});
+		if (navigation.to?.url.pathname === "/") {
+			sectionManager.showSection = false;
+		}
+		else {
+			sectionManager.showSection = true;
+		}
+	})
 </script>
 
 <nav>

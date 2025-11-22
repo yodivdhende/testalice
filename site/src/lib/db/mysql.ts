@@ -6,7 +6,7 @@ export function mysqlconnFn(): Promise<mysql.Connection> {
 
     if (!mysqlconn) {
         mysqlconn = mysql.createConnection({ 
-            host: '127.0.0.1',
+            host: 'localhost',
             port: 3307,
             user: 'yodi',
             password: 'Tester@123',
