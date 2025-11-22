@@ -1,5 +1,6 @@
 import { EventStatus } from '$lib/types/event-status';
 import { dateToSqlstring } from '$lib/utils/time';
+import { stat } from 'fs';
 import { mysqlconnFn } from './mysql';
 
 class EventRepo {
@@ -53,6 +54,35 @@ class EventRepo {
 				if (isLarpEvent(eventResult)) return eventResult;
 			}
 			return;
+		} catch (err) {
+			throw err;
+		}
+	}
+
+	public async getWithStatus(status: EventStatus): Promise<LarpEvent[]> {
+		try {
+			const connection = await mysqlconnFn();
+			const [result] = await connection.execute(`
+                SELECT
+                    Id as id,
+                    Name as name,
+                    StartTime as start,
+                    EndTime as end,
+										Status as status
+                FROM Events
+								WHERE Status = ?
+            `, [status]);
+			if (Array.isArray(result) === false) return [];
+			if (result.length === 0) return [];
+			const events: LarpEvent[] = [];
+			for (let eventResult of result) {
+				if (isLarpEvent(eventResult)) events.push(eventResult);
+				else
+					console.error(`%c sql result is not event`, `background:red;color:black`, {
+						eventResult
+					});
+			}
+			return events;
 		} catch (err) {
 			throw err;
 		}
@@ -151,6 +181,8 @@ class EventRepo {
 			throw err;
 		}
 	}
+
+
 }
 
 export const eventRepo = new EventRepo();

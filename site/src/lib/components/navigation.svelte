@@ -37,6 +37,9 @@
 	{#if roles.includes('user')}
 		<a class="navigation-button" href="/dashboard/characters">Characters</a>
 	{/if}
+	{#if roles.includes('user')}
+		<a class="navigation-button" href="/dashboard/events">Events</a>
+	{/if}
 	{#if roles.includes('admin')}
 		<a class="navigation-button" href="/dashboard/sessions">Sessions</a>
 	{/if}

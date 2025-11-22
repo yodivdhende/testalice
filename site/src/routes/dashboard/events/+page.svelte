@@ -1,6 +1,7 @@
+
 <script lang="ts">
 	import { CirclePlus } from '@lucide/svelte';
-	import { type PageProps } from './$types';
+	import { type PageProps } from '../Events/$types';
 	import { dateToHTMLDateTime } from '$lib/utils/time';
 	import type { LarpEvent } from '$lib/db/event.repo';
 
@@ -25,7 +26,7 @@
 				<th>Name</th>
 				<th>start</th>
 				<th>end</th>
-				<th>status</th>
+        <th>actions</th>
 			</tr>
 		</thead>
         <tbody>
@@ -35,7 +36,7 @@
                     <td>{event.name}</td>
                     <td>{dateToHTMLDateTime(event.start)}</td>
                     <td>{dateToHTMLDateTime(event.end)}</td>
-                    <td>{event.status}</td>
+                    <td><a href="events/{event.id}">sign up</a></td>
                 </tr>
             {/each}
         </tbody>
