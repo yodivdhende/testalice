@@ -44,8 +44,7 @@
   }
 
 	.background {
-    grid-column: 1 / -1;
-    grid-row: 1 / -1;
+		grid-area: section;
 		background-color: black;
 	}
 
@@ -56,6 +55,7 @@
 
     header {
       grid-area: header;
+			background-color: black;
 	}
 
 
