@@ -6,10 +6,6 @@
 	const roles = $derived(credentialStore.roles);
 
 	afterNavigate((navigation) => {
-		console.log(`%c afterNaviation`, `background:lime;color:black`, {
-			from: navigation.from?.url.pathname,
-			to: navigation.to?.url.pathname,
-		});
 		if (navigation.to?.url.pathname === "/") {
 			sectionManager.showSection = false;
 		}

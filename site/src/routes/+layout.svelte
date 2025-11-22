@@ -8,10 +8,6 @@
 	import { sectionManager } from '$lib/managers/section-manager.svelte';
 
 	let { children }: LayoutProps = $props();
-
-    $effect(() => {
-      console.log(`%c showSection`, `background:yellow;color:black`, {showSection: sectionManager.showSection});
-    })
 </script>
 
 <main>
