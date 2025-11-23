@@ -50,7 +50,7 @@ class CharacterVersionRepo {
 		}
 		return characterVersions;
 	}
-
+	
 	public async getItemsforCharacterVersions(
 		ids: number[]
 	): Promise<{ characterVersionId: number; itemId: number }[]> {
@@ -198,9 +198,13 @@ class CharacterVersionRepo {
 		return this.create(characterVersion);
 	}
 
-	public async create(characterVersion: CharacterVersionBare): Promise<number> {}
+	public async create(characterVersion: CharacterVersionBare): Promise<number> {
+		throw new Error('Not implemented');
+	}
 
-	public async update(characterVersion: CharacterVersionBare): Promise<number> {}
+	public async update(characterVersion: CharacterVersionBare): Promise<number> {
+		throw new Error('Not implemented');
+	}
 
 	public async delete(characterVersionId: number): Promise<void> {
 		await Promise.all([
