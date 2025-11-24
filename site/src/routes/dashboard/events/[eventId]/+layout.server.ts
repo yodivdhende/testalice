@@ -20,7 +20,6 @@ export const load: LayoutServerLoad= async ({ params, fetch, url}) => {
 			characterId: url.searchParams.get('character'),
 			fetch,
 		})
-
 	
 		return {
 			event: event.status === 'fulfilled' ? event.value : null,
@@ -51,7 +50,8 @@ async function getCharacters({fetch}: {fetch: Fetch}): Promise<Character[]> {
 // }
  
 async function getSkills({fetch}: {fetch: Fetch}): Promise<Skill[]> {
-		return (await fetch(`/api/skills/groups`,{method: 'GET'})).json() ?? [];
+		const skills = await (await fetch(`/api/skills`,{method: 'GET'})).json();
+		return skills ?? [];
 }
 
 async function getCharacterVersion({characterId, eventId, fetch}: {characterId: unknown, eventId: unknown, fetch: Fetch}): Promise<CharacterVersionBare | undefined>{

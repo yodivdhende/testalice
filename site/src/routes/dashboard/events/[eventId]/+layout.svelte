@@ -6,10 +6,13 @@
 	import { ArrowLeft } from '@lucide/svelte';
 	import type { CharacterVersionBare } from '$lib/db/character_version.repo';
 	import { page } from '$app/state';
+	import type { Skill } from '$lib/db/skills.repo';
+	import SkillsOverview from '$lib/components/skills-overview.svelte';
 
 	let { data, children }: LayoutProps = $props();
 	let event: LarpEvent | null = data.event;
 	let characters: Character[] = data.characters;
+	let skills: Skill[] = data.skills;
 	let selectedCharacterId: string | null = $state(page.url.searchParams.get('character'));
 	let selectedCharacterVersion: CharacterVersionBare | undefined = data.characterVerion;
 
@@ -46,16 +49,17 @@
 			</select>
 			<dl>
 				<dt>
-					<h2><a onclick={() => goToShop('skills')}>Skills</a></h2>
+					<h2><button onclick={() => goToShop('skills')}>Skills</button></h2>
 				</dt>
 				<dd>
+					<SkillsOverview {skills} />
 				</dd>
 				<dt>
-					<h2><a onclick={() => goToShop('implants')}>Implants</a></h2>
+					<h2><button onclick={() => goToShop('implants')}>Implants</button></h2>
 				</dt>
 				<dd></dd>
 				<dt>
-					<h2><a onclick={() => goToShop('items')}>Items</a></h2>
+					<h2><button onclick={() => goToShop('items')}>Items</button></h2>
 				</dt>
 				<dd></dd>
 			</dl>
@@ -89,10 +93,12 @@
 		font-size: 1.5em;
 	}
 
-	h2 {
+	h2 button {
 		font-size: 1.2em;
 		margin: 8px 0;
+		width: 100%;
 	}
+
 
 	.event-header {
 		grid-area: header;

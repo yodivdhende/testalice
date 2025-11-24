@@ -1,7 +1,7 @@
 
 <script lang="ts">
 	import { CirclePlus } from '@lucide/svelte';
-	import { type PageProps } from '../Events/$types';
+	import { type PageProps } from './$types';
 	import { dateToHTMLDateTime } from '$lib/utils/time';
 	import type { LarpEvent } from '$lib/db/event.repo';
 
