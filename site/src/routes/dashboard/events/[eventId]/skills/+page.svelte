@@ -13,7 +13,6 @@
 	let groups = $derived(groupSkills(skills));
 
 	$effect(() => {
-		console.log('currentCharacterSkillsGrouped',currentCharacterSkillsGrouped);
 		characterSkills.forEach((skill) => {
 			Object.values(currentCharacterSkillsGrouped).forEach((group) => {
 				if (group.skills[skill.id] == null) return;
