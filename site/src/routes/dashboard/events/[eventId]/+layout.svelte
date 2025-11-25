@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto, invalidate } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import type { LayoutProps } from './$types';
 	import type { LarpEvent } from '$lib/db/event.repo';
 	import type { Character } from '$lib/db/character.repo';
@@ -24,11 +24,7 @@
 
 	
 	$effect(()=> {
-		console.log('incoming characterVersion', data.characterVersion);
-		if (data.characterVersion == null) {
-			characterVerion = undefined;
-			return;
-		}
+		if (data.characterVersion == null) return;
 		characterVerion = data.characterVersion;
 	})
 
@@ -37,7 +33,10 @@
 	}
 
 	function goToShop(shop: 'skills' | 'implants' | 'items') {
-		goto(`/dashboard/events/${event?.id}/${shop}`);
+		const pathSegments = page.url.pathname.split('/')
+			.filter((_, i) => i <= 3)
+			.join('/')
+		goto(`${pathSegments}/${shop}${page.url.search}`);
 	}
 </script>
 
