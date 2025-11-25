@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { goto, invalidate } from '$app/navigation';
 	import type { LayoutProps } from './$types';
 	import type { LarpEvent } from '$lib/db/event.repo';
 	import type { Character } from '$lib/db/character.repo';
@@ -14,13 +14,23 @@
 	let characters: Character[] = data.characters;
 	let skills: Skill[] = data.skills;
 	let selectedCharacterId: string | null = $state(page.url.searchParams.get('character'));
-	let selectedCharacterVersion: CharacterVersionBare | undefined = data.characterVerion;
+	let characterVerion: CharacterVersionBare | undefined = $state(undefined);
 
 	$effect(() => {
 		if (selectedCharacterId == null) return;
 		if (page.url.searchParams.get('character') == selectedCharacterId) return;
 		goto(`?character=${selectedCharacterId}`);
 	});
+
+	
+	$effect(()=> {
+		console.log('incoming characterVersion', data.characterVersion);
+		if (data.characterVersion == null) {
+			characterVerion = undefined;
+			return;
+		}
+		characterVerion = data.characterVersion;
+	})
 
 	async function goBack() {
 		await goto('.');
@@ -47,22 +57,36 @@
 					<option value={character.id}>{character.name}</option>
 				{/each}
 			</select>
-			<dl>
-				<dt>
-					<h2><button onclick={() => goToShop('skills')}>Skills</button></h2>
-				</dt>
-				<dd>
-					<SkillsOverview {skills} />
-				</dd>
-				<dt>
-					<h2><button onclick={() => goToShop('implants')}>Implants</button></h2>
-				</dt>
-				<dd></dd>
-				<dt>
-					<h2><button onclick={() => goToShop('items')}>Items</button></h2>
-				</dt>
-				<dd></dd>
-			</dl>
+			{#if characterVerion}
+				<dl>
+					<dt>
+						<h2><button onclick={() => goToShop('skills')}>Skills</button></h2>
+					</dt>
+					<dd>
+						<SkillsOverview {skills} values={characterVerion.skills} />
+					</dd>
+					<dt>
+						<h2><button onclick={() => goToShop('implants')}>Implants</button></h2>
+					</dt>
+					<dd>
+						<ul>
+							{#each characterVerion.implants as implant}
+								<li>{implant}</li>
+							{/each}
+						</ul>
+					</dd>
+					<dt>
+						<h2><button onclick={() => goToShop('items')}>Items</button></h2>
+					</dt>
+					<dd>
+						<ul>
+							{#each characterVerion.items as item}
+								<li>{item}</li>
+							{/each}
+						</ul>
+					</dd>
+				</dl>
+			{/if}
 		</aside>
 		<section>
 			{@render children()}
@@ -98,7 +122,6 @@
 		margin: 8px 0;
 		width: 100%;
 	}
-
 
 	.event-header {
 		grid-area: header;

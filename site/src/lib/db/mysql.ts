@@ -10,7 +10,8 @@ export function mysqlconnFn(): Promise<mysql.Connection> {
             port: 3307,
             user: 'yodi',
             password: 'Tester@123',
-            database: 'testaliceDB'
+            database: 'testaliceDB',
+            namedPlaceholders: true,
         });
     }
 

@@ -3,9 +3,9 @@ import { NoAccesRequest, RequestError, UnAutherizedRequestError } from "$lib/typ
 import type { UserRole } from "$lib/types/roles";
 import { error } from "@sveltejs/kit";
 
-export async function handleRequest<T>(cb: () => Promise<T>) {
+export function handleRequest<T>(cb: () => Promise<T>): Promise<T> {
     try {
-        return await cb();
+        return cb();
     } catch (err) {
         if(err instanceof RequestError) return err.getError();
         return error(500, `${err}`);
@@ -28,4 +28,12 @@ export async function authGuardForUser<T extends UserRole[]>(token:string, Roles
     const commonRoles: T = Roles.filter(role => roles.includes(role)) as T;
     if(commonRoles.length === 0) throw new NoAccesRequest();
     return {userId: userId, roles: commonRoles};
+}
+
+export function valueOrLogOfPromiseSetteld<T>(result: PromiseSettledResult<T>): T | null {
+    if(result.status === 'rejected'){
+        console.error(result.reason);
+        return null;
+    } 
+    return result.value;
 }

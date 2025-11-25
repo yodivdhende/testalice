@@ -8,8 +8,8 @@ import { json, type RequestHandler } from '@sveltejs/kit';
 export const GET: RequestHandler = async ({ cookies, params }) => {
 	return handleRequest(async () => {
 		await authGuardForUser(getSessionToken(cookies), ['admin']);
-        const { id } = params;
-		const numberId = isNumberOrError(id);
+        const { id: eventId } = params;
+		const numberId = isNumberOrError(eventId);
 		const event = await eventRepo.getWithId(numberId);
 		if(event == null) throw new NotFoundRequest();
 		return json(event);
@@ -19,8 +19,8 @@ export const GET: RequestHandler = async ({ cookies, params }) => {
 export const DELETE: RequestHandler = async ({ cookies, params}) => {
 	return handleRequest(async () => {
 		await authGuard(getSessionToken(cookies), ['admin']);
-		const { id } = params;
-		const numberId = isNumberOrError(id);
+		const { id: eventId } = params;
+		const numberId = isNumberOrError(eventId);
         eventRepo.delete({id: numberId});
 		return new Response();
 	});
@@ -29,8 +29,8 @@ export const DELETE: RequestHandler = async ({ cookies, params}) => {
 export const POST: RequestHandler = async ({cookies, params, request}) => {
 	return handleRequest(async ()=> {
 		await authGuard(getSessionToken(cookies), ['admin']);
-		const {id} = params;
-		isNumberOrError(id);
+		const {id: eventId} = params;
+		isNumberOrError(eventId);
 		const body = await request.json();
 		const event = {
 			...body,

@@ -2,24 +2,23 @@ import { isCharacter, type Character } from './character.repo';
 import { mysqlconnFn } from './mysql';
 
 class EventParticipatnsRepo {
-
 	public async participate({
 		eventId,
 		userId,
-		characterId
+		characterVersionId
 	}: {
 		eventId: number;
 		userId: number;
-		characterId: number;
+		characterVersionId: number;
 	}) {
 		try {
 			const connection = await mysqlconnFn();
 			await connection.execute(
 				`
-                INSERT Event_Participants (Event, User, Character)
-                VALUES (?,?,?)
-            `,
-				[eventId, userId, characterId]
+          INSERT Event_Participants (Event, User, CharacterVersion)
+          VALUES (:eventId,userId,characterVersionId)
+        `,
+				{ eventId, userId, characterVersionId }
 			);
 		} catch (err) {
 			throw err;
@@ -28,20 +27,20 @@ class EventParticipatnsRepo {
 
 	public async withdraw({
 		eventId,
-		characterId
+		characterVersionId
 	}: {
 		eventId: number;
-		characterId: number;
+		characterVersionId: number;
 	}) {
 		try {
 			const connection = await mysqlconnFn();
 			await connection.execute(
 				`
                 DELETE Event_Participants 
-                WHERE EventId = ?
-                AND CharacterId = ? 
+                WHERE EventId = :eventId
+                AND CharacterId = :characterVersionId
             `,
-				[eventId, characterId]
+				{ eventId, characterVersionId }
 			);
 		} catch (err) {
 			throw err;
@@ -53,19 +52,21 @@ class EventParticipatnsRepo {
 			const connection = await mysqlconnFn();
 			const [result] = await connection.execute(
 				`
-	                SELECT
-		                c.Id as id,
-		                c.Name as name,
-		                c.Owner as ownerId,
-		                u.Name as ownerName,
-	                FROM Characters c 
-	                JOIN Users u
-		                on u.id = c.id
-                    JOIN Event_Participants ep
-                        on ep.characterId = c.Id
-                    WHERE ep.EventId = ?
-            `,
-				[eventId]
+					SELECT
+						c.Id as id,
+						c.Name as name,
+						u.Id as ownerId,
+						u.Name as ownerName,
+					FROM Event_Participants ep 
+					JOIN Character_Versions cv
+						on cv.Id = ep.CharacterVersion
+					JOIN Characters c
+						on c.id = cv.Character
+					JOIN Users u
+						on u.Id = ep.User
+					WHERE ep.EventId = :eventId
+        `,
+				{ eventId }
 			);
 			if (Array.isArray(result) === false) return [];
 			if (result.length === 0) return [];
@@ -73,7 +74,9 @@ class EventParticipatnsRepo {
 			for (let characterResult of result) {
 				if (isCharacter(characterResult)) characters.push(characterResult);
 				else
-					console.error(`%c sql result is not a character`, `background:red;color:black`, { characterResult });
+					console.error(`%c sql result is not a character`, `background:red;color:black`, {
+						characterResult
+					});
 			}
 			return characters;
 		} catch (err) {
@@ -81,31 +84,40 @@ class EventParticipatnsRepo {
 		}
 	}
 
-	public async getPerticipant({ eventId, characterId}: { eventId: number, characterId: number }): Promise<EventParticapant | undefined> {
+	public async getParticipantForCharacter({
+		eventId,
+		characterId
+	}: {
+		eventId: number;
+		characterId: number;
+	}): Promise<EventParticapant | undefined> {
 		try {
 			const connection = await mysqlconnFn();
 			const [result] = await connection.execute(
 				`
-	                SELECT
-									  ep.EventId as eventId,
-									  ep.UserId as userId,
-									  ep.CharacterVersion as characterVerion
-	                FROM Event_Participants  ep
-                  WHERE ep.EventId = :eventId
-										AND ep.CharacterId = :characterId
-            `,
-				{eventId, characterId}
+	        SELECT
+						ep.Event as eventId,
+						ep.User as userId,
+						ep.CharacterVersion as characterVersion
+	        FROM Event_Participants  ep
+					JOIN Character_Versions cv
+						ON cv.Id = ep.CharacterVersion
+          WHERE ep.Event = :eventId
+						AND cv.Character = :characterId
+        `,
+				{ eventId, characterId }
 			);
 			if (Array.isArray(result) === false) return undefined;
 			if (result.length === 0) return undefined;
 			const [participantResult] = result;
 			if (isEventParticapant(participantResult)) return participantResult;
-			console.error(`%c sql result is not an participant`, `background:red;color:black`, { character: participantResult});
+			console.error(`%c sql result is not an participant`, `background:red;color:black`, {
+				character: participantResult
+			});
 		} catch (err) {
 			throw err;
 		}
 	}
-	
 }
 
 export const eventParticipantsRepo = new EventParticipatnsRepo();
@@ -113,15 +125,18 @@ export const eventParticipantsRepo = new EventParticipatnsRepo();
 export type EventParticapant = {
 	eventId: number;
 	userId: number;
-	characterVerion: number
-}
+	characterVersion: number;
+};
+
 export function isEventParticapant(particiapant: unknown): particiapant is EventParticapant {
-	return typeof particiapant=== 'object'
-	&& particiapant != null
-	&& 'eventId' in particiapant
-	&& typeof particiapant.eventId === 'number'
-	&& 'userId' in particiapant
-	&& typeof particiapant.userId === 'number'
-	&& 'characterVerion' in particiapant
-	&& typeof particiapant.characterVerion === 'number'
+	return (
+		typeof particiapant === 'object' &&
+		particiapant != null &&
+		'eventId' in particiapant &&
+		typeof particiapant.eventId === 'number' &&
+		'userId' in particiapant &&
+		typeof particiapant.userId === 'number' &&
+		'characterVersion' in particiapant &&
+		typeof particiapant.characterVersion === 'number'
+	);
 }

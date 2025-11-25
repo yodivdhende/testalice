@@ -1,3 +1,4 @@
+import { valueOrLogOfPromiseSetteld } from '$lib/utils/request';
 import { mysqlconnFn } from './mysql';
 
 class CharacterVersionRepo {
@@ -12,7 +13,7 @@ class CharacterVersionRepo {
       `);
 		if (Array.isArray(results) === false) return [];
 		if (results.length === 0) return [];
-		const ids = results.map(([id]) => id).filter((id) => typeof id === 'number');
+		const ids = results.map(({ id }) => id).filter((id) => typeof id === 'number');
 		const [items, implants, skills] = await Promise.allSettled([
 			this.getItemsforCharacterVersions(ids),
 			this.getImplantsforCharacterVersions(ids),
@@ -26,13 +27,13 @@ class CharacterVersionRepo {
 			if ('name' in characterItem === false || typeof characterItem.name != 'string') continue;
 			characterVersions.push({
 				id: characterItem.id,
-				name: characterItem.name,
 				characterId: characterItem.charaacterId,
+				name: characterItem.name,
 				skills:
 					skills.status === 'fulfilled'
 						? skills.value
 								.filter(({ characterVersionId }) => characterVersionId, characterItem.characterId)
-								.map(({ skillId, value }) => ({ skillId, value }))
+								.map(({ skillId, value }) => ({ id: skillId, value }))
 						: [],
 				items:
 					items.status === 'fulfilled'
@@ -50,18 +51,52 @@ class CharacterVersionRepo {
 		}
 		return characterVersions;
 	}
-	
+
+	public save(characterVersion: CharacterVersionBare): Promise<number> {
+		if (characterVersion.id != null) return this.update(characterVersion);
+		return this.create(characterVersion);
+	}
+
+	public async create(characterVerion: CharacterVersionBare): Promise<number> {
+		const connection = await mysqlconnFn();
+		const [results] = await connection.execute(
+			` 
+				INSERT INTO Character_Versions (Character, Name)
+				VALUES (:characterId, :name)
+			`,
+			{
+				characterId: characterVerion.id,
+				name: characterVerion.name
+			}
+		);
+		console.log('New Character Version', results);
+		return 0;
+	}
+
+	public async update(characterVersion: CharacterVersionBare): Promise<number> {
+		throw new Error('Not implemented');
+	}
+
+	public async delete(characterVersionId: number): Promise<void> {
+		await Promise.all([
+			await this.deleteItems(characterVersionId),
+			await this.deleteImplants(characterVersionId),
+			await this.deleteSkills(characterVersionId)
+		]);
+		await this.deleteCharacterVerion(characterVersionId);
+	}
+
 	public async getItemsforCharacterVersions(
 		ids: number[]
 	): Promise<{ characterVersionId: number; itemId: number }[]> {
 		const connection = await mysqlconnFn();
-		const [result] = await connection.execute(
+		const [result] = await connection.query(
 			`
       SELECT 
-        cvit.CharacterVersion as characterVerionId
-        cvit.Item as itemId,
+        cvit.CharacterVersion as characterVersionId,
+        cvit.Item as itemId
       FROM Character_Version_Items cvit
-      WHERE cvit.CharacterVersion in :ids
+      WHERE cvit.CharacterVersion in (:ids)
       `,
 			{ ids }
 		);
@@ -81,13 +116,13 @@ class CharacterVersionRepo {
 		ids: number[]
 	): Promise<{ characterVersionId: number; implantId: number }[]> {
 		const connection = await mysqlconnFn();
-		const [result] = await connection.execute(
+		const [result] = await connection.query(
 			`
       SELECT 
-        cvim.CharacterVerion as characterVersion,
-        cvim.Implant as implant
+        cvim.CharacterVersion as characterVersionId,
+        cvim.Implant as implantId
       FROM Character_Version_Implants cvim
-      WHERE cvim.CharacterVersion in :ids
+      WHERE cvim.CharacterVersion in (:ids)
       `,
 			{ ids }
 		);
@@ -107,14 +142,14 @@ class CharacterVersionRepo {
 		ids: number[]
 	): Promise<{ characterVersionId: number; skillId: number; value: number }[]> {
 		const connection = await mysqlconnFn();
-		const [result] = await connection.execute(
+		const [result] = await connection.query(
 			`
       SELECT 
-        cvs.CharacterVerion as characterVersion,
-        cvs.Skill as skill,
+        cvs.CharacterVersion as characterVersionId,
+        cvs.Skill as skillId,
         cvs.Value as value
       FROM Character_Version_Skills cvs
-      WHERE cvs.CharacterVersion in :ids
+      WHERE cvs.CharacterVersion in (:ids)
       `,
 			{ ids }
 		);
@@ -135,22 +170,52 @@ class CharacterVersionRepo {
 		return skills;
 	}
 
+	public async saveSkills({
+		versionId,
+		skills
+	}: {
+		versionId: number;
+		skills: CharacterVerionSkill[];
+	}) {
+		this.deleteSkills(versionId);
+		const connection = await mysqlconnFn();
+		const [result] = await connection.execute(
+			`
+				INSERT INTO Character_Version_Skills (CharacterVersion, Skill, Value)
+				VALUES ?
+			`,
+			[skills.map((skill) => [versionId, skill.id, skill.value])]
+		);
+	}
+
+	private async deleteSkills(versionId: number): Promise<void> {
+		const connection = await mysqlconnFn();
+		await connection.execute(
+			`
+			DELETE
+      FROM Character_Version_Skills cvs
+      WHERE cvs.CharacterVersion in :charcterVerionId
+      `,
+			{ charcterVerionId: versionId }
+		);
+	}
+
 	public async getWithdIds(ids: number[]): Promise<CharacterVersionBare[]> {
 		const connection = await mysqlconnFn();
-		const [results] = await connection.execute(
+		const [results] = await connection.query(
 			`
       SELECT 
         cv.Id as id, 
         cv.Character as characterId,
-        cv.Name as name,
+				cv.Name as name
       FROM Character_Versions cv
-      WHERE cv.id in :ids
+      WHERE cv.id in (:ids)
       `,
 			{ ids }
 		);
 		if (Array.isArray(results) === false) return [];
 		if (results.length === 0) return [];
-		const existingIds = results.map(([id]) => id).filter((id) => typeof id === 'number');
+		const existingIds = results.map(({ id }) => id).filter((id) => typeof id === 'number');
 		const [items, implants, skills] = await Promise.allSettled([
 			this.getItemsforCharacterVersions(existingIds),
 			this.getImplantsforCharacterVersions(existingIds),
@@ -164,26 +229,20 @@ class CharacterVersionRepo {
 			if ('name' in characterItem === false || typeof characterItem.name != 'string') continue;
 			characterVersions.push({
 				id: characterItem.id,
+				characterId: characterItem.characterId,
 				name: characterItem.name,
-				characterId: characterItem.charaacterId,
 				skills:
-					skills.status === 'fulfilled'
-						? skills.value
-								.filter(({ characterVersionId }) => characterVersionId, characterItem.characterId)
-								.map(({ skillId, value }) => ({ skillId, value }))
-						: [],
+					valueOrLogOfPromiseSetteld(skills)
+						?.filter(({ characterVersionId }) => characterVersionId === characterItem.id)
+						.map(({ skillId, value }) => ({ id: skillId, value })) ?? [],
 				items:
-					items.status === 'fulfilled'
-						? items.value
-								.filter(({ characterVersionId }) => characterVersionId, characterItem.characterId)
-								.map(({ itemId }) => itemId)
-						: [],
+					valueOrLogOfPromiseSetteld(items)
+								?.filter(({ characterVersionId }) => characterVersionId === characterItem.id)
+								.map(({ itemId }) => itemId) ?? [],
 				implants:
-					implants.status === 'fulfilled'
-						? implants.value
-								.filter(({ characterVersionId }) => characterVersionId, characterItem.characterId)
-								.map(({ implantId }) => implantId)
-						: []
+					valueOrLogOfPromiseSetteld(implants)
+								?.filter(({ characterVersionId }) => characterVersionId === characterItem.id)
+								.map(({ implantId }) => implantId) ?? []
 			});
 		}
 		return characterVersions;
@@ -191,28 +250,6 @@ class CharacterVersionRepo {
 
 	public async getWithId(id: number): Promise<CharacterVersionBare | undefined> {
 		return (await this.getWithdIds([id]))[0];
-	}
-
-	public save(characterVersion: CharacterVersionBare): Promise<number> {
-		if (characterVersion.id != null) return this.update(characterVersion);
-		return this.create(characterVersion);
-	}
-
-	public async create(characterVersion: CharacterVersionBare): Promise<number> {
-		throw new Error('Not implemented');
-	}
-
-	public async update(characterVersion: CharacterVersionBare): Promise<number> {
-		throw new Error('Not implemented');
-	}
-
-	public async delete(characterVersionId: number): Promise<void> {
-		await Promise.all([
-			await this.deleteItems(characterVersionId),
-			await this.deleteImplants(characterVersionId),
-			await this.deleteSkills(characterVersionId),
-			await this.deleteCharacterVerion(characterVersionId)
-		]);
 	}
 
 	private async deleteCharacterVerion(characterVersionId: number): Promise<void> {
@@ -250,29 +287,30 @@ class CharacterVersionRepo {
 			{ characterVerionId }
 		);
 	}
-
-	private async deleteSkills(charcterVerionId: number): Promise<void> {
-		const connection = await mysqlconnFn();
-		await connection.execute(
-			`
-			DELETE
-      FROM Character_Version_Skills cvs
-      WHERE cvs.CharacterVersion in :charcterVerionId
-      `,
-			{ charcterVerionId }
-		);
-	}
 }
 export const characterVersionRepo = new CharacterVersionRepo();
 
+export type CharacterVerionSkill = {
+	id: number;
+	value: number;
+};
+
+export function isCharacterVersionSkill(skill: unknown): skill is CharacterVerionSkill {
+	return (
+		typeof skill === 'object' &&
+		skill != null &&
+		'id' in skill &&
+		typeof skill.id === 'number' &&
+		'value' in skill &&
+		typeof skill.value === 'number'
+	);
+}
+
 export type CharacterVersionBare = {
 	id: number | null;
-	name: string;
 	characterId: number;
-	skills: {
-		skillId: number;
-		value: number;
-	}[];
+	name: string;
+	skills: CharacterVerionSkill[];
 	items: number[];
 	implants: number[];
 };
@@ -289,16 +327,7 @@ export function isCharacterVersionBare(value: unknown): value is CharacterVersio
 		typeof value.characterId === 'number' &&
 		'skills' in value &&
 		Array.isArray(value.skills) &&
-		value.skills.every((skill) => {
-			return (
-				typeof skill === 'object' &&
-				skill != null &&
-				'skillId' in skill &&
-				typeof skill.skillId === 'number' &&
-				'value' in skill &&
-				typeof skill.value === 'number'
-			);
-		}) &&
+		value.skills.every(isCharacterVersionSkill) &&
 		'items' in value &&
 		Array.isArray(value.items) &&
 		value.items.every((item) => typeof item === 'number') &&
