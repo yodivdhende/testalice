@@ -52,6 +52,7 @@
 		border-bottom: 1px solid white;
 		font-size: 2rem;
 	}
+
 	.navigation-button {
 		display: block;
 		background-color: black;
@@ -64,6 +65,7 @@
 		border-top: none;
 		font-size: 1em;
 	}
+
 	.navigation-button:hover {
 		background-color: darkslategray;
 	}
@@ -77,6 +79,11 @@
 	.dropdown-header ul {
 		position: absolute;
 		opacity: 0;
+		display: none;
+	}
+
+	.dropdown-header:hover ul {
+		display: block;
 	}
 
 	.dropdown-header > .navigation-button:focus + ul {
