@@ -69,7 +69,7 @@ class CharacterVersionRepo {
 				name: characterVerion.name
 			}
 		);
-		console.log('New Character Version', results);
+		console.log('create version', results);
 		return 0;
 	}
 
@@ -179,7 +179,7 @@ class CharacterVersionRepo {
 	}) {
 		this.deleteSkills(versionId);
 		const connection = await mysqlconnFn();
-		const [result] = await connection.execute(
+		const [result] = await connection.query(
 			`
 				INSERT INTO Character_Version_Skills (CharacterVersion, Skill, Value)
 				VALUES ?
@@ -190,11 +190,11 @@ class CharacterVersionRepo {
 
 	private async deleteSkills(versionId: number): Promise<void> {
 		const connection = await mysqlconnFn();
-		await connection.execute(
+		await connection.query(
 			`
 			DELETE
       FROM Character_Version_Skills cvs
-      WHERE cvs.CharacterVersion in :charcterVerionId
+      WHERE cvs.CharacterVersion in (:charcterVerionId)
       `,
 			{ charcterVerionId: versionId }
 		);
@@ -254,11 +254,11 @@ class CharacterVersionRepo {
 
 	private async deleteCharacterVerion(characterVersionId: number): Promise<void> {
 		const connection = await mysqlconnFn();
-		await connection.execute(
+		await connection.query(
 			`
 			DELETE
       FROM Character_Version cv
-      WHERE cv.CharacterVersion in :characterVersionId
+      WHERE cv.CharacterVersion in (:characterVersionId)
       `,
 			{ characterVersionId }
 		);
@@ -266,11 +266,11 @@ class CharacterVersionRepo {
 
 	public async deleteItems(characterVersionId: number): Promise<void> {
 		const connection = await mysqlconnFn();
-		await connection.execute(
+		await connection.query(
 			`
 			DELETE
       FROM Character_Version_Items cvit
-      WHERE cvit.CharacterVersion in :characterVersionId
+      WHERE cvit.CharacterVersion in (:characterVersionId)
       `,
 			{ characterVersionId }
 		);
@@ -278,11 +278,11 @@ class CharacterVersionRepo {
 
 	public async deleteImplants(characterVerionId: number): Promise<void> {
 		const connection = await mysqlconnFn();
-		await connection.execute(
+		await connection.query(
 			`
 			DELETE
       FROM Character_Version_Implants cvim
-      WHERE cvim.CharacterVersion in :characterVerionId
+      WHERE cvim.CharacterVersion in (:characterVerionId)
       `,
 			{ characterVerionId }
 		);

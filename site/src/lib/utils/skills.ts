@@ -1,4 +1,3 @@
-import type { CharacterVerionSkill } from "$lib/db/character_version.repo";
 import type { Skill } from "$lib/db/skills.repo";
 
 export function groupSkills(skills: Skill[] | null) {
@@ -26,7 +25,7 @@ export function createNewCharacterVersionSkillGroup(skills: Skill[]|null) {
 	if(skills == null)return [];
 
 		const groups: Record<number, {
-			skills: Record<number, number>,
+			skills: Record<number, {value: number}>,
 			total: number,
 		}> = {};
 
@@ -34,11 +33,13 @@ export function createNewCharacterVersionSkillGroup(skills: Skill[]|null) {
 				const group = groups[skill.groupId];
 				if(group == null) {
 					groups[skill.groupId] = {
-						skills: {[skill.id??0]: 0},
+						skills: {
+							[skill.id??0]: { value: 0}
+						},
 						total: 0,
 					}	;
 				} else {
-					groups[skill.groupId].skills[skill.id??0] = 0;
+					groups[skill.groupId].skills[skill.id??0] = {value: 0};
 					groups[skill.groupId].total = 0;
 				}
 		});

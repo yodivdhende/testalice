@@ -8,21 +8,23 @@
 	let { data }: PageProps = $props();
 	let skills = data.skills;
 	let characterSkills = data.characterSkills;
+	let characterVersionId = data.characterVerionId;
 	let currentCharacterSkillsGrouped = $state(createNewCharacterVersionSkillGroup(skills));
 	let groups = $derived(groupSkills(skills));
 
 	$effect(() => {
+		console.log('currentCharacterSkillsGrouped',currentCharacterSkillsGrouped);
 		characterSkills.forEach((skill) => {
 			Object.values(currentCharacterSkillsGrouped).forEach((group) => {
 				if (group.skills[skill.id] == null) return;
-				group.skills[skill.id] = skill.value;
+				group.skills[skill.id].value = skill.value;
 			});
 		});
 	});
 
 	$effect(() => {
 		Object.values(currentCharacterSkillsGrouped).forEach((group) => {
-			group.total = Object.values(group.skills).reduce((total, value) => total + value, 0);
+			group.total = Object.values(group.skills).reduce((total, skill) => total + skill.value, 0);
 		});
 	});
 
@@ -30,10 +32,11 @@
     const data = new FormData();
 		const skills = JSON.stringify(Object.values(currentCharacterSkillsGrouped).flatMap(({ skills }) =>
 			Object.entries(skills)
-      .filter(([_, value]) => value > 0)
-      .map(([key, value]) => ({ id: key, value }))
+      .filter(([_, skill]) => skill.value > 0)
+      .map(([key, skill]) => ({ id: key, value: skill.value}))
 		));
-    data.set('skills', JSON.stringify(skills));
+    data.set('skills', skills);
+		data.set('characterVersionId', JSON.stringify(characterVersionId));
     await fetch(event.currentTarget.action, {
       method: 'POST',
       body: data,
@@ -49,7 +52,7 @@
       <div class="skill">
         <p>{skill.name}</p>
         {#if skill.id}
-          <SkillSlider bind:value={currentCharacterSkillsGrouped[group.id].skills[skill.id]} />
+          <SkillSlider bind:value={currentCharacterSkillsGrouped[group.id].skills[skill.id].value} />
         {/if}
       </div>
     {/each}

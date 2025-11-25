@@ -22,8 +22,6 @@ export const load: LayoutServerLoad= async ({ params, fetch, url}) => {
 			eventId, characterId, fetch,
 		})
 
-		console.log('load events layout', {characterId, characterVersion });
-	
 		return {
 			event: getValueOfResponse(eventResponse),
 			characters: getValueOfResponse(charactersResponse) ?? [],
@@ -74,7 +72,7 @@ async function getCharacterVersion({characterId, eventId, fetch}: {characterId: 
 		characterVersion.id = versionId;
 		return characterVersion;
 	}
-	const result:CharacterVersionBare = await(await fetch(`/api/characters/version/${participant?.characterVersion}`)).json();
+	const result:CharacterVersionBare = await(await fetch(`/api/characters/versions/${participant?.characterVersion}`)).json();
 	return result;
 
 }
