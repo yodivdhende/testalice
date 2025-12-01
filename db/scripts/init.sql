@@ -166,7 +166,8 @@ CREATE TABLE `Events` (
   `Id` int NOT NULL,
   `Name` varchar(254) DEFAULT NULL,
   `StartTime` datetime DEFAULT NULL,
-  `EndTime` datetime DEFAULT NULL
+  `EndTime` datetime DEFAULT NULL,
+  `Status` ENUM('Draft','Open', 'Live', 'Canceled') DEFAULT 'Draft'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --

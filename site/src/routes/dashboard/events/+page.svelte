@@ -18,7 +18,6 @@
 </script>
 
 <main>
-    <a href="events/new"><CirclePlus /></a>
 	<table>
 		<thead>
 			<tr>

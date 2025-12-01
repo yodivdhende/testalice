@@ -39,7 +39,7 @@ class CharacterVersionRepo {
 					items.status === 'fulfilled'
 						? items.value
 								.filter(({ characterVersionId }) => characterVersionId, characterItem.characterId)
-								.map(({ itemId }) => itemId)
+								.map(({ itemId, count}) => ({id: itemId, count}))
 						: [],
 				implants:
 					implants.status === 'fulfilled'
@@ -88,13 +88,14 @@ class CharacterVersionRepo {
 
 	public async getItemsforCharacterVersions(
 		ids: number[]
-	): Promise<{ characterVersionId: number; itemId: number }[]> {
+	): Promise<{ characterVersionId: number; itemId: number, count: number}[]> {
 		const connection = await mysqlconnFn();
 		const [result] = await connection.query(
 			`
       SELECT 
         cvit.CharacterVersion as characterVersionId,
-        cvit.Item as itemId
+        cvit.Item as itemId,
+				cvit.Count as count
       FROM Character_Version_Items cvit
       WHERE cvit.CharacterVersion in (:ids)
       `,
@@ -102,12 +103,13 @@ class CharacterVersionRepo {
 		);
 		if (Array.isArray(result) === false) return [];
 		if (result.length === 0) return [];
-		const items: { characterVersionId: number; itemId: number }[] = [];
+		const items: { characterVersionId: number; itemId: number, count: number}[] = [];
 		for (let item of result) {
 			if ('characterVersionId' in item === false || typeof item.characterVersionId !== 'number')
 				continue;
 			if ('itemId' in item === false || typeof item.itemId != 'number') continue;
-			items.push({ characterVersionId: item.characterVersionId, itemId: item.itemId });
+			if ('count' in item === false || typeof item.count != 'number') continue;
+			items.push({ characterVersionId: item.characterVersionId, itemId: item.itemId, count: item.count  });
 		}
 		return items;
 	}
@@ -238,7 +240,7 @@ class CharacterVersionRepo {
 				items:
 					valueOrLogOfPromiseSetteld(items)
 								?.filter(({ characterVersionId }) => characterVersionId === characterItem.id)
-								.map(({ itemId }) => itemId) ?? [],
+								.map(({ itemId, count }) => ({id: itemId, count})) ?? [],
 				implants:
 					valueOrLogOfPromiseSetteld(implants)
 								?.filter(({ characterVersionId }) => characterVersionId === characterItem.id)
@@ -306,12 +308,28 @@ export function isCharacterVersionSkill(skill: unknown): skill is CharacterVerio
 	);
 }
 
+export type CharacterVersionItem = {
+	id: number;	
+	count: number;
+}
+
+export function isCharacterVersionItem(item: unknown): item is CharacterVersionItem { 
+	return typeof item === 'object'
+	&& item != null
+	&& 'id' in item
+	&& typeof item.id === 'number'
+	&& 'count' in item
+	&& typeof item.count === 'number'
+}
+
+
+
 export type CharacterVersionBare = {
 	id: number | null;
 	characterId: number;
 	name: string;
 	skills: CharacterVerionSkill[];
-	items: number[];
+	items:  CharacterVersionItem[];
 	implants: number[];
 };
 
@@ -330,7 +348,7 @@ export function isCharacterVersionBare(value: unknown): value is CharacterVersio
 		value.skills.every(isCharacterVersionSkill) &&
 		'items' in value &&
 		Array.isArray(value.items) &&
-		value.items.every((item) => typeof item === 'number') &&
+		value.items.every(isCharacterVersionItem) &&
 		'implants' in value &&
 		Array.isArray(value.implants) &&
 		value.implants.every((implant) => typeof implant === 'number')

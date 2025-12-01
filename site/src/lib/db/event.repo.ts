@@ -1,6 +1,5 @@
 import { EventStatus } from '$lib/types/event-status';
 import { dateToSqlstring } from '$lib/utils/time';
-import { stat } from 'fs';
 import { mysqlconnFn } from './mysql';
 
 class EventRepo {

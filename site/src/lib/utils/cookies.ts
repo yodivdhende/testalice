@@ -5,7 +5,7 @@ import { getTommorow } from "./time";
 export function setSessionToken(cookies: Cookies, token: string) {
     cookies.set('session-token',token, {
         path: '/',
-        maxAge: getTommorow().getTime()/1000,
+        maxAge: 60*60*24, 
         sameSite: 'strict',
     });
 }

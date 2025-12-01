@@ -1,12 +1,10 @@
 <script lang='ts'>
 	import type { Implant } from "$lib/db/implants.repo";
 	import { PlusCircle, Trash } from "@lucide/svelte";
-	import type { PageProps } from "./$types";
   
-  let {data}: PageProps = $props();
-  let implants: Implant[] = data.implants;
-
+  let {implants}: {implants: Implant[]}= $props();
 </script>
+
 <main>
   <h1>Implants shop</h1>
   <div class="grid">
