@@ -115,20 +115,21 @@ INSERT INTO `Character_Version_Implants` (`Id`, `CharacterVersion`, `Implant`) V
 CREATE TABLE `Character_Version_Items` (
   `Id` int NOT NULL,
   `CharacterVersion` int DEFAULT NULL,
-  `Item` int DEFAULT NULL
+  `Item` int DEFAULT NULL,
+  `Count` int DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Gegevens worden geëxporteerd voor tabel `Character_Version_Items`
 --
 
-INSERT INTO `Character_Version_Items` (`Id`, `CharacterVersion`, `Item`) VALUES
-(1, 1, 1),
-(2, 1, 2),
-(3, 1, 1),
-(4, 2, 1),
-(5, 2, 2),
-(6, 2, 3);
+INSERT INTO `Character_Version_Items` (`Id`, `CharacterVersion`, `Item`, `Count`) VALUES
+(1, 1, 1, 1),
+(2, 1, 2, 2),
+(3, 1, 1, 1),
+(4, 2, 1, 4),
+(5, 2, 2, 2),
+(6, 2, 3, 3);
 
 -- --------------------------------------------------------
 
