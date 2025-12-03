@@ -27,7 +27,7 @@
 
 	function getTimeLeft() {
 		const now = new Date();
-		const difference = targetDate.getTime() - now.getTime();
+		const difference = Math.floor((targetDate.getTime() - now.getTime() )/ 1000);
 		return difference;
 	}
 
