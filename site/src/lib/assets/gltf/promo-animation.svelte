@@ -31,7 +31,6 @@ Command: npx @threlte/gltf@3.0.1 site-animation.glb
 		materials: Record<string, Material>;
 	}>(SiteAnimation as string);
 	export const { actions, mixer } = useGltfAnimations(gltf, ref);
-	const showText = false;
 
 	interactivity();
 

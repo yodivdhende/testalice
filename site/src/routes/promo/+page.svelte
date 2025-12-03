@@ -1,14 +1,29 @@
 <script lang="ts">
 	import { Canvas } from '@threlte/core';
 	import PromoAnimation from '$lib/assets/gltf/promo-animation.svelte';
+	import code from '$lib/assets/data/code.json';
 
 	const targetDate = new Date('2026-03-1');
 	let timeLeft = $state();
-	let showInput = $state(true);
+	let showInput = $state(false);
+	let leftCode = $state(code.join('\n'));
+	let codeIndex = 0;
+	let characterIndex = -1;
+	let textArea: HTMLTextAreaElement;
 
 	setInterval(() => {
 		timeLeft = getTimeLeft();
 	}, 1000);
+
+	setInterval(() => {
+		leftCode = updateCode();
+	}, 10);
+
+	$effect(()=> {
+		if(leftCode) {
+			textArea.scrollTop = textArea.scrollHeight;
+		}
+	})
 
 	function getTimeLeft() {
 		const now = new Date();
@@ -16,6 +31,20 @@
 		return difference;
 	}
 
+	function updateCode() {
+		characterIndex ++;
+		let nextLine = '';
+		if(characterIndex >= code[codeIndex].length){
+			characterIndex = 0;
+			codeIndex ++;
+			nextLine = '\n';
+		} 
+		if(codeIndex >= code.length) {
+			codeIndex = 0;
+			leftCode = code.join('\n');
+		}
+		return leftCode + nextLine + code[codeIndex].slice(characterIndex, characterIndex +1);
+	}
 
 </script>
 
@@ -26,6 +55,7 @@
 		</Canvas>
 	</div>
 	<div class="code-left">
+		<textarea bind:this={textArea}>{leftCode}</textarea>
 	</div>
 	<div class="title">
 		TerraPrime 
@@ -103,6 +133,17 @@
 
 	.code-left {
 		grid-area: code-left;
+	}
+	textarea {
+		width: 100%;
+		height: 90%;
+		background-color: black;
+		color: #004400;
+		border: none;
+		resize: none;
+		font-family: 'Courier New', Courier, monospace;
+		font-size: 1rem;
+		overflow: hidden;
 	}
 
 	.code-right {
