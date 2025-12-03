@@ -14,27 +14,24 @@ Command: npx @threlte/gltf@3.0.1 site-animation.glb
 		MeshBasicMaterial,
 		MeshStandardMaterial,
 		MirroredRepeatWrapping,
-		RepeatWrapping,
 		TextureLoader,
 		Vector2
 	} from 'three';
 	import { T, useTask } from '@threlte/core';
 	import { interactivity, Text, useCursor, useGltf, useGltfAnimations } from '@threlte/extras';
 	import SiteAnimation from '$lib/assets/gltf/site-animation.glb';
-	import WorldReverseImage from '$lib/assets/images/WorldReverse.png';
+	import WorldReverseImage from '$lib/assets/images/WorldReverseGreen.png';
 	import FloorTexture from '$lib/assets/images/Grid.png';
 	import { Spring, Tween } from 'svelte/motion';
 
 	let { fallback, error, children, ref = $bindable(), ...props } = $props();
-
 	ref = new Group();
-
 	const gltf = useGltf<{
 		nodes: Record<string, Mesh>;
 		materials: Record<string, Material>;
 	}>(SiteAnimation as string);
-
 	export const { actions, mixer } = useGltfAnimations(gltf, ref);
+	const showText = false;
 
 	interactivity();
 
@@ -53,14 +50,14 @@ Command: npx @threlte/gltf@3.0.1 site-animation.glb
 	} as const;
 
 	const cameraZoom = new Tween(200);
-  const enterTextOpacity = new Tween(1);
+	const enterTextOpacity = new Tween(1);
 	const wireframeMaterial = createWorldTexture();
 	const floorMaterial = createFloorMaterial();
 
 	let sphereRotation = $state(0);
 
 	sphereProps.Sphere01.onClick = () => {
-		start();
+		constalationAnimation();
 		sphereProps.Sphere01.onClick = () => console.log('sphere 1 clicked');
 	};
 
@@ -85,12 +82,12 @@ Command: npx @threlte/gltf@3.0.1 site-animation.glb
 		};
 	}
 
-	function start() {
+	function constalationAnimation() {
 		console.log('actions', $actions);
 		started = true;
 		animateOnce($actions['CameraAction']);
 		cameraZoom.set(80);
-    enterTextOpacity.set(0);
+		enterTextOpacity.set(0);
 		Object.entries($actions)
 			.filter(([name, _action]) => name.includes('Move'))
 			.forEach(([_, action]) => animateOnce(action));
@@ -129,6 +126,9 @@ Command: npx @threlte/gltf@3.0.1 site-animation.glb
 		return material;
 	}
 
+  function degreeToRadian(degree: number) {
+    return degree * (Math.PI / 180);
+  } 
 </script>
 
 <T is={ref} dispose={false} {...props}>
@@ -137,7 +137,7 @@ Command: npx @threlte/gltf@3.0.1 site-animation.glb
 	{:then gltf}
 		<T.Group name="Scene">
 			<T.OrthographicCamera
-				name="Camera"
+				name="Camera01"
 				makeDefault={true}
 				zoom={cameraZoom.current}
 				far={100}
@@ -152,16 +152,12 @@ Command: npx @threlte/gltf@3.0.1 site-animation.glb
 				position={[0, 21.62, 0]}
 				rotation={[-Math.PI / 2, 0, 0]}
 			/>
-      <Text
-        text="ENTER"
-        position={[0.2,1.3,1]}
-        fontSize={0.6}
-        textAlign="center"
-        outlineColor="black"
-        outlineWidth={0.03}
-        transpartent={true}
-        opacity={enterTextOpacity.current}
-      />
+			<T.Mesh
+				name="Plane"
+				geometry={gltf.nodes.Plane.geometry}
+				material={floorMaterial}
+				scale={58.28}
+			/>
 			<T.Mesh
 				name="Sphere01"
 				geometry={gltf.nodes.Sphere01.geometry}
@@ -179,10 +175,10 @@ Command: npx @threlte/gltf@3.0.1 site-animation.glb
 				material={wireframeMaterial}
 				position={[0, 1, 0]}
 				rotation.y={sphereRotation}
-				scale={sphereProps.Sphere02.scale.current}
-				onpointerenter={sphereProps.Sphere02.onHover}
-				onpointerleave={sphereProps.Sphere02.onHoverLeave}
-				onclick={sphereProps.Sphere02.onClick}
+				scale={sphereProps.Sphere01.scale.current}
+				onpointerenter={sphereProps.Sphere01.onHover}
+				onpointerleave={sphereProps.Sphere01.onHoverLeave}
+				onclick={sphereProps.Sphere01.onClick}
 			/>
 			<T.Mesh
 				name="Sphere03"
@@ -190,10 +186,10 @@ Command: npx @threlte/gltf@3.0.1 site-animation.glb
 				material={wireframeMaterial}
 				position={[0, 1, 0]}
 				rotation.y={sphereRotation}
-				scale={sphereProps.Sphere03.scale.current}
-				onpointerenter={sphereProps.Sphere03.onHover}
-				onpointerleave={sphereProps.Sphere03.onHoverLeave}
-				onclick={sphereProps.Sphere03.onClick}
+				scale={sphereProps.Sphere01.scale.current}
+				onpointerenter={sphereProps.Sphere01.onHover}
+				onpointerleave={sphereProps.Sphere01.onHoverLeave}
+				onclick={sphereProps.Sphere01.onClick}
 			/>
 			<T.Mesh
 				name="Sphere04"
@@ -201,10 +197,10 @@ Command: npx @threlte/gltf@3.0.1 site-animation.glb
 				material={wireframeMaterial}
 				position={[0, 1, 0]}
 				rotation.y={sphereRotation}
-				scale={sphereProps.Sphere04.scale.current}
-				onpointerenter={sphereProps.Sphere04.onHover}
-				onpointerleave={sphereProps.Sphere04.onHoverLeave}
-				onclick={sphereProps.Sphere04.onClick}
+				scale={sphereProps.Sphere01.scale.current}
+				onpointerenter={sphereProps.Sphere01.onHover}
+				onpointerleave={sphereProps.Sphere01.onHoverLeave}
+				onclick={sphereProps.Sphere01.onClick}
 			/>
 			<T.Mesh
 				name="Sphere05"
@@ -212,10 +208,10 @@ Command: npx @threlte/gltf@3.0.1 site-animation.glb
 				material={wireframeMaterial}
 				position={[0, 1, 0]}
 				rotation.y={sphereRotation}
-				scale={sphereProps.Sphere05.scale.current}
-				onpointerenter={sphereProps.Sphere05.onHover}
-				onpointerleave={sphereProps.Sphere05.onHoverLeave}
-				onclick={sphereProps.Sphere05.onClick}
+				scale={sphereProps.Sphere01.scale.current}
+				onpointerenter={sphereProps.Sphere01.onHover}
+				onpointerleave={sphereProps.Sphere01.onHoverLeave}
+				onclick={sphereProps.Sphere01.onClick}
 			/>
 			<T.Mesh
 				name="Sphere06"
@@ -223,10 +219,10 @@ Command: npx @threlte/gltf@3.0.1 site-animation.glb
 				material={wireframeMaterial}
 				position={[0, 1, 0]}
 				rotation.y={sphereRotation}
-				scale={sphereProps.Sphere06.scale.current}
-				onpointerenter={sphereProps.Sphere06.onHover}
-				onpointerleave={sphereProps.Sphere06.onHoverLeave}
-				onclick={sphereProps.Sphere06.onClick}
+				scale={sphereProps.Sphere01.scale.current}
+				onpointerenter={sphereProps.Sphere01.onHover}
+				onpointerleave={sphereProps.Sphere01.onHoverLeave}
+				onclick={sphereProps.Sphere01.onClick}
 			/>
 			<T.Mesh
 				name="Sphere07"
@@ -234,21 +230,15 @@ Command: npx @threlte/gltf@3.0.1 site-animation.glb
 				material={wireframeMaterial}
 				position={[0, 1, 0]}
 				rotation.y={sphereRotation}
-				scale={sphereProps.Sphere07.scale.current}
-				onpointerenter={sphereProps.Sphere07.onHover}
-				onpointerleave={sphereProps.Sphere07.onHoverLeave}
-				onclick={sphereProps.Sphere07.onClick}
-			/>
-			<T.Mesh
-				name="Plane"
-				geometry={gltf.nodes.Plane.geometry}
-				material={floorMaterial}
-				scale={58.28}
+				scale={sphereProps.Sphere01.scale.current}
+				onpointerenter={sphereProps.Sphere01.onHover}
+				onpointerleave={sphereProps.Sphere01.onHoverLeave}
+				onclick={sphereProps.Sphere01.onClick}
 			/>
 			<T.Mesh
 				name="Torus01"
 				geometry={gltf.nodes.Torus01.geometry}
-				material={gltf.materials.Torus}
+				material={gltf.materials['Torus.001']}
 				position={[0, 0.01, 0]}
 				scale={0.96}
 			/>
@@ -293,6 +283,48 @@ Command: npx @threlte/gltf@3.0.1 site-animation.glb
 				material={gltf.materials.Torus}
 				position={[0, 0.01, 0]}
 				scale={0.96}
+			/>
+			<T.Mesh
+				name="Sphere08"
+				geometry={gltf.nodes.Sphere08.geometry}
+				material={wireframeMaterial}
+				position={[0, 1, 0]}
+				rotation.y={sphereRotation}
+			/>
+			<T.Mesh
+				name="Sphere09"
+				geometry={gltf.nodes.Sphere09.geometry}
+				material={wireframeMaterial}
+				position={[0, 1, 0]}
+				rotation.y={sphereRotation}
+			/>
+			<T.Mesh
+				name="Sphere10"
+				geometry={gltf.nodes.Sphere10.geometry}
+				material={wireframeMaterial}
+				position={[0, 1, 0]}
+				rotation.y={sphereRotation}
+			/>
+			<T.Mesh
+				name="Sphere11"
+				geometry={gltf.nodes.Sphere11.geometry}
+				material={wireframeMaterial}
+				position={[0, 1, 0]}
+				rotation.y={sphereRotation}
+			/>
+			<T.Mesh
+				name="Sphere12"
+				geometry={gltf.nodes.Sphere12.geometry}
+				material={wireframeMaterial}
+				position={[0, 1, 0]}
+				rotation.y={sphereRotation}
+			/>
+			<T.Mesh
+				name="Sphere13"
+				geometry={gltf.nodes.Sphere13.geometry}
+				material={wireframeMaterial}
+				position={[0, 1, 0]}
+				rotation.y={sphereRotation}
 			/>
 		</T.Group>
 	{:catch err}
