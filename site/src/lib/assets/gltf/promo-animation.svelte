@@ -18,7 +18,6 @@
 	import WorldReverseImage from '$lib/assets/images/WorldReverseGreen.png';
 	import FloorTexture from '$lib/assets/images/Grid.png';
 	import { Tween } from 'svelte/motion';
-	import { onMount } from 'svelte';
 	
 	let { fallback, error, children, ref = $bindable(), ...props } = $props();
 	ref = new Group();
@@ -31,14 +30,12 @@
 	interactivity();
 
 	const { onPointerEnter, onPointerLeave } = useCursor();
-	let constalationOpen = $state(false);
 	const sphereProps = {
 		Sphere01: createSphere()
 	} as const;
 	const cameraZoom = new Tween(200);
 	const wireframeMaterial = createWorldTexture();
 	const floorMaterial = createFloorMaterial();
-
 	const torusMaterial = new MeshStandardMaterial({
 		color: new Color().setRGB(0, 1, 0),
 		emissive: new Color().setRGB(0, 1, 0),
@@ -46,29 +43,44 @@
 		normalScale: new Vector2(1, -1),
 		side: 2,
 	})
-
 	let sphereRotation = $state(0);
 
 	function createSphere() {
 		return {
 			onHover: () => onPointerEnter(),
 			onHoverLeave: () => onPointerLeave(),
-			onClick: () => {
-				console.log('click');
-				constalationAnimation();
-			}
+			onClick: () => { console.log('Sphere clicked') }
 		};
 	}
 
-	function constalationAnimation() {
-			animateOnce($actions['CameraAction'], {reverse: constalationOpen});
-			cameraZoom.set(constalationOpen ? 200 : 80);
+	const animations: ((reverse: boolean) => void)[] = [
+		rowAnimation,
+		constalationAnimation,
+	]; 
+	let nextAnimationIndex = 0;
+	setInterval(() => {
+		animations[nextAnimationIndex](false);
+		setTimeout(() => {
+			animations[nextAnimationIndex](true);
+			nextAnimationIndex = (nextAnimationIndex + 1) % animations.length;
+		}, 4000);
+	}, 5 * 60 * 1000)
+
+	function constalationAnimation(reverse = false) {
+			animateOnce($actions['CameraAction'], {reverse});
+			cameraZoom.set(reverse ? 200 : 80);
 			Object.entries($actions)
 				.filter(([name, _action]) => name.includes('Move'))
-
-				.forEach(([_, action]) => animateOnce(action, {reverse: constalationOpen}));
-			constalationOpen = !constalationOpen;
+				.forEach(([_, action]) => animateOnce(action, {reverse}));
 	}
+
+	function rowAnimation(reverse = false) {
+		cameraZoom.set(reverse ? 200: 80);
+		Object.entries($actions)
+			.filter(([name, _action]) => name.includes('Action') && !name.includes('Camera'))
+			.forEach(([_, action]) => animateOnce(action, {reverse}));
+	}
+
 
 	function animateOnce(action: AnimationAction | undefined, {reverse}: {reverse?: boolean} = {}) {
 		if (!action) return;
