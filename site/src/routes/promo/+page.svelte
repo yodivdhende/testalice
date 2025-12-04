@@ -2,10 +2,12 @@
 	import { Canvas } from '@threlte/core';
 	import PromoAnimation from '$lib/assets/gltf/promo-animation.svelte';
 	import code from '$lib/assets/data/code.json';
+	import { fade, fly } from 'svelte/transition';
 
 	const targetDate = new Date('2026-03-1');
 	let timeLeft = $state();
 	let showInput = $state(false);
+	let showSidePanel = $state(false);
 	let leftCode = $state(code.join('\n'));
 	let codeIndex = 0;
 	let characterIndex = -1;
@@ -54,15 +56,18 @@
 	function onCodeKeyUp(event: KeyboardEvent) {
 		if(event.key === 'Enter') {
 			if(codeValue.trim() === 'Avix76') {
-				alert('Launch sequence initiated!');
+				showSidePanel = true;
+				showInput = false;
 			} 
 			codeValue = '';
 		}
 	}
 
+
 </script>
 
 <main>
+	<div class="grid">
 	<div class="background">
 		<Canvas>
 			<PromoAnimation {onWorldClick}/>
@@ -84,10 +89,24 @@
 	</div>
 	<div class="code-right">
 	</div>
+
+	</div>
+	{#if showSidePanel}
+		<div class="side-panel" in:fly={{ x: 500 }} out:fade>
+			this is the side panel
+		</div>
+	{/if}
 </main>
 
 <style>
 	main {
+		width: 100vw;
+		height: 100vh;
+		overflow: hidden;
+		position: relative;
+	}
+
+	.grid{
 		width: 100vw;
 		height: 100vh;
 		display: grid;
@@ -162,5 +181,18 @@
 
 	.code-right {
 		grid-area: code-right;
+	}
+
+	.side-panel {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 500px;
+		height: calc(100vh - 2rem - 2px);
+		color: #00ff00;
+		font-family: 'Courier New', Courier, monospace;
+		padding: 1rem;
+		border: 1px solid #00ff00;
+		background-color: rgba(0, 0, 0, 0.8);
 	}
 </style>
