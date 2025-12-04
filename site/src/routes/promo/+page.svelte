@@ -46,12 +46,26 @@
 		return leftCode + nextLine + code[codeIndex].slice(characterIndex, characterIndex +1);
 	}
 
+	let codeValue = $state('');
+	function onWorldClick() {
+		showInput = true;
+	}
+
+	function onCodeKeyUp(event: KeyboardEvent) {
+		if(event.key === 'Enter') {
+			if(codeValue.trim() === 'Avix76') {
+				alert('Launch sequence initiated!');
+			} 
+			codeValue = '';
+		}
+	}
+
 </script>
 
 <main>
 	<div class="background">
 		<Canvas>
-			<PromoAnimation />
+			<PromoAnimation {onWorldClick}/>
 		</Canvas>
 	</div>
 	<div class="code-left">
@@ -62,7 +76,7 @@
 	</div>
 	{#if showInput}
 		<div class="input">
-			<input type="text" />
+			<input type="text" bind:value={codeValue} onkeyup={onCodeKeyUp}/>
 		</div>
 	{/if}
 	<div class="count-down">

@@ -19,8 +19,8 @@
 	import FloorTexture from '$lib/assets/images/Grid.png';
 	import { Tween } from 'svelte/motion';
 	
-	let { fallback, error, children, ref = $bindable(), ...props } = $props();
-	ref = new Group();
+	let { onWorldClick , ...props}: {onWorldClick: () => void} = $props();
+	const ref = new Group();
 	const gltf = useGltf<{
 		nodes: Record<string, Mesh>;
 		materials: Record<string, Material>;
@@ -46,10 +46,16 @@
 	let sphereRotation = $state(0);
 
 	function createSphere() {
+		let numberOfClicks = 0;
 		return {
 			onHover: () => onPointerEnter(),
 			onHoverLeave: () => onPointerLeave(),
-			onClick: () => { console.log('Sphere clicked') }
+			onClick: () => {
+				numberOfClicks ++;
+				if(numberOfClicks === 7) onWorldClick();
+				if(numberOfClicks === 1) setTimeout(() => numberOfClicks = 0, 1000);
+				console.log('Sphere clicked', {numberOfClicks});
+			}
 		};
 	}
 
@@ -130,7 +136,7 @@
 
 <T is={ref} dispose={false} {...props}>
 	{#await gltf}
-		{@render fallback?.()}
+		<p>Loading...</p>
 	{:then gltf}
 		<T.Group name="Scene">
 			<T.OrthographicCamera
@@ -300,8 +306,6 @@
 			/>
 		</T.Group>
 	{:catch err}
-		{@render error?.({ error: err })}
+		<p>Error loading model: {err.message}</p>
 	{/await}
-
-	{@render children?.({ ref })}
 </T>
