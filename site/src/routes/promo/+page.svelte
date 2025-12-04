@@ -85,7 +85,7 @@
 			"code-left  count-down 	code-right"
 		;
 		background-color: black;
-		color: green;
+		color: #00ff00;
 		font-family: 'Courier New', Courier, monospace;
 	}
 
@@ -138,7 +138,7 @@
 		width: 100%;
 		height: 90%;
 		background-color: black;
-		color: #004400;
+		color: #005500;
 		border: none;
 		resize: none;
 		font-family: 'Courier New', Courier, monospace;

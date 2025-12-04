@@ -4,7 +4,6 @@
 		Color,
 		Group,
 		LoopOnce,
-		LoopPingPong,
 		Material,
 		Mesh,
 		MeshBasicMaterial,
@@ -14,13 +13,13 @@
 		Vector2
 	} from 'three';
 	import { T, useTask } from '@threlte/core';
-	import { interactivity, Text, useCursor, useGltf, useGltfAnimations } from '@threlte/extras';
+	import { interactivity, useCursor, useGltf, useGltfAnimations } from '@threlte/extras';
 	import SiteAnimation from '$lib/assets/gltf/site-animation.glb';
 	import WorldReverseImage from '$lib/assets/images/WorldReverseGreen.png';
 	import FloorTexture from '$lib/assets/images/Grid.png';
-	import { Spring, Tween } from 'svelte/motion';
-	import { mix } from 'three/tsl';
-
+	import { Tween } from 'svelte/motion';
+	import { onMount } from 'svelte';
+	
 	let { fallback, error, children, ref = $bindable(), ...props } = $props();
 	ref = new Group();
 	const gltf = useGltf<{
@@ -32,16 +31,21 @@
 	interactivity();
 
 	const { onPointerEnter, onPointerLeave } = useCursor();
-
 	let constalationOpen = $state(false);
-
 	const sphereProps = {
 		Sphere01: createSphere()
 	} as const;
-
 	const cameraZoom = new Tween(200);
 	const wireframeMaterial = createWorldTexture();
 	const floorMaterial = createFloorMaterial();
+
+	const torusMaterial = new MeshStandardMaterial({
+		color: new Color().setRGB(0, 1, 0),
+		emissive: new Color().setRGB(0, 1, 0),
+		emissiveIntensity: 1,
+		normalScale: new Vector2(1, -1),
+		side: 2,
+	})
 
 	let sphereRotation = $state(0);
 
@@ -109,6 +113,7 @@
 		material.transparent = true;
 		return material;
 	}
+
 </script>
 
 <T is={ref} dispose={false} {...props}>
@@ -193,49 +198,49 @@
 			<T.Mesh
 				name="Torus01"
 				geometry={gltf.nodes.Torus01.geometry}
-				material={gltf.materials['Torus.001']}
+				material={torusMaterial}
 				position={[0, 0.01, 0]}
 				scale={0.96}
 			/>
 			<T.Mesh
 				name="Torus02"
 				geometry={gltf.nodes.Torus02.geometry}
-				material={gltf.materials.Torus}
+				material={torusMaterial}
 				position={[0, 0.01, 0]}
 				scale={0.96}
 			/>
 			<T.Mesh
 				name="Torus03"
 				geometry={gltf.nodes.Torus03.geometry}
-				material={gltf.materials.Torus}
+				material={torusMaterial}
 				position={[0, 0.01, 0]}
 				scale={0.96}
 			/>
 			<T.Mesh
 				name="Torus04"
 				geometry={gltf.nodes.Torus04.geometry}
-				material={gltf.materials.Torus}
+				material={torusMaterial}
 				position={[0, 0.01, 0]}
 				scale={0.96}
 			/>
 			<T.Mesh
 				name="Torus05"
 				geometry={gltf.nodes.Torus05.geometry}
-				material={gltf.materials.Torus}
+				material={torusMaterial}
 				position={[0, 0.01, 0]}
 				scale={0.96}
 			/>
 			<T.Mesh
 				name="Torus06"
 				geometry={gltf.nodes.Torus06.geometry}
-				material={gltf.materials.Torus}
+				material={torusMaterial}
 				position={[0, 0.01, 0]}
 				scale={0.96}
 			/>
 			<T.Mesh
 				name="Torus07"
 				geometry={gltf.nodes.Torus07.geometry}
-				material={gltf.materials.Torus}
+				material={torusMaterial}
 				position={[0, 0.01, 0]}
 				scale={0.96}
 			/>
