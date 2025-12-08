@@ -5,8 +5,8 @@
 	let showPassword = $state(false);
 	let passwordInputType = $derived.by(() => (showPassword ? 'text' : 'password'));
 
-	let email = 'yodi.vandenhende@gmail.com';
-	let password = 'Tester@123';
+	let email = '';
+	let password = '';
 
 	function toggleShowPassword() {
 		showPassword = !showPassword;
