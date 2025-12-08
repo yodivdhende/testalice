@@ -70,7 +70,7 @@
 			animations[nextAnimationIndex](true);
 			nextAnimationIndex = (nextAnimationIndex + 1) % animations.length;
 		}, 4000);
-	}, 5 * 60 * 1000)
+	}, 2 * 60 * 1000)
 
 	function constalationAnimation(reverse = false) {
 			animateOnce($actions['CameraAction'], {reverse});
