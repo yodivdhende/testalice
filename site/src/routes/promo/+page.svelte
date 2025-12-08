@@ -22,7 +22,6 @@
 	const animationManager = createAnimationManager();
 	animationManager.registerAnimation({
 		animation: pacmanAnimation,
-		index: 0,
 	});
 	setContext('promoAnimationManager', animationManager);
 
