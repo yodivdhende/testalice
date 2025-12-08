@@ -8,7 +8,7 @@
 		StatusCommandInfo,
 		WebStatusCommandInfo
 	} from '../../../../websocket-server/connection-socket';
-	import SessionRow from '../../../lib/components/session-row.svelte';
+	import SessionRow from '$lib/components/session-row.svelte';
 	import { type PageProps } from './$types';
 
 	let { data }: PageProps = $props();

@@ -1,4 +1,4 @@
-import { getSessionToken } from '../../../lib/utils/cookies';
+import { getSessionToken } from '$lib/utils/cookies';
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad= async ({fetch, cookies}) => {

@@ -1,6 +1,18 @@
 version: '3.7'
 
 services:
+  sveltekit:
+    container_name: testalice-sveltekit
+    build:
+      context: ./site
+      dockerfile: dockerfile
+    ports:
+      - 4174:3000
+    env_file:
+      - ./site/.env
+    depends_on:
+      - db
+
   db:
     container_name: testalice-db
     image: mysql/mysql-server:latest
@@ -12,7 +24,7 @@ services:
       - MYSQL_USER=yodi
       - MYSQL_PASSWORD=Tester@123
     volumes:
-      - './scripts:/docker-entrypoint-initdb.d'
+      - './db/scripts:/docker-entrypoint-initdb.d'
   phpnyadmin:
     image: phpmyadmin/phpmyadmin
     ports:
