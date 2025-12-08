@@ -11,7 +11,7 @@ export function createAnimationManager() {
       animation(true);
       nextAnimationIndex = (nextAnimationIndex + 1) % animations.length;
     }, 4000);
-  }, 5 * 1000);
+  }, 1 * 60 * 1000);
 
   return {
     registerAnimation: ({animation}: {animation: (reverse: boolean) => void}) => {
