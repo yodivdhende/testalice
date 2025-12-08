@@ -11,15 +11,11 @@ export function createAnimationManager() {
       animation(true);
       nextAnimationIndex = (nextAnimationIndex + 1) % animations.length;
     }, 4000);
-  }, 2 * 60 * 1000);
+  }, 5 * 1000);
 
   return {
-    registerAnimation: ({animation, index}: {animation: (reverse: boolean) => void, index?: number}) => {
-      if(index != null){
-        animations[index] = animation;
-      } else { 
-        animations.push(animation)
-      }
+    registerAnimation: ({animation}: {animation: (reverse: boolean) => void}) => {
+      animations.push(animation)
     }
   }
 

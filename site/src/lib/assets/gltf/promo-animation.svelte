@@ -48,14 +48,12 @@
 	let sphereRotation = $state(0);
 
 	$effect(()=>{
-	getContext<PromoAnimationManager>('promoAnimationManager').registerAnimation({
-		animation: rowAnimation,
-		index: 1,
-	})
-	getContext<PromoAnimationManager>('promoAnimationManager').registerAnimation({
-		animation: constalationAnimation,
-		index: 2,
-	})
+		getContext<PromoAnimationManager>('promoAnimationManager').registerAnimation({
+			animation: rowAnimation,
+		})
+		getContext<PromoAnimationManager>('promoAnimationManager').registerAnimation({
+			animation: constalationAnimation,
+		})
 	})
 
 	function createSphere() {
