@@ -3,6 +3,10 @@
 	import PromoAnimation from '$lib/assets/gltf/promo-animation.svelte';
 	import code from '$lib/assets/data/code.json';
 	import { fade, fly } from 'svelte/transition';
+	import pacman from '$lib/assets/images/pacman_open.gif';
+	import { Tween } from 'svelte/motion';
+	import { createAnimationManager } from '$lib/managers/promo-animation-manager.svelte';
+	import { setContext } from 'svelte';
 
 	const targetDate = new Date('2026-03-1');
 	let timeLeft = $state();
@@ -12,6 +16,16 @@
 	let codeIndex = 0;
 	let characterIndex = -1;
 	let textArea: HTMLTextAreaElement;
+	let pacmanLeftDefault = -100;
+	let	pacmanLeft =  new Tween(pacmanLeftDefault);
+
+	const animationManager = createAnimationManager();
+	animationManager.registerAnimation({
+		animation: pacmanAnimation,
+		index: 0,
+	});
+	setContext('promoAnimationManager', animationManager);
+
 
 	setInterval(() => {
 		timeLeft = getTimeLeft();
@@ -21,31 +35,31 @@
 		leftCode = updateCode();
 	}, 10);
 
-	$effect(()=> {
-		if(leftCode) {
+	$effect(() => {
+		if (leftCode) {
 			textArea.scrollTop = textArea.scrollHeight;
 		}
-	})
+	});
 
 	function getTimeLeft() {
 		const now = new Date();
-		const difference = Math.floor((targetDate.getTime() - now.getTime() )/ 1000);
+		const difference = Math.floor((targetDate.getTime() - now.getTime()) / 1000);
 		return difference;
 	}
 
 	function updateCode() {
-		characterIndex ++;
+		characterIndex++;
 		let nextLine = '';
-		if(characterIndex >= code[codeIndex].length){
+		if (characterIndex >= code[codeIndex].length) {
 			characterIndex = 0;
-			codeIndex ++;
+			codeIndex++;
 			nextLine = '\n';
-		} 
-		if(codeIndex >= code.length) {
-			codeIndex = 0;
+		}
+		if (codeIndex >= code.length) {
+				codeIndex = 0;
 			leftCode = code.join('\n');
 		}
-		return leftCode + nextLine + code[codeIndex].slice(characterIndex, characterIndex +1);
+		return leftCode + nextLine + code[codeIndex].slice(characterIndex, characterIndex + 1);
 	}
 
 	let codeValue = $state('');
@@ -54,47 +68,48 @@
 	}
 
 	function onCodeKeyUp(event: KeyboardEvent) {
-		if(event.key === 'Enter') {
-			if(codeValue.trim() === 'Avix76') {
+		if (event.key === 'Enter') {
+			if (codeValue.trim() === 'Avix76') {
 				showSidePanel = true;
 				showInput = false;
-			} 
+			}
 			codeValue = '';
 		}
 	}
 
 
+	function pacmanAnimation() {
+		pacmanLeft.set(100,{ duration: 4000});
+		setTimeout(() => {
+			pacmanLeft.set(pacmanLeftDefault, { duration: 0 });
+		}, 5000);
+	}
+	 
 </script>
 
 <main>
+	<img src={pacman} alt="Pacman of dhvtlogo" class="pacman-logo" style:left={`${pacmanLeft.current}%`}/>
 	<div class="grid">
-	<div class="background">
-		<Canvas>
-			<PromoAnimation {onWorldClick}/>
-		</Canvas>
-	</div>
-	<div class="code-left">
-		<textarea bind:this={textArea}>{leftCode}</textarea>
-	</div>
-	<div class="title">
-		TerraPrime 
-	</div>
-	{#if showInput}
-		<div class="input">
-			<input type="text" bind:value={codeValue} onkeyup={onCodeKeyUp}/>
+		<div class="code">
+			<textarea bind:this={textArea}>{leftCode}</textarea>
 		</div>
-	{/if}
-	<div class="count-down">
-		{timeLeft}
-	</div>
-	<div class="code-right">
-	</div>
-
+		<div class="background">
+			<Canvas>
+				<PromoAnimation {onWorldClick} />
+			</Canvas>
+		</div>
+		<div class="title">TerraPrime</div>
+		{#if showInput}
+			<div class="input">
+				<input type="text" bind:value={codeValue} onkeyup={onCodeKeyUp} />
+			</div>
+		{/if}
+		<div class="count-down">
+			{timeLeft}
+		</div>
 	</div>
 	{#if showSidePanel}
-		<div class="side-panel" in:fly={{ x: 500 }} out:fade>
-			this is the side panel
-		</div>
+		<div class="side-panel" in:fly={{ x: 500 }} out:fade>this is the side panel</div>
 	{/if}
 </main>
 
@@ -104,27 +119,40 @@
 		height: 100vh;
 		overflow: hidden;
 		position: relative;
+		background-color: black;
 	}
 
-	.grid{
+	.pacman-logo {
+		position: absolute;
+		top: 2rem;
+		height: 50vh;
+	}
+
+	.grid {
 		width: 100vw;
 		height: 100vh;
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
 		grid-template-rows: 1fr minmax(500px, 1fr) 1fr;
-		grid-template-areas: 
-			"code-left 	title				code-right"
-			"code-left 	input				code-right"
-			"code-left  count-down 	code-right"
-		;
-		background-color: black;
+		grid-template-areas:
+			'. 	title				.'
+			'. 	input				.'
+			'.  count-down 	.';
 		color: #00ff00;
 		font-family: 'Courier New', Courier, monospace;
+		z-index: 1;
+	}
+
+	.code {
+		grid-column: 1/ -1;
+		grid-row: 1/ -1;
+		z-index: 1;
 	}
 
 	.background {
 		grid-column: 1/ -1;
 		grid-row: 1/ -1;
+		z-index: 1;
 	}
 
 	.title {
@@ -136,16 +164,16 @@
 		text-align: center;
 		padding: auto;
 	}
-	
+
 	.input {
 		grid-area: input;
 		align-self: center;
 		justify-self: center;
-		z-index: 1;
-		width:100%;
+		z-index: 2;
+		width: 100%;
 	}
 
-	.input input{
+	.input input {
 		width: 100%;
 		border: none;
 		outline: none;
@@ -164,23 +192,17 @@
 		text-align: center;
 	}
 
-	.code-left {
-		grid-area: code-left;
-	}
+
 	textarea {
 		width: 100%;
 		height: 90%;
-		background-color: black;
+		background: transparent;
 		color: #005500;
 		border: none;
 		resize: none;
 		font-family: 'Courier New', Courier, monospace;
 		font-size: 1rem;
 		overflow: hidden;
-	}
-
-	.code-right {
-		grid-area: code-right;
 	}
 
 	.side-panel {
@@ -193,6 +215,14 @@
 		font-family: 'Courier New', Courier, monospace;
 		padding: 1rem;
 		border: 1px solid #00ff00;
-		background-color: rgba(0, 0, 0, 0.8);
+		background-color: rgba(0, 0, 0, 0.95);
+		z-index: 2;
+	}
+
+
+	@media (max-width: 768px) {
+		.side-panel {
+			width: 100%;
+		}
 	}
 </style>

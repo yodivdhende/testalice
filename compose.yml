@@ -1,6 +1,6 @@
 services:
   sveltekit:
-    container_name: testalice-sveltekit
+    container_name: terra-prime-sveltekit
     build:
       context: ./site
       dockerfile: dockerfile
@@ -12,7 +12,7 @@ services:
       - db
 
   db:
-    container_name: testalice-db
+    container_name: terra-prime-db
     image: mysql/mysql-server:latest
     ports:
       - 3307:3306
@@ -31,4 +31,16 @@ services:
       - PMA_HOST=db
       - PMA_PORT=3306
     stdin_open: true
- 
+
+  tunnel:
+    container_name: cloudflared-tunnel
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate  run
+    environment:
+      - TUNNEL_TOKEN=eyJhIjoiMjliYTJlMmJiMmM1NjUwNTJiZGZlZjMwOTczYjY0NmYiLCJ0IjoiN2ZkZGIwODUtOTBkOS00ZjcwLWJhNjQtNzFiODU3ODQxYTM2IiwicyI6Ik1UTmtNelZtTmpNdFpUQmlPQzAwTkdSakxXSXdOalV0TW1Fd01HUmlPV1k1TWpkbCJ9
+
+networks:
+  default:
+    external:
+      name: terra-prime

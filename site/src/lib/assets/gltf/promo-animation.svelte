@@ -18,6 +18,8 @@
 	import WorldReverseImage from '$lib/assets/images/WorldReverseGreen.png';
 	import FloorTexture from '$lib/assets/images/Grid.png';
 	import { Tween } from 'svelte/motion';
+	import { getContext } from 'svelte';
+	import type { PromoAnimationManager } from '$lib/managers/promo-animation-manager.svelte';
 	
 	let { onWorldClick , ...props}: {onWorldClick: () => void} = $props();
 	const ref = new Group();
@@ -45,6 +47,17 @@
 	})
 	let sphereRotation = $state(0);
 
+	$effect(()=>{
+	getContext<PromoAnimationManager>('promoAnimationManager').registerAnimation({
+		animation: rowAnimation,
+		index: 1,
+	})
+	getContext<PromoAnimationManager>('promoAnimationManager').registerAnimation({
+		animation: constalationAnimation,
+		index: 2,
+	})
+	})
+
 	function createSphere() {
 		let numberOfClicks = 0;
 		return {
@@ -54,25 +67,11 @@
 				numberOfClicks ++;
 				if(numberOfClicks === 7) onWorldClick();
 				if(numberOfClicks === 1) setTimeout(() => numberOfClicks = 0, 1000);
-				console.log('Sphere clicked', {numberOfClicks});
 			}
 		};
 	}
 
-	const animations: ((reverse: boolean) => void)[] = [
-		rowAnimation,
-		constalationAnimation,
-	]; 
-	let nextAnimationIndex = 0;
-	setInterval(() => {
-		animations[nextAnimationIndex](false);
-		setTimeout(() => {
-			animations[nextAnimationIndex](true);
-			nextAnimationIndex = (nextAnimationIndex + 1) % animations.length;
-		}, 4000);
-	}, 2 * 60 * 1000)
-
-	function constalationAnimation(reverse = false) {
+	export function constalationAnimation(reverse = false) {
 			animateOnce($actions['CameraAction'], {reverse});
 			cameraZoom.set(reverse ? 200 : 80);
 			Object.entries($actions)
@@ -80,13 +79,12 @@
 				.forEach(([_, action]) => animateOnce(action, {reverse}));
 	}
 
-	function rowAnimation(reverse = false) {
+	export function rowAnimation(reverse = false) {
 		cameraZoom.set(reverse ? 200: 80);
 		Object.entries($actions)
 			.filter(([name, _action]) => name.includes('Action') && !name.includes('Camera'))
 			.forEach(([_, action]) => animateOnce(action, {reverse}));
 	}
-
 
 	function animateOnce(action: AnimationAction | undefined, {reverse}: {reverse?: boolean} = {}) {
 		if (!action) return;
