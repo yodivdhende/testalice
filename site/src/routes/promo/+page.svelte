@@ -5,7 +5,7 @@
 	import { fade, fly } from 'svelte/transition';
 	import pacman from '$lib/assets/images/pacman_open.gif';
 	import { Tween } from 'svelte/motion';
-	import { createAnimationManager } from '$lib/managers/promo-animation-manager.svelte';
+	import { setPromoAnimationManagerContext } from '$lib/managers/promo-animation-manager.svelte';
 	import { setContext } from 'svelte';
 
 	const targetDate = new Date('2026-03-1');
@@ -19,11 +19,10 @@
 	let pacmanLeftDefault = -100;
 	let	pacmanLeft =  new Tween(pacmanLeftDefault);
 
-	const animationManager = createAnimationManager();
+	const animationManager = setPromoAnimationManagerContext();
 	animationManager.registerAnimation({
 		animation: pacmanAnimation,
 	});
-	setContext('promoAnimationManager', animationManager);
 
 
 	setInterval(() => {

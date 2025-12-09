@@ -18,8 +18,7 @@
 	import WorldReverseImage from '$lib/assets/images/WorldReverseGreen.png';
 	import FloorTexture from '$lib/assets/images/Grid.png';
 	import { Tween } from 'svelte/motion';
-	import { getContext } from 'svelte';
-	import type { PromoAnimationManager } from '$lib/managers/promo-animation-manager.svelte';
+	import { getPromoAnimationManagerContext } from '$lib/managers/promo-animation-manager.svelte';
 	
 	let { onWorldClick , ...props}: {onWorldClick: () => void} = $props();
 	const ref = new Group();
@@ -46,15 +45,9 @@
 		side: 2,
 	})
 	let sphereRotation = $state(0);
-
-	$effect(()=>{
-		getContext<PromoAnimationManager>('promoAnimationManager').registerAnimation({
-			animation: rowAnimation,
-		})
-		getContext<PromoAnimationManager>('promoAnimationManager').registerAnimation({
-			animation: constalationAnimation,
-		})
-	})
+	let promoAnimationManager = getPromoAnimationManagerContext();
+	promoAnimationManager.registerAnimation({animation: rowAnimation})
+	promoAnimationManager.registerAnimation({animation: constalationAnimation})
 
 	function createSphere() {
 		let numberOfClicks = 0;
