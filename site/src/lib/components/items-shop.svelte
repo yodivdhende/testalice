@@ -31,9 +31,10 @@
   <h1>Items shop</h1>
   <div class="grid">
     {#each basketItems as item}
-      <div class="items">
+      <div class="items {item.count > 0 ? 'selected' : ''}">
         <img src="https://picsum.photos/200/200"  alt="random" />
-        <div>{item.name}</div>
+        <div class="item-name">{item.name}</div>
+        <div class="item-description">{item.description}</div>
         <button onclick={()=>remove(item)}><CircleMinus/></button>
         <input type=number  bind:value={item.count} />
         <button onclick={()=>item.count++}><PlusCircle /></button>
@@ -52,28 +53,53 @@
     grid-template-columns: repeat(3, 1fr);
   }
 
-  .items{
+  .items {
     display: grid;
-    max-width: 200px;
+    width: 250px;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: min-content;
     grid-template-areas: 
-      'image image image'
-      'name name name'
-      'remove value add';
+      'image        image       image'
+      'name         name        name'
+      'description  description description'
+      'remove       value       add';
   }
+
+  .selected {
+    background-color: lightgreen;
+  }
+
   .items img {
     grid-area: image;
+    margin-left: auto;
+    margin-right: auto;
   }
-  .items div{
+
+  .items .item-name{
     grid-area: name;
     width: 100%;
+    height: min-content;
+    padding: 0.5em;
     text-align: center;
+    font-weight: bold;
+    border-bottom: 1px solid silver;
   }
+
+  .items .item-description{
+    grid-area: description;
+    width: 100%;
+    padding: 0.5em;
+  }
+
+
   .items button:last-child{
     grid-area: add;
   }
 
   .items input {
     grid-area: value;
+    width:100%;
+    text-align: center;
   }
 
   .items button:first-child{

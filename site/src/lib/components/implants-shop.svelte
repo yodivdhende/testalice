@@ -3,6 +3,11 @@
 	import { PlusCircle, Trash } from "@lucide/svelte";
   
   let {implants, characterImplants=$bindable()}: {implants: Implant[], characterImplants: number[]}= $props();
+  let implantItems: (Implant & {selected: boolean})[] = $derived.by(()=> implants.map(implant => ({
+      ...implant,
+      selected: characterImplants.includes(implant.id ?? -1),
+    }))
+  )
 
   function addImplant(id: number | null){
     if(id == null) return;
@@ -19,10 +24,11 @@
 <main>
   <h1>Implants shop</h1>
   <div class="grid">
-    {#each implants as implant}
-      <div class="items">
+    {#each implantItems as implant}
+      <div class="implant {implant.selected ? 'selected' : ''}">
         <img src="https://picsum.photos/200/200"  alt="random" />
-        <div>{implant.name}</div>
+        <div class="implant-name">{implant.name}</div>
+        <div class="implant-description">{implant.description}</div>
         <button onclick={()=>removeImplant(implant.id)}><Trash /></button>
         <button onclick={()=>addImplant(implant.id)}><PlusCircle /></button>
       </div> 
@@ -40,27 +46,45 @@
     grid-template-columns: repeat(3, 1fr);
   }
 
-  .items{
+  .implant{
     display: grid;
-    max-width: 200px;
+    max-width: 250px;
     grid-template-areas: 
-      'image image'
-      'name name'
-      'add delete';
+      'image        image'
+      'name         name'
+      'description  description'
+      'delete       add';
   }
-  .items img {
+
+  .selected {
+    background-color: lightgreen;
+  }
+
+  .implant img {
     grid-area: image;
+    margin-left: auto;
+    margin-right: auto;
   }
-  .items div{
+
+  .implant .implant-name{
     grid-area: name;
     width: 100%;
+    height: min-content;
+    padding: 0.5em;
     text-align: center;
+    font-weight: bold;
+    border-bottom: 1px solid silver;
   }
-  .items button:first {
-    grid-area: add;
+  .implant .implant-description{
+    grid-area: description;
+    width: 100%;
+    padding: 0.5em;
   }
-  .items button:last-child{
+  .implant button:first {
     grid-area: delete;
+  }
+  .implant button:last-child{
+    grid-area: add;
   }
 
 </style>
