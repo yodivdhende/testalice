@@ -1,53 +1,39 @@
 <script lang="ts">
 	import SkillSlider from '$lib/components/skill-slider.svelte';
-	import { createNewCharacterVersionSkillGroup, groupSkills } from '$lib/utils/skills';
-	import { ShoppingBag } from '@lucide/svelte';
+	import { groupSkills } from '$lib/utils/skills.svelte';
 	import type { CharacterVerionSkill } from '$lib/db/character_version.repo';
 	import type { Skill } from '$lib/db/skills.repo';
 
-	let { skills, characterSkills=$bindable()}: {skills: Skill[], characterSkills: CharacterVerionSkill[]}= $props();
-	let currentCharacterSkillsGrouped = $state(createNewCharacterVersionSkillGroup(skills));
-	let groups = $derived(groupSkills(skills));
+	let {
+		skills,
+		characterSkills = $bindable()
+	}: { skills: Skill[]; characterSkills: CharacterVerionSkill[] } = $props();
+	let groupedSkills = groupSkills(skills);
 
 	$effect(() => {
 		characterSkills.forEach((skill) => {
-			Object.values(currentCharacterSkillsGrouped).forEach((group) => {
-				if (group.skills[skill.id] == null) return;
-				group.skills[skill.id].value = skill.value;
-			});
+			Object.values(groupedSkills).forEach((group) => group.setValueOfSkill(skill));
 		});
 	});
 
 	$effect(() => {
-		Object.values(currentCharacterSkillsGrouped).forEach((group) => {
-			group.total = Object.values(group.skills).reduce((total, skill) => total + skill.value, 0);
-		});
-	});
-
-	function saveSkills() {
-		const skills: CharacterVerionSkill[] = Object.values(currentCharacterSkillsGrouped).flatMap(
-			({ skills }) =>
-				Object.entries(skills)
-					.filter(([_, skill]) => skill.value > 0)
-					.map(([key, skill]) => ({ id: Number(key), value: skill.value }))
+		const skills: CharacterVerionSkill[] = Object.values(groupedSkills).flatMap(({ skills }) =>
+			skills.filter(({ value }) => value > 0).map(({ id, value }) => ({ id: id ?? -1, value }))
 		);
-    characterSkills = skills;
-	}
+		characterSkills = skills;
+	});
 </script>
 
 <h1>Skill shop</h1>
-{#each groups as group}
-	<h2>{group.name}: {currentCharacterSkillsGrouped[group.id].total}</h2>
+{#each groupedSkills as group}
+	<h2>{group.name}: {group.total}</h2>
 	{#each group.skills as skill}
 		<div class="skill">
 			<p>{skill.name}</p>
-			{#if skill.id}
-				<SkillSlider bind:value={currentCharacterSkillsGrouped[group.id].skills[skill.id].value} />
-			{/if}
+			<SkillSlider bind:value={skill.value} />
 		</div>
 	{/each}
 {/each}
-<button onclick={saveSkills}><ShoppingBag /></button>
 
 <style>
 	h1 {
