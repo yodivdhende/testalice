@@ -1,4 +1,3 @@
-
 <script lang='ts'>
 	import { CircleMinus, PlusCircle } from "@lucide/svelte";
 	import type { Item } from "$lib/db/items.repo";

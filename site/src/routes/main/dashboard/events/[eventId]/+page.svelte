@@ -39,12 +39,6 @@
 		await goto('.');
 	}
 
-	// function goToShop(shop: 'skills' | 'implants' | 'items') {
-	// 	const pathSegments = page.url.pathname.split('/')
-	// 		.filter((_, i) => i <= 3)
-	// 		.join('/')
-	// 	goto(`${pathSegments}/${shop}${page.url.search}`);
-	// }
 	let shop = $state('skills');
 	function goToShop(shopRoute: 'skills' | 'implants' | 'items') {
 		shop = shopRoute;
@@ -80,8 +74,8 @@
 					</dt>
 					<dd>
 						<ul>
-							{#each characterVersion.implants as implant}
-								<li>{implant}</li>
+							{#each characterVersion.implants as charImplantId}
+								<li>{implants.find(implant => charImplantId === implant.id)?.name}</li>
 							{/each}
 						</ul>
 					</dd>
@@ -104,7 +98,7 @@
 					<SkillsShop {skills} bind:characterSkills={characterVersion.skills} />
 				{/if}
 				{#if shop === 'implants'}
-					<ImplantsShop {implants} />
+					<ImplantsShop {implants} bind:characterImplants={characterVersion.implants} />
 				{/if}
 				{#if shop === 'items'}
 					<ItemsShop {items} bind:characterItems={characterVersion.items}/>

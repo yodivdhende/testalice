@@ -2,7 +2,18 @@
 	import type { Implant } from "$lib/db/implants.repo";
 	import { PlusCircle, Trash } from "@lucide/svelte";
   
-  let {implants}: {implants: Implant[]}= $props();
+  let {implants, characterImplants=$bindable()}: {implants: Implant[], characterImplants: number[]}= $props();
+
+  function addImplant(id: number | null){
+    if(id == null) return;
+    if(characterImplants.includes(id)) return;
+    characterImplants = [...characterImplants, id];
+  }
+  function removeImplant(id: number | null){
+    if(id == null) return;
+    if(!characterImplants.includes(id)) return;
+    characterImplants = characterImplants.filter(implantId => implantId !== id);
+  }
 </script>
 
 <main>
@@ -12,8 +23,8 @@
       <div class="items">
         <img src="https://picsum.photos/200/200"  alt="random" />
         <div>{implant.name}</div>
-        <button><PlusCircle /></button>
-        <button><Trash /></button>
+        <button onclick={()=>removeImplant(implant.id)}><Trash /></button>
+        <button onclick={()=>addImplant(implant.id)}><PlusCircle /></button>
       </div> 
     {/each}
   </div> 
