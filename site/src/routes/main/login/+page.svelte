@@ -22,7 +22,7 @@
 
 <main>
 	<div class="login-container">
-		<form method="POST" action="/login">
+		<form method="POST" action="/main/login">
 			<h1>Login</h1>
 			<label for="email">Email</label>
 			<input type="email" name="email" id="email" value={email} />
@@ -37,7 +37,7 @@
 			</div>
 			<button> Login </button>
 		</form>
-		<a href="login/register">Register</a>
+		<a href="/main/login/register">Register</a>
 	</div>
 </main>
 

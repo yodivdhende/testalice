@@ -18,30 +18,30 @@
 <nav>
 	<a class="navigation-button" href="/">Home</a>
 	{#if roles.includes('user') === false}
-		<a class="navigation-button" href="/login">login</a>
+		<a class="navigation-button" href="/main/login">login</a>
 	{/if}
 	{#if roles.includes('user')}
-		<a class="navigation-button" href="/dashboard/users">Users</a>
+		<a class="navigation-button" href="/main/dashboard/users">Users</a>
 	{/if}
 	{#if roles.includes('admin')}
 		<div class="dropdown-header">
 			<button class="navigation-button">Manage</button>
 			<ul>
-				<li><a class="navigation-button" href="/dashboard/manage/skills">Skills</a></li>
-				<li><a class="navigation-button" href="/dashboard/manage/items">Items</a></li>
-				<li><a class="navigation-button" href="/dashboard/manage/implants">Implants</a></li>
-				<li><a class="navigation-button" href="/dashboard/manage/events">Events</a></li>
+				<li><a class="navigation-button" href="/main/dashboard/manage/skills">Skills</a></li>
+				<li><a class="navigation-button" href="/main/dashboard/manage/items">Items</a></li>
+				<li><a class="navigation-button" href="/main/dashboard/manage/implants">Implants</a></li>
+				<li><a class="navigation-button" href="/main/dashboard/manage/events">Events</a></li>
 			</ul>
 		</div>
 	{/if}
 	{#if roles.includes('user')}
-		<a class="navigation-button" href="/dashboard/characters">Characters</a>
+		<a class="navigation-button" href="/main/dashboard/characters">Characters</a>
 	{/if}
 	{#if roles.includes('user')}
-		<a class="navigation-button" href="/dashboard/events">Events</a>
+		<a class="navigation-button" href="/main/dashboard/events">Events</a>
 	{/if}
 	{#if roles.includes('admin')}
-		<a class="navigation-button" href="/dashboard/sessions">Sessions</a>
+		<a class="navigation-button" href="/main/dashboard/sessions">Sessions</a>
 	{/if}
 </nav>
 
