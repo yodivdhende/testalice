@@ -17,13 +17,12 @@
 	let characterIndex = -1;
 	let textArea: HTMLTextAreaElement;
 	let pacmanLeftDefault = -100;
-	let	pacmanLeft =  new Tween(pacmanLeftDefault);
+	let pacmanLeft = new Tween(pacmanLeftDefault);
 
 	const animationManager = setPromoAnimationManagerContext();
 	animationManager.registerAnimation({
-		animation: pacmanAnimation,
+		animation: pacmanAnimation
 	});
-
 
 	setInterval(() => {
 		timeLeft = getTimeLeft();
@@ -54,7 +53,7 @@
 			nextLine = '\n';
 		}
 		if (codeIndex >= code.length) {
-				codeIndex = 0;
+			codeIndex = 0;
 			leftCode = code.join('\n');
 		}
 		return leftCode + nextLine + code[codeIndex].slice(characterIndex, characterIndex + 1);
@@ -75,18 +74,21 @@
 		}
 	}
 
-
 	function pacmanAnimation() {
-		pacmanLeft.set(100,{ duration: 4000});
+		pacmanLeft.set(100, { duration: 4000 });
 		setTimeout(() => {
 			pacmanLeft.set(pacmanLeftDefault, { duration: 0 });
 		}, 5000);
 	}
-	 
 </script>
 
 <main>
-	<img src={pacman} alt="Pacman of dhvtlogo" class="pacman-logo" style:left={`${pacmanLeft.current}%`}/>
+	<img
+		src={pacman}
+		alt="Pacman of dhvtlogo"
+		class="pacman-logo"
+		style:left={`${pacmanLeft.current}%`}
+	/>
 	<div class="grid">
 		<div class="code">
 			<textarea bind:this={textArea}>{leftCode}</textarea>
@@ -190,7 +192,6 @@
 		text-align: center;
 	}
 
-
 	textarea {
 		width: 100%;
 		height: 90%;
@@ -216,7 +217,6 @@
 		background-color: rgba(0, 0, 0, 0.95);
 		z-index: 2;
 	}
-
 
 	@media (max-width: 768px) {
 		.side-panel {

@@ -3,15 +3,14 @@
 	import { groupSkills } from '$lib/utils/skills.svelte';
 	import type { CharacterVerionSkill } from '$lib/db/character_version.repo';
 	import type { Skill } from '$lib/db/skills.repo';
+	import { getEventCharacterVersionManager } from '$lib/managers/event-character-version-manager.svelte';
 
-	let {
-		skills,
-		characterSkills = $bindable()
-	}: { skills: Skill[]; characterSkills: CharacterVerionSkill[] } = $props();
+	let { skills }: { skills: Skill[] } = $props();
 	let groupedSkills = groupSkills(skills);
+	const characterManager = getEventCharacterVersionManager();
 
 	$effect(() => {
-		characterSkills.forEach((skill) => {
+		characterManager.skills.forEach((skill) => {
 			Object.values(groupedSkills).forEach((group) => group.setValueOfSkill(skill));
 		});
 	});
@@ -20,7 +19,7 @@
 		const skills: CharacterVerionSkill[] = Object.values(groupedSkills).flatMap(({ skills }) =>
 			skills.filter(({ value }) => value > 0).map(({ id, value }) => ({ id: id ?? -1, value }))
 		);
-		characterSkills = skills;
+		characterManager.skills = skills;
 	});
 </script>
 

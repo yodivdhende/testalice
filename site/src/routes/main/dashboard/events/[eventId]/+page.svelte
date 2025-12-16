@@ -4,7 +4,6 @@
 	import type { LarpEvent } from '$lib/db/event.repo';
 	import type { Character } from '$lib/db/character.repo';
 	import { ArrowLeft } from '@lucide/svelte';
-	import type { CharacterVersionBare } from '$lib/db/character_version.repo';
 	import { page } from '$app/state';
 	import type { Skill } from '$lib/db/skills.repo';
 	import SkillsOverview from '$lib/components/skills-overview.svelte';
@@ -13,6 +12,10 @@
 	import ItemsShop from '$lib/components/items-shop.svelte';
 	import type { Implant } from '$lib/db/implants.repo';
 	import type { Item } from '$lib/db/items.repo';
+	import {
+		getEventCharacterVersionManager,
+		setEventCharacterVersionManager
+	} from '$lib/managers/event-character-version-manager.svelte';
 
 	let { data }: PageProps = $props();
 	let event: LarpEvent | null = data.event;
@@ -21,8 +24,8 @@
 	let implants: Implant[] = data.implants;
 	let items: Item[] = data.items;
 	let selectedCharacterId: string | null = $state(page.url.searchParams.get('character'));
-	let characterVersion: CharacterVersionBare | undefined = $state(undefined);
-
+	setEventCharacterVersionManager();
+	const characterVersionManager = getEventCharacterVersionManager();
 
 	$effect(() => {
 		if (selectedCharacterId == null) return;
@@ -30,10 +33,12 @@
 		goto(`?character=${selectedCharacterId}`);
 	});
 
-	$effect(()=>{
-		if(data.characterVersion == null) return;
-		characterVersion = data.characterVersion;
-	})
+	$effect(() => {
+		if (data.characterVersion == null) return;
+		console.log('new data.characterVerion', { data: data.characterVersion });
+		characterVersionManager.reset();
+		characterVersionManager.setCharacterVersion(data.characterVersion);
+	});
 
 	async function goBack() {
 		await goto('.');
@@ -61,21 +66,21 @@
 					<option value={character.id}>{character.name}</option>
 				{/each}
 			</select>
-			{#if characterVersion}
+			{#if characterVersionManager}
 				<dl>
 					<dt>
 						<h2><button onclick={() => goToShop('skills')}>Skills</button></h2>
 					</dt>
 					<dd>
-						<SkillsOverview {skills} values={characterVersion.skills} />
+						<SkillsOverview {skills} values={characterVersionManager.skills} />
 					</dd>
 					<dt>
 						<h2><button onclick={() => goToShop('implants')}>Implants</button></h2>
 					</dt>
 					<dd>
 						<ul>
-							{#each characterVersion.implants as charImplantId}
-								<li>{implants.find(implant => charImplantId === implant.id)?.name}</li>
+							{#each characterVersionManager.implants as charImplantId}
+								<li>{implants.find((implant) => charImplantId === implant.id)?.name}</li>
 							{/each}
 						</ul>
 					</dd>
@@ -84,8 +89,8 @@
 					</dt>
 					<dd>
 						<ul>
-							{#each characterVersion.items as charItem}
-								<li>{items.find(item => item.id === charItem.id)?.name}: {charItem.count}</li>
+							{#each characterVersionManager.items as charItem}
+								<li>{items.find((item) => item.id === charItem.id)?.name}: {charItem.count}</li>
 							{/each}
 						</ul>
 					</dd>
@@ -93,16 +98,14 @@
 			{/if}
 		</aside>
 		<section>
-			{#if characterVersion != null}
-				{#if shop === 'skills'}
-					<SkillsShop {skills} bind:characterSkills={characterVersion.skills} />
-				{/if}
-				{#if shop === 'implants'}
-					<ImplantsShop {implants} bind:characterImplants={characterVersion.implants} />
-				{/if}
-				{#if shop === 'items'}
-					<ItemsShop {items} bind:characterItems={characterVersion.items}/>
-				{/if}
+			{#if shop === 'skills'}
+				<SkillsShop {skills} />
+			{/if}
+			{#if shop === 'implants'}
+				<ImplantsShop {implants} />
+			{/if}
+			{#if shop === 'items'}
+				<ItemsShop {items} />
 			{/if}
 		</section>
 		<div class="event-footer">

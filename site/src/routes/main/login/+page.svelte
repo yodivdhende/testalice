@@ -4,12 +4,19 @@
 
 	let showPassword = $state(false);
 	let passwordInputType = $derived.by(() => (showPassword ? 'text' : 'password'));
+	let submitButton: HTMLButtonElement;
 
 	let email = '';
 	let password = '';
 
 	function toggleShowPassword() {
 		showPassword = !showPassword;
+	}
+
+	function login(event: KeyboardEvent) {
+		if (event.key !== 'Enter') return;
+		if (submitButton == null) return;
+		submitButton.click();
 	}
 
 	let { form }: PageProps = $props();
@@ -28,14 +35,20 @@
 			<input type="email" name="email" id="email" value={email} />
 			<label for="password">Password</label>
 			<div class="password">
-				<input type={passwordInputType} name="password" id="password" value={password} />
+				<input
+					type={passwordInputType}
+					name="password"
+					id="password"
+					value={password}
+					onkeydown={login}
+				/>
 				{#if showPassword}
 					<button onclick={toggleShowPassword}>◎</button>
 				{:else}
 					<button onclick={toggleShowPassword}>◉</button>
 				{/if}
 			</div>
-			<button> Login </button>
+			<button bind:this={submitButton}> Login </button>
 		</form>
 		<a href="/main/login/register">Register</a>
 	</div>
