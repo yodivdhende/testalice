@@ -6,9 +6,9 @@
 	import pacman from '$lib/assets/images/pacman_open.gif';
 	import { Tween } from 'svelte/motion';
 	import { setPromoAnimationManagerContext } from '$lib/managers/promo-animation-manager.svelte';
-	import { setContext } from 'svelte';
+	import PromoSidePanel from '$lib/components/side-panels/promo-side-panel.svelte';
 
-	const targetDate = new Date('2026-03-1');
+	const targetDate = new Date('2026-03-1 00:00');
 	let timeLeft = $state();
 	let showInput = $state(false);
 	let showSidePanel = $state(false);
@@ -16,14 +16,13 @@
 	let codeIndex = 0;
 	let characterIndex = -1;
 	let textArea: HTMLTextAreaElement;
-	let pacmanLeftDefault = -100;
-	let	pacmanLeft =  new Tween(pacmanLeftDefault);
+	let pacmanLeftDefault = -200;
+	let pacmanLeft = new Tween(pacmanLeftDefault);
 
 	const animationManager = setPromoAnimationManagerContext();
 	animationManager.registerAnimation({
-		animation: pacmanAnimation,
+		animation: pacmanAnimation
 	});
-
 
 	setInterval(() => {
 		timeLeft = getTimeLeft();
@@ -54,7 +53,7 @@
 			nextLine = '\n';
 		}
 		if (codeIndex >= code.length) {
-				codeIndex = 0;
+			codeIndex = 0;
 			leftCode = code.join('\n');
 		}
 		return leftCode + nextLine + code[codeIndex].slice(characterIndex, characterIndex + 1);
@@ -67,7 +66,7 @@
 
 	function onCodeKeyUp(event: KeyboardEvent) {
 		if (event.key === 'Enter') {
-			if (codeValue.trim() === 'Avix76') {
+			if (codeValue.trim() === 'Avix74') {
 				showSidePanel = true;
 				showInput = false;
 			}
@@ -75,18 +74,21 @@
 		}
 	}
 
-
 	function pacmanAnimation() {
-		pacmanLeft.set(100,{ duration: 4000});
+		pacmanLeft.set(100, { duration: 4000 });
 		setTimeout(() => {
 			pacmanLeft.set(pacmanLeftDefault, { duration: 0 });
 		}, 5000);
 	}
-	 
 </script>
 
 <main>
-	<img src={pacman} alt="Pacman of dhvtlogo" class="pacman-logo" style:left={`${pacmanLeft.current}%`}/>
+	<img
+		src={pacman}
+		alt="Pacman of dhvtlogo"
+		class="pacman-logo"
+		style:left={`${pacmanLeft.current}%`}
+	/>
 	<div class="grid">
 		<div class="code">
 			<textarea bind:this={textArea}>{leftCode}</textarea>
@@ -107,7 +109,9 @@
 		</div>
 	</div>
 	{#if showSidePanel}
-		<div class="side-panel" in:fly={{ x: 500 }} out:fade>this is the side panel</div>
+		<div class="side-panel" in:fly={{ x: 500 }} out:fade>
+			<PromoSidePanel />
+		</div>
 	{/if}
 </main>
 
@@ -131,7 +135,7 @@
 		height: 100vh;
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
-		grid-template-rows: 1fr minmax(500px, 1fr) 1fr;
+		grid-template-rows: 1fr minmax(200px, 1.5fr) 1fr;
 		grid-template-areas:
 			'. 	title				.'
 			'. 	input				.'
@@ -157,7 +161,7 @@
 		grid-area: title;
 		align-self: end;
 		z-index: 1;
-		font-size: 5rem;
+		font-size: min(5rem, 15vw);
 		font-weight: bold;
 		text-align: center;
 		padding: auto;
@@ -190,7 +194,6 @@
 		text-align: center;
 	}
 
-
 	textarea {
 		width: 100%;
 		height: 90%;
@@ -207,7 +210,7 @@
 		position: absolute;
 		top: 0;
 		right: 0;
-		width: 500px;
+		width: min(500px, calc(100vw - 2rem - 4px));
 		height: calc(100vh - 2rem - 2px);
 		color: #00ff00;
 		font-family: 'Courier New', Courier, monospace;
@@ -215,12 +218,5 @@
 		border: 1px solid #00ff00;
 		background-color: rgba(0, 0, 0, 0.95);
 		z-index: 2;
-	}
-
-
-	@media (max-width: 768px) {
-		.side-panel {
-			width: 100%;
-		}
 	}
 </style>
